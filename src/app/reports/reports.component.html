@@ -1,0 +1,385 @@
+<div class="reportDiv">
+    <div class="section1">
+        <h4>Tide</h4>
+        <!-- <p style="color: white;">ROWE ADCP</p> -->
+        <div class="dataMain">
+
+            <div class="progress" role="progressbar" data-value="10">
+                <div class="progress-inner">
+                    <div class="progress-indicator"></div>
+                    <div class="progress-indicator"></div>
+                </div>
+                <span class="progress-label">
+                    <strong>10</strong>
+                    <span>m</span>
+                </span>
+            </div>
+
+
+        </div>
+        <h4>Battery Level</h4>
+        <div class="dataMain">
+
+            <app-battery></app-battery>
+            <div class="texts">
+                <h6>Battery Level</h6>
+                <p>89%</p>
+            </div>
+
+        </div>
+        <h4>Current Location</h4>
+        <div class="dataMain">
+            <div class="location">
+                <img src="../../assets/output-onlinegiftools (1).gif" alt="location">
+                <div class="texts">
+                    <h6><span>Lat : </span>13.8923789</h6>
+                    <h6><span>Lon : </span>15.8376482</h6>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- <div class="currentdiv">
+
+            <div class="names">
+                <p>Current</p>
+                <span>low</span>
+            </div>
+            <div class="elements">
+                <app-guage></app-guage>
+                
+                <div class="compp">
+                    <div class="compass">
+                        <div class="compass-inner">
+                            <div class="north">N</div>
+                            <div class="east">E</div>
+                            <div class="west">W</div>
+                            <div class="south">S</div>
+                            <div class="main-arrow">
+                                <div class="arrow-up"></div>
+                                <div class="arrow-down"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="currentdiv">
+
+            <div class="names">
+                <p>Current</p>
+                <span>low</span>
+            </div>
+            <div class="elements">
+                <div class="knotdiv">
+                    <div id="control-panel-speed-component" class="daq-gauge--light">
+                        <div class="sc-dnqmqq jpcCTi daq-gauge--light__label">
+                            <div color="#fec036" class="sc-iwsKbI gmDjoc"><svg width="100" height="100"
+                                    viewBox="0 0 207 207">
+                                    <g class="scale">
+                                        <line class="tick" x1="46.78501089566946" y1="159.21498910433053"
+                                            x2="51.02765158278874" y2="154.97234841721124" stroke-linecap="round">
+                                        </line>
+                                        <text x="60.92714651940041" y="149.07285348059958" text-anchor="middle">0</text>
+                                        <line class="tick" x1="27.391006954535285" y1="127.56685105280832"
+                                            x2="30.244176503420746" y2="126.63980006968347" stroke-linecap="round">
+                                        </line>
+                                        <line class="tick" x1="24.47877692268655" y1="90.56346002930164"
+                                            x2="30.404906966257386" y2="91.50206681954302" stroke-linecap="round">
+                                        </line>
+                                        <text x="44.232543734589306" y="97.69214933010626" text-anchor="middle">8</text>
+                                        <line class="tick" x1="38.68314894719168" y1="56.27107244274838"
+                                            x2="41.110199930316526" y2="58.03442819962579" stroke-linecap="round">
+                                        </line>
+                                        <line class="tick" x1="66.90775527070605" y1="32.16498132702475"
+                                            x2="69.63169826914333" y2="37.511020472154954" stroke-linecap="round">
+                                        </line>
+                                        <text x="75.98756526549697" y="53.98511181079211" text-anchor="middle">16</text>
+                                        <line class="tick" x1="103" y1="23.5" x2="103" y2="26.5" stroke-linecap="round">
+                                        </line>
+                                        <line class="tick" x1="139.09224472929398" y1="32.16498132702476"
+                                            x2="136.3683017308567" y2="37.51102047215497" stroke-linecap="round"></line>
+                                        <text x="130.01243473450305" y="53.98511181079212"
+                                            text-anchor="middle">24</text>
+                                        <line class="tick" x1="167.31685105280832" y1="56.271072442748384"
+                                            x2="164.88980006968347" y2="58.03442819962581" stroke-linecap="round">
+                                        </line>
+                                        <line class="tick" x1="181.52122307731344" y1="90.56346002930165"
+                                            x2="175.59509303374261" y2="91.50206681954303" stroke-linecap="round">
+                                        </line>
+                                        <text x="161.76745626541071" y="97.69214933010626"
+                                            text-anchor="middle">32</text>
+                                        <line class="tick" x1="178.6089930454647" y1="127.56685105280832"
+                                            x2="175.75582349657924" y2="126.63980006968347" stroke-linecap="round">
+                                        </line>
+                                        <line class="tick" x1="159.21498910433053" y1="159.21498910433053"
+                                            x2="154.97234841721124" y2="154.97234841721124" stroke-linecap="round">
+                                        </line>
+                                        <text x="145.07285348059958" y="149.07285348059958"
+                                            text-anchor="middle">40</text>
+                                    </g>
+                                    <line class="needle" x1="103" y1="103" x2="182.5" y2="103"
+                                        transform="rotate(-37.349999999999994 103 103)" stroke-linecap="round"></line>
+                                    <circle class="needle-knob" cx="103" cy="103" r="14" fill="#fff"></circle>
+                                    <g>
+                                        <circle class="track" cx="103" cy="103" r="87.5" fill="none"
+                                            stroke-dasharray="549.7787143782137" stroke-dashoffset="137.44467859455344"
+                                            stroke-width="6" transform="rotate(-225 103 103)"></circle>
+                                        <circle class="track progress" cx="103" cy="103" r="87.5" fill="none"
+                                            stroke-dasharray="549.7787143782137" stroke-dashoffset="263.2065595085698"
+                                            stroke-width="6" transform="rotate(-225 103 103)"></circle>
+                                    </g>
+                                </svg>
+                                <div class="sc-gZMcBi jjZFEi">
+                                    <div color="#fec036" class="sc-gqjmRU dEXSWI">27.8 Knot</div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="compp">
+                    <div class="compass">
+                        <div class="compass-inner">
+                            <div class="north">N</div>
+                            <div class="east">E</div>
+                            <div class="west">W</div>
+                            <div class="south">S</div>
+                            <div class="main-arrow">
+                                <div class="arrow-up"></div>
+                                <div class="arrow-down"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div> -->
+        <!-- <div class="currentdiv">
+
+            <div class="names">
+                <p>Current</p>
+                <span>low</span>
+            </div> -->
+        <!-- <div class="elements"> -->
+        <!-- <div class="knotdiv">
+                    <div id="control-panel-speed-component" class="daq-gauge--light">
+                        <div class="sc-dnqmqq jpcCTi daq-gauge--light__label">
+                            <div color="#fec036" class="sc-iwsKbI gmDjoc"><svg width="100" height="100"
+                                    viewBox="0 0 207 207">
+                                    <g class="scale">
+                                        <line class="tick" x1="46.78501089566946" y1="159.21498910433053"
+                                            x2="51.02765158278874" y2="154.97234841721124" stroke-linecap="round">
+                                        </line>
+                                        <text x="60.92714651940041" y="149.07285348059958" text-anchor="middle">0</text>
+                                        <line class="tick" x1="27.391006954535285" y1="127.56685105280832"
+                                            x2="30.244176503420746" y2="126.63980006968347" stroke-linecap="round">
+                                        </line>
+                                        <line class="tick" x1="24.47877692268655" y1="90.56346002930164"
+                                            x2="30.404906966257386" y2="91.50206681954302" stroke-linecap="round">
+                                        </line>
+                                        <text x="44.232543734589306" y="97.69214933010626" text-anchor="middle">8</text>
+                                        <line class="tick" x1="38.68314894719168" y1="56.27107244274838"
+                                            x2="41.110199930316526" y2="58.03442819962579" stroke-linecap="round">
+                                        </line>
+                                        <line class="tick" x1="66.90775527070605" y1="32.16498132702475"
+                                            x2="69.63169826914333" y2="37.511020472154954" stroke-linecap="round">
+                                        </line>
+                                        <text x="75.98756526549697" y="53.98511181079211" text-anchor="middle">16</text>
+                                        <line class="tick" x1="103" y1="23.5" x2="103" y2="26.5" stroke-linecap="round">
+                                        </line>
+                                        <line class="tick" x1="139.09224472929398" y1="32.16498132702476"
+                                            x2="136.3683017308567" y2="37.51102047215497" stroke-linecap="round"></line>
+                                        <text x="130.01243473450305" y="53.98511181079212"
+                                            text-anchor="middle">24</text>
+                                        <line class="tick" x1="167.31685105280832" y1="56.271072442748384"
+                                            x2="164.88980006968347" y2="58.03442819962581" stroke-linecap="round">
+                                        </line>
+                                        <line class="tick" x1="181.52122307731344" y1="90.56346002930165"
+                                            x2="175.59509303374261" y2="91.50206681954303" stroke-linecap="round">
+                                        </line>
+                                        <text x="161.76745626541071" y="97.69214933010626"
+                                            text-anchor="middle">32</text>
+                                        <line class="tick" x1="178.6089930454647" y1="127.56685105280832"
+                                            x2="175.75582349657924" y2="126.63980006968347" stroke-linecap="round">
+                                        </line>
+                                        <line class="tick" x1="159.21498910433053" y1="159.21498910433053"
+                                            x2="154.97234841721124" y2="154.97234841721124" stroke-linecap="round">
+                                        </line>
+                                        <text x="145.07285348059958" y="149.07285348059958"
+                                            text-anchor="middle">40</text>
+                                    </g>
+                                    <line class="needle" x1="103" y1="103" x2="182.5" y2="103"
+                                        transform="rotate(-37.349999999999994 103 103)" stroke-linecap="round"></line>
+                                    <circle class="needle-knob" cx="103" cy="103" r="14" fill="#fff"></circle>
+                                    <g>
+                                        <circle class="track" cx="103" cy="103" r="87.5" fill="none"
+                                            stroke-dasharray="549.7787143782137" stroke-dashoffset="137.44467859455344"
+                                            stroke-width="6" transform="rotate(-225 103 103)"></circle>
+                                        <circle class="track progress" cx="103" cy="103" r="87.5" fill="none"
+                                            stroke-dasharray="549.7787143782137" stroke-dashoffset="263.2065595085698"
+                                            stroke-width="6" transform="rotate(-225 103 103)"></circle>
+                                    </g>
+                                </svg>
+                                <div class="sc-gZMcBi jjZFEi">
+                                    <div color="#fec036" class="sc-gqjmRU dEXSWI">27.8 Knot</div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div> -->
+        <!-- <div class="compp">
+                    <div class="compass">
+                        <div class="compass-inner">
+                            <div class="north">N</div>
+                            <div class="east">E</div>
+                            <div class="west">W</div>
+                            <div class="south">S</div>
+                            <div class="main-arrow">
+                                <div class="arrow-up"></div>
+                                <div class="arrow-down"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+        <!-- </div> -->
+        <!-- </div> -->
+
+
+
+    </div>
+    <div class="section2">
+        <h4>Surface Current Speed</h4>
+        <div class="dataMainc">
+
+            <app-gauge gaugeId="gauge-1"></app-gauge>
+        </div>
+        <h4>Mid Current Speed</h4>
+        <div class="dataMainc">
+
+            <app-gauge gaugeId="gauge-2"></app-gauge>
+        </div>
+        <h4>Low Current SPeed</h4>
+        <div class="dataMainc">
+
+            <app-gauge gaugeId="gauge-3"></app-gauge>
+        </div>
+    </div>
+    <div class="sectionMid">
+        <h4>Direction</h4>
+        <div class="dataMain">
+            <div class="compp">
+                <div class="compass">
+                    <div class="compass-inner">
+                        <div class="north">N</div>
+                        <div class="NE">NE</div>
+                        <div class="east">E</div>
+                        <div class="SE">SE</div>
+                        <div class="west">W</div>
+                        <div class="SW">SW</div>
+                        <div class="south">S</div>
+                        <div class="NW">NW</div>
+                        <div class="main-arrow" [style.transform]="'rotate(' + compassvalue1 + 'deg)'">
+                            <div class="arrow-up"></div>
+                            <div class="arrow-down"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3>{{compassvalue1}} <span>°</span></h3>
+        </div>
+        <h4>Direction</h4>
+        <div class="dataMain">
+            <div class="compp">
+                <div class="compass">
+                    <div class="compass-inner">
+                        <div class="north">N</div>
+                        <div class="NE">NE</div>
+                        <div class="east">E</div>
+                        <div class="SE">SE</div>
+                        <div class="west">W</div>
+                        <div class="SW">SW</div>
+                        <div class="south">S</div>
+                        <div class="NW">NW</div>
+                        <div class="main-arrow " [style.transform]="'rotate(' + compassvalue2 + 'deg)'">
+                            <div class="arrow-up"></div>
+                            <div class="arrow-down"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <h3>{{compassvalue2}} <span>°</span></h3>
+        </div>
+        <h4>Direction</h4>
+        <div class="dataMain">
+            <div class="compp">
+                <div class="compass">
+                    <div class="compass-inner">
+                        <div class="north">N</div>
+                        <div class="NE">NE</div>
+                        <div class="east">E</div>
+                        <div class="SE">SE</div>
+                        <div class="west">W</div>
+                        <div class="SW">SW</div>
+                        <div class="south">S</div>
+                        <div class="NW">NW</div>
+                        <div class="main-arrow" [style.transform]="'rotate(' + compassvalue3 + 'deg)'">
+                            <div class="arrow-up"></div>
+                            <div class="arrow-down"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3>{{compassvalue3}} <span>°</span></h3>
+        </div>
+    </div>
+    <div class="section3">
+        <h3>Buoy Location</h3>
+        <div class="mapbox">
+            <div id="ol-map" class="map-container"></div>
+        </div>
+        <h3>Data Chart</h3>
+        <app-homechart></app-homechart>
+    </div>
+    <!-- <div class="Mmain">
+        <div class="sec-two-three">
+            <div class="section2">
+                <div class="battery">
+                    <app-battery></app-battery>
+                    <div class="texts">
+                        <h6>Battery Level</h6>
+                        <p>70%</p>
+                    </div>
+                </div>
+                <div class="location">
+                    <img src="../../assets/output-onlinegiftools (1).gif" alt="location">
+                    <div class="texts">
+                        <h6><span>Lat : </span>13.8923789</h6>
+                        <h6><span>Lang : </span>15.8376482</h6>
+
+                    </div>
+                </div>
+
+                
+            </div>
+            <div class="section3">
+
+                <div class="mapbox">
+                    <div id="ol-map" class="map-container"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart">
+            <app-homechart></app-homechart>
+        </div>
+    </div> -->
+
+
+</div>

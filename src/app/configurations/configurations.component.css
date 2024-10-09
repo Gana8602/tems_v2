@@ -1,0 +1,183 @@
+.config{
+    height: 100vh;
+    flex: 1;
+    margin: 0;
+    padding-left: 7%;
+    /* background-color: aqua; */
+    display: flex;
+    flex-direction: row;
+}
+.stationSetting{
+    width: 50%;
+    height: 100%;
+    background-color: rgb(47, 45, 45);
+    margin: 5px;
+    border-radius: 15px;
+    display: flex;
+    /* padding-top: 20px; */
+    flex-direction: column;
+    /* align-items: flex-end; */
+    overflow: hidden;
+
+}
+.map-container {
+    flex: 1;
+    /* padding-bottom: 40px; */
+    width: 100%;
+    border-radius: 15px;
+    height: 100%;
+}
+.location{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    /* background-color: aqua; */
+}
+.fencing{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    /* background-color: aqua; */
+}
+.fff p{
+    font-size: 17px;
+    font-weight: 700;
+    color: rgba(53, 49, 49, 0.875);
+}
+.fields{
+
+    padding: 20px;
+    height: 50%;
+    width: 100%;
+
+    
+}
+h3{
+    font-size: 17px;
+    font-weight: 700;
+    color: rgb(210, 211, 212);
+}
+.mapbox{
+    width: 100%;
+/* flex: 1; */
+height: 50%;
+/* margin-bottom: 10px; */
+/* background-color: aqua; */
+}
+
+.stationSetting p{
+    color: rgba(255, 255, 255, 0.662);
+    margin-left: 10px;
+    /* padding-top: 10px; */
+    font-size: 14px;
+    font-weight: 100;
+}
+button{
+    height: 40px;
+    width: 100px;
+    border-radius: 15px;
+    background-color: rgb(0, 255, 255);
+    color: rgb(0, 0, 0);
+    font-weight: 500;
+    font-size: 15px;
+}
+.stationSetting select{
+    height: 40px;
+    width: 250px;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    border: 2px;
+    color: grey;
+    border-width: 2px;
+    border-color: grey;
+    border-radius: 10px;
+    background-color: rgba(41, 40, 40, 0.68);
+}
+.stationSetting input{
+    height: 40px;
+    width: 310px;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    border: 2px;
+    color: grey;
+    border-width: 2px;
+    border-color: grey;
+    border-radius: 10px;
+    background-color: rgba(41, 40, 40, 0.68);
+}
+/* for sensor parameter*/
+.parameterSetting{
+    /* flex: 1; */
+    width: 50%;
+       height: 100%;
+       background-color:  rgb(47, 45, 45);
+       margin: 5px;
+       padding: 20px;
+       border-radius: 15px;
+       display: flex;
+       flex-direction: column;
+   }
+
+.sensors{
+    height: 200px;
+    width: 100%;
+    /* background-color: aquamarine; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.sensors h1{
+    color: rgba(255, 255, 255, 0.775);
+    font-size: 15px;
+    font-weight: 500;
+}
+.tide{
+    height: 100px;
+    width: 100px;
+    border-radius: 10px;
+    background-color: rgb(34, 35, 35);
+    box-shadow:  0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.adcp{
+    height: 100px;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 10px;
+    background-color: rgb(34, 35, 35);
+    box-shadow:  0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.battery{
+    height: 100px;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow:  0 4px 8px rgba(0, 0, 0, 0.1);
+    
+    background-color: rgb(34, 35, 35);
+}
+svg{
+    height: 50px;
+    width: 50px;
+}
+.rep{
+    width: 100%;
+    flex: 1;
+    background-color: aqua;
+}

@@ -1,0 +1,77 @@
+.battery-container {
+  display: flex;
+  flex-direction: column; 
+  align-items: center;   
+  /* justify-content: center;Center items vertically */
+  /* height: 100px;          Adjust the container height */
+  /* width: 150px;           Adjust the container width */
+  /* overflow: hidden;       Prevent overflow */
+}
+
+.battery-shell {
+  width: 55px;            
+  height: 90px;
+  /* border: 2px solid black; */
+  background-color: #ddd;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 10px;  
+  border-radius: 5px; 
+}
+.pin{
+  display: flex;
+  flex-direction: row;
+}
+.plus{
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  height: 6px;
+  width: 15px;
+  margin-right: 4px;
+  border-radius: 2px 2px 2;
+    /* border: 2px solid grey; */
+  background-color: grey;
+}
+p{
+  font-size: 6px;
+  color: white;
+}
+.minus{
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+    height: 6px;
+    width: 15px;
+    margin-left: 4px;
+    border-radius: 2px 2px 2;
+    /* border: 2px solid grey; */
+    background-color: grey;
+  
+}
+.battery-fill {
+  width:  100%;
+  animation: batteryFill 2s forwards;
+  transition: height 0.5s ease;
+  border-radius: 5px;
+}
+@keyframes batteryFill {
+  from {
+    height: 0; /* Start with an empty battery */
+  }
+  to {
+    height: height; /* Fully filled battery */
+  }
+}
+.circular-battery {
+  /* margin: 0;               */
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+svg {
+  display: block;
+  margin: 0 auto;         /* Center the circular battery */
+}
