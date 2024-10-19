@@ -21,18 +21,20 @@ import { SensorService } from '../sensor.service';
 import { response } from 'express';
 import { LayoutComponent } from '../layout/layout.component';
 import { url } from 'node:inspector';
+import { CommonModule } from '@angular/common';
+import { HealthComponent } from "../health/health.component";
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [HomechartComponent, HttpClientModule, KnotComponent, BatteryComponent, GaugeComponent],
+  imports: [HomechartComponent, HttpClientModule, KnotComponent, BatteryComponent, GaugeComponent, CommonModule, HealthComponent],
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.css'
 })
 export class ReportsComponent {
 constructor(private layout:LayoutComponent){}
   compassvalue1: number = 180;
-  compassvalue2: number = 45;
+  compassvalue2: String = "045";
   compassvalue3: number = 120;
   progressValue = 10; // Set your initial value
   currentSpeed: number = 100;
@@ -64,6 +66,11 @@ constructor(private layout:LayoutComponent){}
     this.currentSpeed = newSpeed;
   }
 
+
+  getColor(status: string): string {
+    return status === 'green' ? '#81db81' : '#db8381'; // green for healthy, red for issue
+  }
+
   ngOnInit(): void {
     
 //  const lat = parseFloat(this.layout.sensorDataList[0]?.LAT);
@@ -73,8 +80,8 @@ constructor(private layout:LayoutComponent){}
     if (typeof window !== 'undefined') { // Check if running in the browser
       const markerStyle = new Style({
         image: new Icon({
-          src: 'https://openlayers.org/en/latest/examples/data/icon.png',
-          scale: 0.3,
+          src: '../../assets/buoy.png',
+        scale: 0.04,
         }),
       });
 
@@ -128,8 +135,9 @@ constructor(private layout:LayoutComponent){}
         }),
         layers: [
           new TileLayer({
-            source: new XYZ(
-            {url: 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',}
+            source: 
+            new XYZ(
+            {url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4',}
             ),
           }),
           vectorLayer,

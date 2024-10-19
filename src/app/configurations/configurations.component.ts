@@ -15,34 +15,84 @@ import Feature from 'ol/Feature';
 import { Point, Circle } from 'ol/geom';
 import { number } from 'echarts';
 import { parseNumber } from 'devextreme/localization';
+import { UnitsComponent } from "../units/units.component";
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-configurations',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, UnitsComponent, CommonModule],
   templateUrl: './configurations.component.html',
   styleUrl: './configurations.component.css'
 })
 export class ConfigurationsComponent implements OnInit {
-  Lat: number = 13.2243;
-  Lang: number = 15.32;
+  Lat!: number ;
+  Lang!: number;
   Warning: number = 32;
   Danger:number = 18;
   tide:number = 2.3;
   battery:number = 12.3;
+  tideOffset:number = 2.3;
+  belowwarning: number = 5.5;
+  abovewarning:number = 12.4;
+  belowdanger:number = 4.2;
+  abovedanger:number = 2.5;
+  currentUnit:String = 'm/s';
   selectedStationType: string = '';  // Bind this to the dropdown
   stationTypes: string[] = [];
+  selectedUnit: string = 'mtr';
+
+  slectedOption: String = 'tide';
+  selectedcurrentUnit: string = 'm/s'; // Default selected unit
+  onsubmit() {
+    // Convert the updated coordinates to map projection
+    this.center = fromLonLat([this.Lang, this.Lat]);
+  
+    // Update the map view to center on the new coordinates
+    this.map.getView().setCenter(this.center);
+  
+    // Update the marker's geometry to the new position
+    const marker = this.map.getLayers().getArray().find(layer => {
+      return layer instanceof VectorLayer;
+    }) as VectorLayer;
+  
+    if (marker) {
+      const source = marker.getSource() as VectorSource;
+      const features = source.getFeatures();
+      
+      // Assuming the marker is the first feature, update its position
+      const markerFeature = features[0]; // First feature is the marker
+      markerFeature.setGeometry(new Point(this.center)); // Update the geometry
+  
+      // Refresh the source to ensure the map re-renders
+      source.refresh();
+    }
+  }
+  selecteoption(typee: String) {
+  this.slectedOption = typee;
+  console.log(`selectedType : ${this.slectedOption}`);
+  }
+
+  selectUnit(unit: string) {
+    this.selectedUnit = unit;
+    console.log(`Selected unit: ${this.selectedUnit}`);
+  }
+  selectcurrentUnit(unit: string) {
+    this.selectedcurrentUnit = unit;
+    console.log(`Selected unit: ${this.selectedcurrentUnit}`);
+  }
+
 constructor (private staion:LayoutComponent){}
 map!: Map;
 center = fromLonLat([ 80.19146988481407,14.602590765602967]);
   ngOnInit(): void {
-    
+    // this.center = fromLonLat([this.Lang, this.Lat]);
   // Check if running in the browser
       const markerStyle = new Style({
         image: new Icon({
-          src: 'https://openlayers.org/en/latest/examples/data/icon.png',
-          scale: 0.3,
+          src: '../../assets/buoy.png',
+        scale: 0.04,
         }),
       });
 
@@ -97,7 +147,7 @@ center = fromLonLat([ 80.19146988481407,14.602590765602967]);
         layers: [
           new TileLayer({
             source: new XYZ(
-            {url: 'https://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',}
+            {url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4',}
             ),
           }),
           vectorLayer,

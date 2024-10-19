@@ -1,8 +1,11 @@
 <div class="config">
 
     <div class="stationSetting">
+        <div class="title">
+            <h3>Sensor Settings</h3>
+        </div>
         <div class="fields">
-            <h3>Station Type</h3>
+            <h3>Station</h3>
             <select [(ngModel)]="selectedStationType">
                 <option value="">--Please choose an option--</option>
                 @for (item of stationTypes; track $index) {
@@ -51,9 +54,12 @@
 
     </div>
     <div class="parameterSetting">
-        <h3>Sensor Settings</h3>
+        <div class="title">
+            <h3>Sensor Settings</h3>
+        </div>
+
         <div class="sensors">
-            <div class="tide">
+            <div class="tide" [ngClass]="{'selectOption' :slectedOption === 'tide' }" (click)="selecteoption('tide')">
                 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 101.22">
                     <defs>
                         <style>
@@ -81,7 +87,7 @@
                 </svg>
                 <h1>Tide</h1>
             </div>
-            <div class="adcp">
+            <div class="adcp" [ngClass]="{'selectOption' :slectedOption === 'adcp' }" (click)="selecteoption('adcp')">
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 59.05"
                     style="enable-background:new 0 0 122.88 59.05" xml:space="preserve">
@@ -92,7 +98,8 @@
                 </svg>
                 <h1>ADCP</h1>
             </div>
-            <div class="battery">
+            <div class="battery" [ngClass]="{'selectOption' :slectedOption === 'battery' }"
+                (click)="selecteoption('battery')">
                 <svg xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
                     text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd"
                     clip-rule="evenodd" viewBox="0 0 258 511.5">
@@ -112,30 +119,55 @@
 
 
                 <div class="fff">
-                    <p>Latitude</p>
-                    <input type="text" [(ngModel)]="Lat" placeholder="Latitude">
+                    @if(slectedOption == 'tide'){
+                    <p>Tide Offset</p>
+                    <input type="text" [(ngModel)]="tideOffset" placeholder="Tide Offset">
+                    <div class="radioo">
+                        <p>Unit</p>
+                        <div class="unit">
+                            <div [ngClass]="{'selected': selectedUnit === 'mtr'}" class="meter"
+                                (click)="selectUnit('mtr')">
+                                <h4>mtr</h4>
+                            </div>
+                            <div [ngClass]="{'selected': selectedUnit === 'feet'}" class="knot"
+                                (click)="selectUnit('feet')">
+                                <h4>feet</h4>
+                            </div>
+                        </div>
+
+                    </div>
+                    }@else if(slectedOption == 'adcp'){
+                    <div class="radioo">
+                        <p>Current Unit</p>
+                        <div class="unit">
+                            <div [ngClass]="{'selected': selectedcurrentUnit === 'm/s'}" class="meter"
+                                (click)="selectcurrentUnit('m/s')">
+                                <h4>m/s</h4>
+                            </div>
+                            <div [ngClass]="{'selected': selectedcurrentUnit === 'knot'}" class="knot"
+                                (click)="selectcurrentUnit('knot')">
+                                <h4>Knot</h4>
+                            </div>
+                        </div>
+
+                    </div>
+                    }@else if(slectedOption == 'battery'){
+                    <p>Above Warning</p>
+                    <input type="text" [(ngModel)]="belowwarning" placeholder="Below Warning">
+                    <p>below warning</p>
+                    <input type="text" [(ngModel)]="abovewarning" placeholder="Above Warning">
+                    <p>Above Danger</p>
+                    <input type="text" [(ngModel)]="belowdanger" placeholder="Below Danger">
+                    <p>Below Danger</p>
+                    <input type="text" [(ngModel)]="abovedanger" placeholder="Above Danger">
+                    }
+
+
+
                 </div>
-                <div class="fff">
-                    <p>Longitude</p>
 
-                    <input type="text" [(ngModel)]="Lang" placeholder="Longitude">
 
-                </div>
-
-                <!-- <p>Location</p>
-                <input type="text" [(ngModel)]="Lat" placeholder="Latitude"> -->
-
-                <div class="fff">
-                    <p>Warning Circle</p>
-                    <input type="text" [(ngModel)]="Warning" placeholder="Warning Circle">
-
-                </div>
-                <div class="fff">
-                    <p>Danger Circle</p>
-                    <input type="text" [(ngModel)]="Danger" placeholder="Danger Circle">
-                </div>
-
-                <button class="submit">submit</button>
+                <button class="submit" (click)="onsubmit()">submit</button>
 
             </div>
         </div>

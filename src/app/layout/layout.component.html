@@ -4,13 +4,15 @@
     <section>
         <!-- <app-home></app-home> -->
         @if(page == 'Home'){
+        <!-- <app-user></app-user> -->
         <!-- <app-configurations></app-configurations> -->
         <app-reports></app-reports>
         <!-- <app-home></app-home> -->
         }@else if (page == 'Dashboard') {
-        <app-dashboard></app-dashboard>
-        }@else if (page == 'Reports') {
         <app-reports></app-reports>
+
+        }@else if (page == 'Reports') {
+        <app-dashboard></app-dashboard>
         }
         @else if (page == 'Analytics') {
         <app-analytics></app-analytics>
@@ -18,9 +20,14 @@
 
         <app-configurations></app-configurations>
         <!-- <app-home></app-home> -->
+        }@else if(page == 'user'){
+
+        <app-user></app-user> <!-- <app-home></app-home> -->
         }@else{
         <!-- <app-configurations></app-configurations> -->
         <app-reports></app-reports>
+        <!-- <app-home></app-home> -->
+        <!-- <app-user></app-user> -->
         }
 
 

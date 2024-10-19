@@ -140,6 +140,7 @@
  h4{
   margin-left: 5px;
   color: white;
+  font-size: 15px;
 }
 .mapbox{
     
@@ -279,7 +280,7 @@ margin: 0px;
 .compass-inner {
 	width: 172px;
 	height: 172px;
-	background-color: rgb(30 30 30);
+	background-color: rgb(0, 0, 0);
 	border-radius: 100%;
 	position: relative;
 	left: 2.75px;
@@ -515,7 +516,9 @@ top: 30px;
   /* width: 50%; */
  /* background-color: #7f7e7f59; */
  border-radius: 15px;
+ filter: drop-shadow(1px 2px 2px #909090);
  display: flex;
+
  flex-direction: column;
  align-items: center;
 }
@@ -1371,4 +1374,48 @@ stroke-width: 3; */
   #panel-lower-graduated-bars {
       margin-bottom:3rem
   }
+}
+
+.sensor-health {
+  height: 47%;
+  width: 97%;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  /* flex-direction: row; */
+  /* justify-content: space-evenly; */
+  /* align-items: center; */
+  /* height: 300px; */
+  /* color: black; */
+}
+.table-container, tr{
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+ 
+
+}
+
+.sensor-box {
+  height: 200px;
+  width: 100px;
+  margin: 20px;
+  border-radius: 15px;
+  box-shadow: #909090b5 2px 3px 2px;
+  display: flex;
+  color: black;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+}
+
+.sensor-box img {
+  height: 70px;
+  width: 70px;
 }

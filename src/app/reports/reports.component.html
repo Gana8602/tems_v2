@@ -22,8 +22,8 @@
 
             <app-battery></app-battery>
             <div class="texts">
-                <h6>Battery Level</h6>
-                <p>89%</p>
+
+                <p>85 v</p>
             </div>
 
         </div>
@@ -33,7 +33,7 @@
                 <img src="../../assets/output-onlinegiftools (1).gif" alt="location">
                 <div class="texts">
                     <h6><span>Lat : </span>13.8923789</h6>
-                    <h6><span>Lon : </span>15.8376482</h6>
+                    <h6><span>Lang : </span>15.8376482</h6>
 
                 </div>
             </div>
@@ -258,21 +258,21 @@
         <h4>Surface Current Speed</h4>
         <div class="dataMainc">
 
-            <app-gauge gaugeId="gauge-1"></app-gauge>
+            <app-gauge gaugeId="gauge-1" [value]="29"></app-gauge>
         </div>
         <h4>Mid Current Speed</h4>
         <div class="dataMainc">
 
-            <app-gauge gaugeId="gauge-2"></app-gauge>
+            <app-gauge gaugeId="gauge-2" [value]="15"></app-gauge>
         </div>
-        <h4>Low Current SPeed</h4>
+        <h4>Bottom Current Speed</h4>
         <div class="dataMainc">
 
-            <app-gauge gaugeId="gauge-3"></app-gauge>
+            <app-gauge gaugeId="gauge-3" [value]="10"></app-gauge>
         </div>
     </div>
     <div class="sectionMid">
-        <h4>Direction</h4>
+        <h4>Surface Current Direction</h4>
         <div class="dataMain">
             <div class="compp">
                 <div class="compass">
@@ -294,7 +294,7 @@
             </div>
             <h3>{{compassvalue1}} <span>°</span></h3>
         </div>
-        <h4>Direction</h4>
+        <h4>Mid Current Direction</h4>
         <div class="dataMain">
             <div class="compp">
                 <div class="compass">
@@ -317,7 +317,7 @@
             </div>
             <h3>{{compassvalue2}} <span>°</span></h3>
         </div>
-        <h4>Direction</h4>
+        <h4>Bottom Current Direction</h4>
         <div class="dataMain">
             <div class="compp">
                 <div class="compass">
@@ -345,8 +345,21 @@
         <div class="mapbox">
             <div id="ol-map" class="map-container"></div>
         </div>
-        <h3>Data Chart</h3>
-        <app-homechart></app-homechart>
+
+        <div class="sensor-health">
+            <app-health></app-health>
+            <!-- <h3>Sensor Health</h3> -->
+
+            <!-- <div class="sens">
+                <div *ngFor="let sensor of sensorStatus" class="sensor-box"
+                    [ngStyle]="{'background-color': getColor(sensor.status)}">
+                    <img src="../../assets/{{sensor.file.toLowerCase().replace(' ', '-')}}.png" alt="{{sensor.name}}">
+                    <h4>{{sensor.name}}</h4>
+                </div>
+            </div> -->
+        </div>
+
+        <!-- <app-homechart></app-homechart> -->
     </div>
     <!-- <div class="Mmain">
         <div class="sec-two-three">
