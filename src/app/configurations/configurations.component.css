@@ -10,7 +10,7 @@
 .stationSetting{
     width: 50%;
     height: 100%;
-    background-color: rgb(47, 45, 45);
+    background-color:   rgb(30 30 30);
     margin: 5px;
     border-radius: 15px;
     display: flex;
@@ -33,7 +33,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     /* background-color: aqua; */
 }
 .fencing{
@@ -42,7 +42,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     /* background-color: aqua; */
 }
 .fff p{
@@ -54,7 +54,7 @@
 
     padding: 20px;
     height: 50%;
-    width: 100%;
+    width: 80%;
 
     
 }
@@ -78,6 +78,13 @@ height: 50%;
     font-size: 14px;
     font-weight: 100;
 }
+.parameterSetting p{
+    color: rgba(255, 255, 255, 0.662);
+    margin-left: 10px;
+    /* padding-top: 10px; */
+    font-size: 14px;
+    font-weight: 100;
+}
 button{
     height: 40px;
     width: 100px;
@@ -85,45 +92,78 @@ button{
     background-color: rgb(0, 255, 255);
     color: rgb(0, 0, 0);
     font-weight: 500;
+    margin-top: 30px;
     font-size: 15px;
+    margin-left: 15px;
 }
 .stationSetting select{
     height: 40px;
     width: 250px;
     margin-left: 10px;
+    margin-top: 5px;
     margin-bottom: 20px;
     border: 2px;
-    color: grey;
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
     border-width: 2px;
-    border-color: grey;
+    border-color: rgba(64, 62, 62, 0.678);
     border-radius: 10px;
-    background-color: rgba(41, 40, 40, 0.68);
+    background-color: rgba(173, 172, 172, 0.409);
 }
 .stationSetting input{
+    height: 40px;
+    width: 280px;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+    padding-left: 10px;
+    border: 2px;
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border-width: 2px;
+    border-color: rgba(103, 100, 100, 0.678);
+    border-radius: 10px;
+    background-color: rgba(173, 172, 172, 0.409);
+}
+.parameterSetting input{
     height: 40px;
     width: 310px;
     margin-left: 10px;
     margin-bottom: 20px;
+    margin-top: 5px;
     border: 2px;
-    color: grey;
+    padding-left: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
     border-width: 2px;
-    border-color: grey;
+    border-color: rgba(0, 0, 0, 0.678);
     border-radius: 10px;
-    background-color: rgba(41, 40, 40, 0.68);
+    background-color: rgba(173, 172, 172, 0.409);
 }
 /* for sensor parameter*/
 .parameterSetting{
     /* flex: 1; */
     width: 50%;
        height: 100%;
-       background-color:  rgb(47, 45, 45);
+       background-color:   rgb(30 30 30);
        margin: 5px;
        padding: 20px;
        border-radius: 15px;
        display: flex;
+       align-items: center;
        flex-direction: column;
    }
-
+.title{
+    height: 20px;
+    width: 100%;
+    padding-top: 10px;
+    padding-left: 10px;
+    align-items: center;
+    justify-content: start;
+}
 .sensors{
     height: 200px;
     width: 100%;
@@ -138,7 +178,12 @@ button{
     font-size: 15px;
     font-weight: 500;
 }
-.tide{
+h1{
+    color: rgba(255, 255, 255, 0.775);
+    font-size: 15px;
+    font-weight: 500;
+}
+.tide, .adcp, .battery{
     height: 100px;
     width: 100px;
     border-radius: 10px;
@@ -148,36 +193,48 @@ button{
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s color 0.3s;
 }
-.adcp{
-    height: 100px;
-    width: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    border-radius: 10px;
-    background-color: rgb(34, 35, 35);
-    box-shadow:  0 4px 8px rgba(0, 0, 0, 0.1);
+.selectOption{
+    background-color: rgb(73, 104, 104);
 }
-.battery{
-    height: 100px;
-    width: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    border-radius: 10px;
-    box-shadow:  0 4px 8px rgba(0, 0, 0, 0.1);
-    
-    background-color: rgb(34, 35, 35);
-}
+
 svg{
     height: 50px;
     width: 50px;
 }
 .rep{
-    width: 100%;
+    width: 80%;
     flex: 1;
-    background-color: aqua;
+    /* background-color: aqua; */
+    /* background-color: aqua; */
+}
+
+.unit{
+    height: 50px;
+    width: 200px;
+    /* background-color: blue; */
+    display: flex;
+    border-radius: 20px;
+    flex-direction: row;
+    margin-top: 20px;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.meter, .knot{
+    height: 40px;
+    width: 40%;
+    background-color: rgb(34, 35, 35);
+    border-radius: 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer; /* Make it clickable */
+    transition: background-color 0.3s, color 0.3s;
+}
+.selected {
+    background-color: white;
+    color: black;
 }

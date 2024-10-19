@@ -7,28 +7,28 @@
     <ul class="nav-list">
 
         <li>
-            <a>
+            <a [class.selected]="isPageSelected('Home')">
                 <i class='bx bx-home' (click)="onPageChange('Home')"></i>
                 <span class="links_name">Home</span>
             </a>
             <span class="tooltip">Home</span>
         </li>
         <li>
-            <a>
+            <a [class.selected]="isPageSelected('Dashboard')">
                 <i class='bx bx-grid-alt' (click)="onPageChange('Dashboard')"></i>
                 <span class="links_name">Dashboard</span>
             </a>
             <span class="tooltip">Dashboard</span>
         </li>
         <li>
-            <a>
+            <a [class.selected]="isPageSelected('Reports')">
                 <i class='bx bx-detail' (click)="onPageChange('Reports')"></i>
                 <span class="links_name">Reports</span>
             </a>
             <span class="tooltip">Reports</span>
         </li>
         <li>
-            <a>
+            <a [class.selected]="isPageSelected('Analytics')">
                 <i class='bx bx-pie-chart-alt-2' (click)="onPageChange('Analytics')"></i>
                 <span class="links_name">Analytics</span>
             </a>
@@ -56,11 +56,25 @@
             <span class="tooltip">Saved</span>
         </li> -->
         <li>
-            <a>
+            <a [class.selected]="isPageSelected('user')">
+                <i class='bx bx-user' (click)="onPageChange('user')"></i>
+                <span class="links_name">User Management</span>
+            </a>
+            <span class="tooltip">User Management</span>
+        </li>
+        <li>
+            <a [class.selected]="isPageSelected('Setting')">
                 <i class='bx bx-cog' (click)="onPageChange('Setting')"></i>
                 <span class="links_name">Setting</span>
             </a>
             <span class="tooltip">Setting</span>
+        </li>
+        <li>
+            <a [class.selected]="isPageSelected('logout')">
+                <i class='bx bx-exit' (click)="onPageChange('logout')"></i>
+                <span class="links_name">Log Out</span>
+            </a>
+            <span class="tooltip">Log Out</span>
         </li>
         <!-- <li class="profile">
             <div class="profile-details">

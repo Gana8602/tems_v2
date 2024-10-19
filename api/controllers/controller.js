@@ -42,30 +42,44 @@ const registerUser = async (req, res) => {
 
 // Login user
 const loginUser = async (req, res) => {
-    const { email, password } = req.body;
+    const { userName, password } = req.body;
+
+    if (!userName || !password) {
+        return res.status(400).json({ message: 'Please provide both username and password' });
+    }
 
     try {
-        const result = await sql.query`SELECT * FROM users WHERE email = ${email}`;
+        // Check for the user in the database
+        const query = `SELECT * FROM users WHERE userName = @userName`;
+        const request = new sql.Request();
+        request.input('userName', sql.VarChar, userName);
+        const result = await request.query(query);
+
         const user = result.recordset[0];
 
+        // Check if the user exists
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
+        // Compare the hashed password
         const isMatch = await bcrypt.compare(password, user.password);
-
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid password' });
         }
 
+        // Return user data upon successful login
         res.json({
             id: user.id,
-            email: user.email,
+            userName: user.userName,
         });
     } catch (err) {
+        console.error('Database error:', err);
         res.status(500).send(err);
     }
 };
+
+
 //save data
 const saveSensorData = async (req, res) => {
     console.log('Received data:', req.body); // Debugging

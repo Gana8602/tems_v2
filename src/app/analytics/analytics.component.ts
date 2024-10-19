@@ -52,5 +52,3 @@ ngAfterViewInit(): void {
   chart.setOption(option);
 }
 }    
-
-

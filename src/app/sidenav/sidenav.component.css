@@ -144,6 +144,14 @@
   transition: all 0.4s ease;
   background: #11101D;
 }
+.sidebar li a.selected{
+  background-color: #ffffff; /* Keep the background white */
+  color: #11101D;
+}
+.sidebar li a.selected .links_name,
+.sidebar li a.selected i {
+  color: #11101D;            /* Ensure the text and icon remain visible */
+}
 .sidebar li a:hover{
   background: #FFF;
 }

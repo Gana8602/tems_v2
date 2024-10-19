@@ -1,0 +1,19 @@
+<div class="main">
+    <!-- <img src="../../assets/back.png" alt="buoy"> -->
+    <div class="round">
+        <div class="inner-round">
+            <h3>Login</h3>
+            <h4>Tridel Environmental<br> Reporting and Real-time Analysis</h4>
+            <div class="field">
+                <p>Username</p>
+                <input type="text" [(ngModel)]="UserObj.Username" placeholder="Username">
+            </div>
+            <div class="field">
+                <p>password</p>
+                <input type="password" [(ngModel)]="UserObj.password" placeholder="Password">
+            </div>
+
+            <button (click)="login()">Login</button>
+        </div>
+    </div>
+</div>

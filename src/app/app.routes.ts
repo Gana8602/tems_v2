@@ -5,40 +5,42 @@ import { LayoutComponent } from './layout/layout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReportsComponent } from './reports/reports.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
-import { SidenavComponent } from './sidenav/sidenav.component';
+import { SidenavComponent } from '../app/sidenav/sidenav.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgCircleProgressModule } from 'ng-circle-progress';
+import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
-    {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'main'
-    },{
-        path: 'main',
-        component: LayoutComponent,
-        children: [
-            
-            // {
-            //     path: 'home',
-            //     component: HomeComponent
-            // }
-            // ,
-            // {
-            //     path: 'dashboard',
-            //     component: DashboardComponent
-            // },
-            // {
-            //     path: 'report',
-            //     component: ReportsComponent
-            // },
-            // {
-            //     path:'analytics',
-            //     component:AnalyticsComponent
-            // }
-        ]
-    },
-
-
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'login' // Redirect to the login page instead of base
+  },
+  {
+    path: 'login', // Enable login route
+    component: LoginComponent
+  },
+  {
+    path: 'base', // Correct path to navigate after login
+    component: LayoutComponent,
+    children: [
+      // {
+      //   path: 'home',
+      //   component: HomeComponent
+      // },
+      // {
+      //   path: 'dashboard',
+      //   component: DashboardComponent
+      // },
+      // {
+      //   path: 'report',
+      //   component: ReportsComponent
+      // },
+      // {
+      //   path: 'analytics',
+      //   component: AnalyticsComponent
+      // }
+    ]
+  }
 ];
