@@ -19,16 +19,36 @@
             <!-- <input type="text" [(ngModel)]="battery" placeholder="Battery Voltage ">-->
             <h3>Geo Location</h3>
             <div class="location">
-                <div class="fff">
-                    <p>Latitude</p>
-                    <input type="text" [(ngModel)]="Lat" placeholder="Latitude">
-                </div>
-                <div class="fff">
-                    <p>Longitude</p>
+                <div class="locc">
+                    <div class="radioo">
+                        <!-- <p>Current Unit</p> -->
+                        <div class="unit">
+                            <div [ngClass]="{'selected': selectedcurrentUnit === 'm/s'}" class="meter"
+                                (click)="selectcurrentUnit('m/s')">
+                                <h4>Deg dec</h4>
+                            </div>
+                            <div [ngClass]="{'selected': selectedcurrentUnit === 'knots'}" class="knot"
+                                (click)="selectcurrentUnit('knots')">
+                                <h4>Dms</h4>
+                            </div>
+                        </div>
 
-                    <input type="text" [(ngModel)]="Lang" placeholder="Longitude">
+                    </div>
+                    <div class="field">
+                        <div class="fff">
+                            <p>Latitude</p>
+                            <input type="text" [(ngModel)]="Lat" placeholder="Latitude">
+                        </div>
+                        <div class="fff">
+                            <p>Longitude</p>
+
+                            <input type="text" [(ngModel)]="Lang" placeholder="Longitude">
+
+                        </div>
+                    </div>
 
                 </div>
+
             </div>
             <!-- <p>Location</p>
             <input type="text" [(ngModel)]="Lat" placeholder="Latitude"> -->
@@ -125,14 +145,18 @@
                     <div class="radioo">
                         <p>Unit</p>
                         <div class="unit">
+                            <div [ngClass]="{'selected': selectedUnit === 'cm'}" class="cm" (click)="selectUnit('cm')">
+                                <h4>cm</h4>
+                            </div>
                             <div [ngClass]="{'selected': selectedUnit === 'mtr'}" class="meter"
                                 (click)="selectUnit('mtr')">
                                 <h4>mtr</h4>
                             </div>
                             <div [ngClass]="{'selected': selectedUnit === 'feet'}" class="knot"
                                 (click)="selectUnit('feet')">
-                                <h4>feet</h4>
+                                <h4>Feet</h4>
                             </div>
+
                         </div>
 
                     </div>
@@ -144,9 +168,9 @@
                                 (click)="selectcurrentUnit('m/s')">
                                 <h4>m/s</h4>
                             </div>
-                            <div [ngClass]="{'selected': selectedcurrentUnit === 'knot'}" class="knot"
-                                (click)="selectcurrentUnit('knot')">
-                                <h4>Knot</h4>
+                            <div [ngClass]="{'selected': selectedcurrentUnit === 'knots'}" class="knot"
+                                (click)="selectcurrentUnit('knots')">
+                                <h4>Knots</h4>
                             </div>
                         </div>
 

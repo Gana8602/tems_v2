@@ -1,171 +1,109 @@
-import { Component, forwardRef, Inject, Optional } from '@angular/core';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import { Vector as VectorLayer } from 'ol/layer';
-import { Vector as VectorSource, XYZ } from 'ol/source';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import { Circle as CircleStyle, Fill, Stroke } from 'ol/style';
-import { fromLonLat } from 'ol/proj';
-import Feature from 'ol/Feature';
-import { Point, Circle } from 'ol/geom';
-import { Icon, Style } from 'ol/style';
-import { HomechartComponent } from '../homechart/homechart.component';
-import { KnotComponent } from '../home/knot/knot.component';
-import { BatteryComponent } from '../battery/battery.component';
-import { getDistance } from 'ol/sphere';
-import { GaugeComponent } from "../gauge/gauge.component"; // Import distance calculation function
-
-import { HttpClientModule } from '@angular/common/http';
-import { SensorService } from '../sensor.service';
-import { response } from 'express';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { LayoutComponent } from '../layout/layout.component';
-import { url } from 'node:inspector';
-import { CommonModule } from '@angular/common';
-import { HealthComponent } from "../health/health.component";
+import { BatteryComponent } from '../battery/battery.component';
+import { HealthComponent } from '../health/health.component';
+import { GaugeComponent } from '../gauge/gauge.component';
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [HomechartComponent, HttpClientModule, KnotComponent, BatteryComponent, GaugeComponent, CommonModule, HealthComponent],
+  imports:[BatteryComponent, HealthComponent, GaugeComponent],
   templateUrl: './reports.component.html',
-  styleUrl: './reports.component.css'
+  styleUrls: ['./reports.component.css']
 })
 export class ReportsComponent {
-constructor(private layout:LayoutComponent){}
+  isBrowser: boolean;
+  map!: any;  // Leaflet Map will be dynamically loaded only in the browser
+  center: [number, number] = [14.602590765602967, 80.19146988481407];
+  radius = 180;
+  wrange = 80;
   compassvalue1: number = 180;
   compassvalue2: String = "045";
   compassvalue3: number = 120;
-  progressValue = 10; // Set your initial value
+  progressValue = 10;
   currentSpeed: number = 100;
-  currentValue: number = 20; // example value in Knots
-  maxValue: number = 40; // assuming max value is 40 knots
-  map!: Map;
-  battery:number = 0;
+  currentValue: number = 20;
+  maxValue: number = 40;
 
-   
-  center = fromLonLat([ 80.19146988481407,14.602590765602967]); // Center coordinates
-  radius = 180;
-  wrange = 80; // Circle radius in meters
+  battery: number = 0;
 
-  // Correct calculation for the needle rotation, mapped between -135 and +135 degrees
-  get needleRotation(): number {
-    const minAngle = -135;
-    const maxAngle = 135;
-    return minAngle + (this.currentValue / this.maxValue) * (maxAngle - minAngle) - 90;
+
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: any,
+    private layout: LayoutComponent
+  ) {
+    // Check if the code is running in the browser
+    this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  // Calculate the stroke offset for progress
-  get strokeDashOffset(): number {
-    const circleCircumference = 549.78; // the circle's total circumference
-    return circleCircumference * (1 - this.currentValue / this.maxValue) + 70;
-  }
- 
-
-  updateSpeed(newSpeed: number) {
-    this.currentSpeed = newSpeed;
-  }
-
-
-  getColor(status: string): string {
-    return status === 'green' ? '#81db81' : '#db8381'; // green for healthy, red for issue
-  }
-
-  ngOnInit(): void {
-    
-//  const lat = parseFloat(this.layout.sensorDataList[0]?.LAT);
-//  const long = parseFloat(this.layout.sensorDataList[0]?.LONG);
- 
-//  this.center = fromLonLat([long, lat]);
-    if (typeof window !== 'undefined') { // Check if running in the browser
-      const markerStyle = new Style({
-        image: new Icon({
-          src: '../../assets/buoy.png',
-        scale: 0.04,
-        }),
-      });
-
-      const marker = new Feature({
-        geometry: new Point(this.center), // Start at center
-      });
-      marker.setStyle(markerStyle);
-
-      // Create a circle geometry around the marker
-      const circleFeature = new Feature({
-        geometry: new Circle(this.center, this.radius), // 180 meters radius
-      });
-      const circleFeature2 = new Feature({
-        geometry: new Circle(this.center, this.wrange), // 180 meters radius
-      });
-
-      // Style the circle
-      const circleStyle = new Style({
-        stroke: new Stroke({
-          color: 'red',
-          width: 2,
-        }),
-        fill: new Fill({
-          color: 'rgba(0, 0, 255, 0.1)', // light blue with transparency
-        }),
-      });
-      circleFeature.setStyle(circleStyle);
-      const circleStyle2 = new Style({
-        stroke: new Stroke({
-          color: 'yellow',
-          width: 2,
-        }),
-        fill: new Fill({
-          color: 'rgba(0, 0, 255, 0.1)', // light blue with transparency
-        }),
-      });
-      circleFeature2.setStyle(circleStyle2);
-
-      const vectorSource = new VectorSource({
-        features: [marker, circleFeature,circleFeature2], // Add both marker and circle
-      });
-
-      const vectorLayer = new VectorLayer({
-        source: vectorSource,
-      });
-
-      this.map = new Map({
-        view: new View({
-          center: this.center,
-          zoom: 15, // Adjust zoom level as needed
-        }),
-        layers: [
-          new TileLayer({
-            source: 
-            new XYZ(
-            {url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4',}
-            ),
-          }),
-          vectorLayer,
-        ],
-        target: 'ol-map',
-      });
-
-      // Simulate moving the marker to a new location
-      setTimeout(() => {
-        const newCoords = this.center; // Example new marker position
-        marker.getGeometry()?.setCoordinates(newCoords);
-        this.checkBuoyRange(newCoords as [number, number]);
-        this.checkBuoyRange2(newCoords as [number, number]);
-      }, 3000); // Simulate after 3 seconds 
+  // Initialize map only after view has been fully rendered
+  ngAfterViewInit(): void {
+    if (this.isBrowser) {
+      this.loadLeafletAndInitializeMap();
     }
   }
 
+  async loadLeafletAndInitializeMap(): Promise<void> {
+    const L = await import('leaflet');  // Lazy-load Leaflet
+    this.initializeLeafletMap(L);
+  }
+
+  initializeLeafletMap(L: any): void {
+    const mapContainer = document.getElementById('leaflet-map');
+    
+    if (!mapContainer) {
+      console.error('Map container not found');
+      return;
+    }
+
+    this.map = L.map('leaflet-map').setView(this.center, 15);
+
+    L.tileLayer('https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4', {
+      maxZoom: 18
+    }).addTo(this.map);
+
+    const markerIcon = L.icon({
+      iconUrl: '../../assets/buoy.png',
+      iconSize: [24, 24], // Set the size of the marker
+    });
+
+    const marker = L.marker(this.center, { icon: markerIcon }).addTo(this.map);
+
+    const circle = L.circle(this.center, {
+      color: 'red',
+      fillColor: '#f03',
+      fillOpacity: 0.1,
+      radius: this.radius
+    }).addTo(this.map);
+
+    const warningCircle = L.circle(this.center, {
+      color: 'yellow',
+      fillColor: '#ff0',
+      fillOpacity: 0.1,
+      radius: this.wrange
+    }).addTo(this.map);
+
+    setTimeout(() => {
+      const newCoords = this.center; // Simulate new position
+      marker.setLatLng(newCoords);
+      this.checkBuoyRange(newCoords, L);
+      this.checkBuoyRange2(newCoords, L);
+    }, 3000);
+  }
+
   // Function to check if the marker is within the range
-  checkBuoyRange(markerCoords: [number, number]): void {
-    const distance = getDistance(this.center, markerCoords); // Calculate the distance in meters
+  checkBuoyRange(markerCoords: [number, number], L: any): void {
+    const distance = this.map.distance(this.center, markerCoords);
     if (distance > this.radius) {
       console.log('Buoy missing or out of range');
     } else {
       console.log('Buoy within range');
     }
   }
-  checkBuoyRange2(markerCoords: [number, number]): void {
-    const distance = getDistance(this.center, markerCoords); // Calculate the distance in meters
+
+  checkBuoyRange2(markerCoords: [number, number], L: any): void {
+    const distance = this.map.distance(this.center, markerCoords);
     if (distance > this.wrange) {
       console.log('Buoy is warning range');
     } else {

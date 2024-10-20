@@ -127,27 +127,34 @@
     flex-direction: column;
     /* background-color: unset; */
 }
+
 .map-container {
-    flex-grow: 1;
+    /* flex-grow: 1; */
     padding: 10px;
-    /* width: 100%; */
+    width: 100%;
+    border: 2px solid red;
     border-radius: 15px;
     height: 100%;
+}
+#leaflet-map{
+  border-radius: 10px;
 }
 .map-container .ol-viewport{
   border-radius: 15px;
 }
+
  h4{
   margin-left: 5px;
   color: white;
   font-size: 15px;
 }
 .mapbox{
-    
-    width: 100%;
+    margin: 12px !important;
+    width: 97%;
 border-radius: 15px;
+
 margin: 0px;
-    height: 46%;
+    height: 48%;
 }
 .grid-container {
     display: grid;
@@ -1377,7 +1384,7 @@ stroke-width: 3; */
 }
 
 .sensor-health {
-  height: 47%;
+  height: 50%;
   width: 97%;
   margin: 10px;
   display: flex;

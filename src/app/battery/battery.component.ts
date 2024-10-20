@@ -10,7 +10,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class BatteryComponent implements OnInit {
 
-  @Input() batteryLevel: number = 80; // Battery level input
+  @Input() batteryLevel: number = 30; // Battery level input
   public batteryColor: string = 'green'; // Battery color based on level
   public offset: number = 0;
   public circumference: number = 0;
