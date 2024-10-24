@@ -2,7 +2,7 @@
 
     <div class="stationSetting">
         <div class="title">
-            <h3>Sensor Settings</h3>
+            <h3>Station Settings</h3>
         </div>
         <div class="fields">
             <h3>Station</h3>
@@ -23,29 +23,75 @@
                     <div class="radioo">
                         <!-- <p>Current Unit</p> -->
                         <div class="unit">
-                            <div [ngClass]="{'selected': selectedcurrentUnit === 'm/s'}" class="meter"
-                                (click)="selectcurrentUnit('m/s')">
-                                <h4>Deg dec</h4>
+                            <div [ngClass]="{'selected': selectedcoordinate === 'DD'}" class="meter"
+                                (click)="selectcoordinate('DD')">
+                                <h4>DD</h4>
                             </div>
-                            <div [ngClass]="{'selected': selectedcurrentUnit === 'knots'}" class="knot"
-                                (click)="selectcurrentUnit('knots')">
-                                <h4>Dms</h4>
+                            <div [ngClass]="{'selected': selectedcoordinate === 'DMS'}" class="knot"
+                                (click)="selectcoordinate('DMS')">
+                                <h4>DMS</h4>
                             </div>
                         </div>
 
                     </div>
-                    <div class="field">
-                        <div class="fff">
-                            <p>Latitude</p>
-                            <input type="text" [(ngModel)]="Lat" placeholder="Latitude">
-                        </div>
-                        <div class="fff">
-                            <p>Longitude</p>
+                    <div class="dd">
+                        @if(selectedcoordinate == 'DMS'){
+                        <div class="lat">
 
-                            <input type="text" [(ngModel)]="Lang" placeholder="Longitude">
+                            <h3>Latitude</h3>
+                            <div class="inlat">
+                                <div class="ddfff">
+                                    <p>Deg</p>
+                                    <input type="text" [(ngModel)]="latdeg" placeholder="Degree" class="ddfff-input">
+                                </div>
+                                <div class="ddfff">
+                                    <p>Min </p>
+                                    <input type="text" [(ngModel)]="latmin" placeholder="Minutes" class="ddfff-input">
+                                </div>
+                                <div class="ddfff">
+                                    <p>Sec</p>
+                                    <input type="text" [(ngModel)]="latsec" placeholder="Seconds" class="ddfff-input">
+                                </div>
+                            </div>
 
                         </div>
+                        <div class="lat">
+
+                            <h3>Longitude</h3>
+                            <div class="inlat">
+                                <div class="ddfff">
+                                    <p>Deg</p>
+                                    <input type="text" [(ngModel)]="langdeg" placeholder="Degree" class="ddfff-input">
+                                </div>
+                                <div class="ddfff">
+                                    <p>Min</p>
+                                    <input type="text" [(ngModel)]="langmin" placeholder="Minutes" class="ddfff-input">
+                                </div>
+                                <div class="ddfff">
+                                    <p>Sec</p>
+                                    <input type="text" [(ngModel)]="langsec" placeholder="Seconds" class="ddfff-input">
+                                </div>
+                            </div>
+
+                        </div>
+                        }@else {
+                        <div class="field">
+                            <div class="fff">
+                                <p>Latitude</p>
+                                <input type="text" [(ngModel)]="Lat" placeholder="Latitude">
+                            </div>
+                            <div class="fff">
+                                <p>Longitude</p>
+
+                                <input type="text" [(ngModel)]="Lang" placeholder="Longitude">
+
+                            </div>
+                        </div>
+                        }
+
+
                     </div>
+                    <!--  -->
 
                 </div>
 
@@ -64,7 +110,7 @@
                     <input type="text" [(ngModel)]="Danger" placeholder="Danger Circle">
                 </div>
             </div>
-            <button class="submit">submit</button>
+            <button (click)="onsubmit()" class="submit">Submit</button>
 
         </div>
         <div class="mapbox">
@@ -154,7 +200,7 @@
                             </div>
                             <div [ngClass]="{'selected': selectedUnit === 'feet'}" class="knot"
                                 (click)="selectUnit('feet')">
-                                <h4>Feet</h4>
+                                <h4>feet</h4>
                             </div>
 
                         </div>
@@ -191,7 +237,7 @@
                 </div>
 
 
-                <button class="submit" (click)="onsubmit()">submit</button>
+                <button class="submit" (click)="onsubmit()">Submit</button>
 
             </div>
         </div>

@@ -1,29 +1,42 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router'; // Import RouterModule
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, HttpClientModule, RouterModule], // Add RouterModule
+  imports: [FormsModule, HttpClientModule, RouterModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'], // Fix typo from styleUrl to styleUrls
-  providers: [AuthService]
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  UserObj: any = {
-    userName: '',
-    password: ''
-  };
+  userName: string = '';
+  password: string = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
-  login() {
-    // Directly navigate to the base route without authentication
-    this.router.navigate(['/base']);
+  login(event: Event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const user = {
+      userName: this.userName,
+      password: this.password,
+    };
+
+    console.log(user);
+
+    this.http.post('http://localhost:3000/api/users/login', user).subscribe({
+      next: (response) => {
+        console.log(response);
+        // Navigate to the base route upon successful login
+        this.router.navigate(['/base']);
+      },
+      error: (err) => {
+        console.error('Login failed:', err);
+        // Handle error (e.g., show an error message)
+      },
+    });
   }
-  
 }

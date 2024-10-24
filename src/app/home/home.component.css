@@ -61,7 +61,7 @@ footer {
  
 .floating-image1 {
     position: fixed;
-    bottom: 20px;
+    bottom: 22px;
     right: 20px;
     width: 70px;
     height: 70px;
@@ -72,7 +72,7 @@ footer {
 
 .floating-image2 {
     position: fixed;
-    bottom: 20px;
+    bottom: 22px;
     right: 100px;
     width: 70px;
     height: 70px;
@@ -83,7 +83,7 @@ footer {
 
 .floating-image3 {
     position: fixed;
-    bottom: 20px;
+    bottom: 22px;
     right: 180px;
     width: 70px;
     height: 70px;
@@ -94,7 +94,7 @@ footer {
 
 .floating-image4 {
     position: fixed;
-    bottom: 20px;
+    bottom: 22px;
     right: 260px;
     width: 70px;
     height: 70px;
@@ -105,7 +105,7 @@ footer {
 
 .floating-image5 {
     position: fixed;
-    bottom: 20px;
+    bottom: 22px;
     right: 340px;
     width: 70px;
     height: 70px;
@@ -116,11 +116,72 @@ footer {
 
 .floating-image6 {
     position: fixed;
-    bottom: 20px;
+    bottom: 22px;
     right: 420px;
     width: 70px;
     height: 70px;
     z-index: 1000;
     border: 2px solid black;
     border-radius: 10px;
+}
+.powered{
+    position: fixed;
+    bottom: 0px;
+    right: 10px;
+    width: 280px;
+    height: 20px;
+    background-color: #afaeaed0;
+    opacity: 0.6;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.image{
+    height: 100%;
+    width: 23px;
+    background-image: url('../../assets/logo.png');
+    background-size: cover;
+    margin-right: 10px;
+}
+span{
+    font-size: 12px;
+}
+.bouy1{
+    position: fixed;
+    /* bottom: 0px; */
+    top: 10px;
+    right: 5px;
+    width: 280px;
+    height: 20px;
+    background-color: #ee4c4cd0;
+    opacity: 0.6;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    animation: blinker 2s linear infinite;
+    border-radius: 10px;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+.bouy2{
+    position: fixed;
+    /* bottom: 0px; */
+    top: 40px;
+    right: 5px;
+    width: 280px;
+    height: 20px;
+    background-color: #ee4c4cd0;
+    opacity: 0.6;
+    display: flex;
+    border-radius: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    animation: blinker 3s linear infinite;
 }

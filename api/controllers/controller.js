@@ -1,5 +1,7 @@
+const { json } = require('stream/consumers');
 const { sql } = require('../db');
 const bcrypt = require('bcrypt');
+const axios = require('axios');
 
 // Get all users
 const getUsers = async (req, res) => {
@@ -10,13 +12,79 @@ const getUsers = async (req, res) => {
         res.status(500).send(err);
     }
 };
+const getRoles = async (req, res) => {
+    try {
+        const result = await sql.query`SELECT * FROM roles`;
+        res.json(result.recordset); // SQL Server returns result in `recordset`
+    } catch (err) {
+        res.status(500).send(err);
+    }
+};
+const addRole = async (req, res) => {
+    console.log('Received data:', req.body);
+    const { role } = req.body;
+    
+    if (!role) {
+        return res.status(400).json({ message: 'Invalid input data' });
+    }
+
+    try {
+        const query = `INSERT INTO roles (role) VALUES (@role)`;
+        const request = new sql.Request();
+        request.input('role', sql.VarChar, role);
+
+        const result = await request.query(query);
+        res.status(201).json({
+            status: 'success',
+            message: 'Role added successfully',
+        });
+    } catch (error) {
+        console.error('Database error:', error); // Changed 'err' to 'error'
+        res.status(500).send(error);
+    }
+};
+
+
+//designation add and get
+const getdesignation = async (req, res) => {
+    try {
+        const result = await sql.query`SELECT * FROM designation`;
+        res.json(result.recordset); // SQL Server returns result in `recordset`
+    } catch (err) {
+        res.status(500).send(err);
+    }
+};
+const adddesignation = async (req, res) => {
+    console.log('Received data:', req.body);
+    const { designation } = req.body;
+    
+    if (!designation) {
+        return res.status(400).json({ message: 'Invalid input data' });
+    }
+
+    try {
+        const query = `INSERT INTO designation (designation) VALUES (@designation)`;
+        const request = new sql.Request();
+        request.input('designation', sql.VarChar, designation);
+
+        const result = await request.query(query);
+        res.status(201).json({
+            status: 'success',
+            message: 'designation added successfully',
+        });
+    } catch (error) {
+        console.error('Database error:', error); // Changed 'err' to 'error'
+        res.status(500).send(error);
+    }
+};
+
 
 // Register new user
 const registerUser = async (req, res) => {
     console.log('Received data:', req.body); // Debugging
 
-    const { username, email, password } = req.body;
-    if (!username || !email || !password) {
+    const { name, username, role, designation, email, password } = req.body;
+    if (!name || !username || !role || !designation || !email || !password) {
         return res.status(400).json({ message: 'Invalid input data' });
     }
 
@@ -24,25 +92,44 @@ const registerUser = async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         
-        const query = `INSERT INTO users (username, email, password) VALUES (@username, @email, @password)`;
+        const query = `
+            INSERT INTO users (name, username, role, designation, email, password) 
+            VALUES (@name, @username, @role, @designation, @email, @password)
+        `;
 
         // Prepare the statement
         const request = new sql.Request();
+        request.input('name', sql.VarChar, name);
         request.input('username', sql.VarChar, username);
+        request.input('role', sql.VarChar, role);
+        request.input('designation', sql.VarChar, designation);
         request.input('email', sql.VarChar, email);
         request.input('password', sql.VarChar, hashedPassword);
 
         const result = await request.query(query);
-        res.status(201).json({ id: result.rowsAffected[0], username, email });
+        
+        // Send a success response
+        res.status(201).json({ 
+            message: 'User registered successfully',
+            userId: result.rowsAffected[0],
+            name,
+            username,
+            role,
+            designation,
+            email
+        });
     } catch (err) {
         console.error('Database error:', err);
         res.status(500).send(err);
     }
 };
 
+
 // Login user
 const loginUser = async (req, res) => {
+    console.log('recieved' ,req.body);
     const { userName, password } = req.body;
+
 
     if (!userName || !password) {
         return res.status(400).json({ message: 'Please provide both username and password' });
@@ -94,32 +181,29 @@ const saveSensorData = async (req, res) => {
         BatteryVoltage,
         GPS_Date,
         S1_RelativeWaterLevel,
-        S2_Bin1_Surface,
-        S2_Bin4_Middle,
-        S2_Bin7_Lower
+        S2_SurfaceCurrentSpeedDirection,
+        Middle_CurrentSpeedDirection,
+        Lower_CurrentSpeedDirection
     } = req.body;
 
     // Validate input
-    if (!StationID || !Date || !Time || !UTC_Time || !LAT || !LONG || !BatteryVoltage || !GPS_Date || !S1_RelativeWaterLevel || !S2_Bin1_Surface || !S2_Bin4_Middle || !S2_Bin7_Lower) {
+    if (!StationID || !Date || !Time || !UTC_Time || !LAT || !LONG || !BatteryVoltage || !GPS_Date || !S1_RelativeWaterLevel || !S2_SurfaceCurrentSpeedDirection || !Middle_CurrentSpeedDirection || !Lower_CurrentSpeedDirection) {
         return res.status(400).json({ message: 'Invalid input data' });
     }
 
     try {
-        // Convert numerical values to strings
+        // Convert numerical values to strings if necessary
         const stringLAT = String(LAT);
         const stringLONG = String(LONG);
         const stringBatteryVoltage = String(BatteryVoltage);
         const stringS1_RelativeWaterLevel = String(S1_RelativeWaterLevel);
-        const stringS2_Bin1_Surface = String(S2_Bin1_Surface);
-        const stringS2_Bin4_Middle = String(S2_Bin4_Middle);
-        const stringS2_Bin7_Lower = String(S2_Bin7_Lower);
 
-        // Define the SQL query to insert the data
+        // Prepare the SQL query
         const query = `
-            INSERT INTO SensorData (
-                StationID, Date, Time, UTC_Time, LAT, LONG, BatteryVoltage, GPS_Date, S1_RelativeWaterLevel, S2_Bin1_Surface, S2_Bin4_Middle, S2_Bin7_Lower
+            INSERT INTO temsv2.dbo.sensorsData (
+                StationID, [Date], [Time], UTC_Time, LAT, LONG, Battery_Voltage, GPS_Date, S1_RelativeWaterLevel, S2_SurfaceCurrentSpeedDirection, Middle_CurrentSpeedDirection, Lower_CurrentSpeedDirection
             ) VALUES (
-                @StationID, @Date, @Time, @UTC_Time, @LAT, @LONG, @BatteryVoltage, @GPS_Date, @S1_RelativeWaterLevel, @S2_Bin1_Surface, @S2_Bin4_Middle, @S2_Bin7_Lower
+                @StationID, @Date, @Time, @UTC_Time, @LAT, @LONG, @BatteryVoltage, @GPS_Date, @S1_RelativeWaterLevel, @S2_SurfaceCurrentSpeedDirection, @Middle_CurrentSpeedDirection, @Lower_CurrentSpeedDirection
             )
         `;
 
@@ -128,31 +212,170 @@ const saveSensorData = async (req, res) => {
         request.input('Date', sql.VarChar, Date);
         request.input('Time', sql.VarChar, Time);
         request.input('UTC_Time', sql.VarChar, UTC_Time);
-        request.input('LAT', sql.VarChar, stringLAT); // Convert to string
-        request.input('LONG', sql.VarChar, stringLONG); // Convert to string
-        request.input('BatteryVoltage', sql.VarChar, stringBatteryVoltage); // Convert to string
+        request.input('LAT', sql.VarChar, stringLAT);
+        request.input('LONG', sql.VarChar, stringLONG);
+        request.input('BatteryVoltage', sql.VarChar, stringBatteryVoltage);
         request.input('GPS_Date', sql.VarChar, GPS_Date);
-        request.input('S1_RelativeWaterLevel', sql.VarChar, stringS1_RelativeWaterLevel); // Convert to string
-        request.input('S2_Bin1_Surface', sql.VarChar, stringS2_Bin1_Surface); // Convert to string
-        request.input('S2_Bin4_Middle', sql.VarChar, stringS2_Bin4_Middle); // Convert to string
-        request.input('S2_Bin7_Lower', sql.VarChar, stringS2_Bin7_Lower); // Convert to string
+        request.input('S1_RelativeWaterLevel', sql.VarChar, stringS1_RelativeWaterLevel);
+        request.input('S2_SurfaceCurrentSpeedDirection', sql.VarChar, '0.69;221.6'); // Static data, adjust as needed
+        request.input('Middle_CurrentSpeedDirection', sql.VarChar, '0.71;249.3'); // Static data, adjust as needed
+        request.input('Lower_CurrentSpeedDirection', sql.VarChar, '0.32;254.7'); // Static data, adjust as needed
 
         const result = await request.query(query);
 
         // Send response
         res.status(201).json({ message: 'Sensor data saved successfully', data: req.body });
+       await axios.get('http://localhost:3000/api/split');
+       console.log('Successfully triggered test API for tide and currents');
     } catch (err) {
         console.error('Database error:', err);
         res.status(500).json({ message: 'Error saving data', error: err });
     }
 };
 
+
+const test = async (req, res) => {
+    try {
+        const result = await sql.query`SELECT TOP 1 * FROM sensorsData ORDER BY id DESC`;
+        const data = result.recordset[0]; // Get the first record
+
+        // Check if data exists
+        if (data) {
+            // Extract and format time
+            const timeString = data.Time; 
+            console.log("fetched time ==", timeString);
+            const timee = new Date(timeString); // Use new Date()
+            const formattedTime = timee.toISOString().substr(11, 8); // HH:MM:SS
+            console.log("convetrted time ==", formattedTime);
+            //  formattedTime += '.0000000';
+
+            const utctime = data.UTC_Time;
+            const utctimee = new Date(utctime); // Use new Date()
+            const formattedUTCTime = utctimee.toISOString().substr(11, 8);
+
+            // Extract and format date
+            const dateString = data.Date;
+            const datee = new Date(dateString); // Use new Date()
+            const formattedDate = datee.toISOString().substr(0, 10); // YYYY-MM-DD
+
+            // Print formatted date and time
+            console.log('Formatted Date == ', formattedDate);
+            console.log('Formatted Time == ', formattedTime);
+
+            // Assign data to variables
+            const StationID = data.StationID;
+            const Time = formattedTime; // Use the formatted time
+            const UTC_Time = formattedUTCTime; // Use formatted UTC time
+            const LAT = String(data.LAT);
+            const LONG = String(data.LONG);
+            // const Battery_Voltage = String(data.BatteryVoltage); // Check if key matches
+            const GPS_Date = String(data.GPS_Date);
+            const S1_RelativeWaterLevel = String(data.S1_RelativeWaterLevel);
+            const S2_SurfaceCurrentSpeedDirection = String(data.S2_SurfaceCurrentSpeedDirection);
+            const Middle_CurrentSpeedDirection = String(data.Middle_CurrentSpeedDirection);
+            const Lower_CurrentSpeedDirection = String(data.Lower_CurrentSpeedDirection);
+
+            // Print each piece of data explicitly
+            console.log(`Station ID == ${StationID}`);
+            console.log(`Date == ${formattedDate}`);
+            console.log(`Time == ${formattedTime}`);
+            console.log(`UTC Time == ${formattedUTCTime}`);
+            console.log(`Latitude == ${LAT}`);
+            console.log(`Longitude == ${LONG}`);
+            // console.log(`Battery Voltage == ${Battery_Voltage}`);
+            console.log(`GPS Date == ${GPS_Date}`);
+            console.log(`S1 Relative Water Level == ${S1_RelativeWaterLevel}`);
+            console.log(`S2 Surface Current Speed Direction == ${S2_SurfaceCurrentSpeedDirection}`);
+            console.log(`Middle Current Speed Direction == ${Middle_CurrentSpeedDirection}`);
+            console.log(`Lower Current Speed Direction == ${Lower_CurrentSpeedDirection}`);
+
+            // Save data to tide
+            const tidequery = `
+                INSERT INTO tide (
+                    StationID, Date, [Time], LAT, LONG, S1_RelativeWaterLevel
+                ) VALUES (
+                    @StationID, @Date, @Time, @LAT, @LONG, @S1_RelativeWaterLevel
+                )
+            `;
+
+            const currentquery = `
+            INSERT INTO currents (
+                StationID, Date, [Time], UTC_Time, LAT, LONG, S2_SurfaceCurrentSpeedDirection, Middle_CurrentSpeedDirection, Lower_CurrentSpeedDirection
+            ) VALUES (
+                @StationID, @Date, @Time, @UTC_Time, @LAT, @LONG, @S2_SurfaceCurrentSpeedDirection, @Middle_CurrentSpeedDirection, @Lower_CurrentSpeedDirection
+            )
+        `;
+
+            const request = new sql.Request();
+            request.input('StationID', sql.VarChar, StationID);
+            request.input('Date', sql.Date, formattedDate);
+            request.input('Time', sql.VarChar, formattedTime); // Use the formatted time
+            request.input('UTC_Time', sql.VarChar, formattedUTCTime); // Use formatted UTC time
+            request.input('LAT', sql.VarChar, LAT); // Convert to string
+            request.input('LONG', sql.VarChar, LONG); // Convert to string
+            request.input('S1_RelativeWaterLevel', sql.VarChar, S1_RelativeWaterLevel); // Convert to string
+
+            // Exclude BatteryVoltage and other columns from the insert if they are not part of your INSERT statement
+            // request.input('BatteryVoltage', sql.VarChar, Battery_Voltage);
+            // request.input('GPS_Date', sql.VarChar, GPS_Date);
+            request.input('S2_SurfaceCurrentSpeedDirection', sql.VarChar, S2_SurfaceCurrentSpeedDirection);
+            request.input('Middle_CurrentSpeedDirection', sql.VarChar, Middle_CurrentSpeedDirection);
+            request.input('Lower_CurrentSpeedDirection', sql.VarChar, Lower_CurrentSpeedDirection);
+
+            try {
+                const tideresult = await request.query(tidequery);
+                const currentresult = await request.query(currentquery);
+            } catch (error) {
+                console.error("Error saving currents data: ", error);
+                return res.status(500).json({ message: "Error saving currents data.", error: error.message });
+            }
+            // Send the data as a response after logging
+            return res.json(data); // Send original data if needed, or format as required
+        } else {
+            return res.status(404).json({ message: "No data found." });
+        }
+    } catch (err) {
+        console.error(err); // Log the error for debugging
+        return res.status(500).send(err); 
+    }
+};
+
+
+
 //get all sensor data
 const getSensors = async (req, res) => {
+    const { fromDate, toDate } = req.query;
+
+    // Validate the presence of both parameters
+    if (!fromDate || !toDate) {
+        return res.status(400).json({ message: 'fromDate and toDate are required.' });
+    }
+
     try {
-        const result = await sql.query`SELECT * FROM SensorData`;
-        res.json(result.recordset); // SQL Server returns result in `recordset`
+        console.log('Received fromDate:', fromDate);
+        console.log('Received toDate:', toDate);
+
+        const query = `
+            SELECT * 
+            FROM sensorsData 
+            WHERE Date >= @fromDate AND Date <= @toDate
+        `;
+
+        const request = new sql.Request();
+        request.input('fromDate', sql.DateTime, new Date(fromDate));
+        request.input('toDate', sql.DateTime, new Date(toDate));
+
+        // Log the parsed dates
+        console.log('Parsed fromDate:', new Date(fromDate));
+        console.log('Parsed toDate:', new Date(toDate));
+
+        const result = await request.query(query);
+
+        // Return the filtered records
+       // Log the result
+        res.json([...result.recordset].reverse());
     } catch (err) {
+        console.error('Error executing query:', err);
         res.status(500).send(err);
     }
 };
@@ -160,15 +383,77 @@ const getSensors = async (req, res) => {
 
 
 
+
+//delete role
+const deleteRole = async (req, res) => {
+    const { id } = req.params; // Assuming you're getting the id from the URL parameters
+
+    if (!id) {
+        return res.status(400).json({ message: 'ID is required' });
+    }
+
+    try {
+        const query = `DELETE FROM roles WHERE id = @id`;
+        const request = new sql.Request();
+        request.input('id', sql.Int, id); // Make sure to match the data type with your database schema
+
+        const result = await request.query(query);
+        
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).json({ message: 'Role not found' });
+        }
+
+        res.status(200).json({ message: 'Role deleted successfully' });
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).send(error);
+    }
+};
+
+//delete Designation
+
+const DeleteDesignation = async (req, res) => {
+    const { id } = req.params; // Assuming you're getting the id from the URL parameters
+
+    if (!id) {
+        return res.status(400).json({ message: 'ID is required' });
+    }
+
+    try {
+        const query = `DELETE FROM designation WHERE id = @id`;
+        const request = new sql.Request();
+        request.input('id', sql.Int, id); // Make sure to match the data type with your database schema
+
+        const result = await request.query(query);
+        
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).json({ message: 'Designation not found' });
+        }
+
+        res.status(200).json({ message: 'Designation deleted successfully' });
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).send(error);
+    }
+};
+
+
 // module.exports = { saveSensorData };
 
 
 module.exports = {
+    addRole,
     getUsers,
     registerUser,
     loginUser,
     saveSensorData,
     getSensors,
+    getRoles,
+    getdesignation,
+    adddesignation,
+    deleteRole,
+    DeleteDesignation,
+    test
 };
 
 

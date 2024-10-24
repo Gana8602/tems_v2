@@ -1,22 +1,27 @@
-import { Component, Input, AfterViewInit } from '@angular/core';
+import { Component, Input, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import * as echarts from 'echarts';
- 
+
 @Component({
   selector: 'app-gauge',
   standalone:true,
   templateUrl: './gauge.component.html',
   styleUrls: ['./gauge.component.css']
 })
- 
-export class GaugeComponent implements AfterViewInit {
+export class GaugeComponent implements AfterViewInit, OnChanges {
   @Input() gaugeId!: string;  // Dynamically assigned ID
   @Input() value!: number;
   speedType: string = 'Knots';
   
- 
   ngAfterViewInit(): void {
     this.initChart();
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['value']) {
+      this.initChart();
+    }
+  }
+
   getColorForValue(value: number): string {
     if (value >= 0 && value < 12) {
       return '#008000';  // Light blue for 0-12
@@ -26,6 +31,7 @@ export class GaugeComponent implements AfterViewInit {
       return '#fd666d';  // Red for above 28
     }
   }
+
   initChart(): void {
     const chartDom = document.getElementById(this.gaugeId)!;  // Use dynamic ID
     const myChart = echarts.init(chartDom);
@@ -34,8 +40,8 @@ export class GaugeComponent implements AfterViewInit {
       series: [
         {
           type: 'gauge',
-          min:0,
-          max: 40,
+          min: 0,
+          max: 4,
           axisLine: {
             lineStyle: {
               width: 10,
@@ -75,7 +81,7 @@ export class GaugeComponent implements AfterViewInit {
           detail: {
             valueAnimation: true,
             formatter: (value: number) => {
-              return `${this.value.toFixed(0)} ${this.speedType}`;  // Dynamic value with speedType unit
+              return `${value.toFixed(2)} ${this.speedType}`;  // Use value for the gauge
             },
             color: valueColor,
             fontSize: 18
@@ -83,9 +89,7 @@ export class GaugeComponent implements AfterViewInit {
           data: [
             {
               value: this.value
-              
             },
-            
           ]
         }
       ]
@@ -93,4 +97,3 @@ export class GaugeComponent implements AfterViewInit {
     myChart.setOption(option);
   }
 }
- 

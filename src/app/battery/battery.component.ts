@@ -3,39 +3,39 @@ import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-battery',
-  standalone:true,
+  standalone: true,
   templateUrl: './battery.component.html',
   styleUrls: ['./battery.component.css'],
-  imports:[CommonModule],
+  imports: [CommonModule],
 })
 export class BatteryComponent implements OnInit {
-
-  @Input() batteryLevel: number = 30; // Battery level input
+  @Input() batteryLevel: number = 12.4; // Default battery level in volts
   public batteryColor: string = 'green'; // Battery color based on level
-  public offset: number = 0;
-  public circumference: number = 0;
-  
+  public fillHeight: string = '0%'; // To dynamically set battery fill height
 
   ngOnInit() {
     this.calculateBatteryColor();
-    this.calculateBatteryOffset();
+    this.calculateBatteryFill();
   }
 
   // Calculate the color of the battery based on its level
   calculateBatteryColor() {
-    if (this.batteryLevel > 75) {
-      this.batteryColor = 'green';
-    } else if (this.batteryLevel > 40) {
-      this.batteryColor = 'yellow';
-    } else {
-      this.batteryColor = 'red';
+    if (this.batteryLevel > 12.0) {
+      this.batteryColor = 'green'; // Full charge
+    } else if (this.batteryLevel < 9.0) {
+      this.batteryColor = 'yellow'; // Moderate charge
+    } else if(this.batteryLevel <5) {
+      this.batteryColor = 'red'; // Low charge
     }
   }
 
-  // Calculate the stroke offset for the circular battery indicator
-  calculateBatteryOffset() {
-    const radius = 45; // Radius of the circle
-    this.circumference = 2 * Math.PI * radius; // Circumference of the circle
-    this.offset = this.circumference - (this.batteryLevel / 100) * this.circumference; // Stroke offset calculation
+  // Calculate the height of the battery fill based on the voltage
+  calculateBatteryFill() {
+    const maxLevel = 12.4; // Set your maximum level
+    const minLevel = 0; // Below which it's considered low
+    const fillPercentage = ((this.batteryLevel - minLevel) / (maxLevel - minLevel)) * 100;
+
+    // Ensure fillPercentage is between 0% and 100%
+    this.fillHeight = fillPercentage > 100 ? '100%' : fillPercentage < 0 ? '0%' : fillPercentage + '%';
   }
 }
