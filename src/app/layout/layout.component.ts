@@ -11,12 +11,20 @@ import { UserComponent } from '../user/user.component';
 import { ToastrModule } from 'ngx-toastr';
 
 interface SensorData {
+  id:number;
   StationID: string;
   Date: string;
   Time: string;
-  LAT: string;
-  LONG: string;
+  UTC_Time:string;
+  LAT: number;
+  LONG: number;
   BatteryVoltage: string;
+  GPS_Date: string;
+  Lower_CurrentSpeedDirection:string;
+  Middle_CurrentSpeedDirection:string;
+  S1_RelativeWaterLevel:number;
+  S2_SurfaceCurrentSpeedDirection:string;
+
 }
 
 @Component({
@@ -41,15 +49,19 @@ export class LayoutComponent implements OnInit {
   sensorDataList: SensorData[] = [];
   httpClient = inject(HttpClient);
   page:String = 'Home';
+  selectedBuoy:string = '';
 
   ngOnInit(): void {
     this.sensors();
   }
 
   sensors() {
-    this.httpClient.get('http://localhost:3000/api/users/sensorData')
-      .subscribe((data: any) => {
-        this.sensorDataList = data;
-      });
+    this.httpClient.get('http://localhost:3000/api/users/sensorData?fromDate=2024-01-10&toDate=2024-01-10')
+  .subscribe((data: any) => {
+      console.log('sensorData:== ', data);
+      this.sensorDataList = data;
+      // Optionally log the sensorDataList to verify
+      console.log('sensorDataList after assignment:', this.sensorDataList);
+  });
   }
 }

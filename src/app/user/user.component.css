@@ -1,69 +1,123 @@
-.users{
+.users {
     height: 100vh;
     flex: 1;
-    margin: 0;
     padding-left: 7%;
-    /* background-color: aqua; */
     display: flex;
     color: white;
     flex-direction: column;
 }
-h4{
+
+h4 {
     padding: 10px;
 }
-.user-main{
+
+.user-main {
     height: 100%;
     width: 100%;
     border-radius: 15px;
     margin-top: 10px;
     margin-bottom: 10px;
     margin-right: 20px;
-    background-color:   black;
+    background-color: black;
 }
-.sections{
+
+.sections {
     height: 94%;
     width: 100%;
-    /* background-color: aqua; */
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
 }
-         
-.list-users, .edit-users, .datas{
+
+.list-users{
     height: 100%;
     width: 33%;
-    /* background-color: grey; */
     margin-left: 10px;
     margin-right: 10px;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
-    justify-content: end;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: start;
+    background-color: rgb(30 30 30);
 }
-.user-list{
+
+
+button{
+    height: 40px;
+    width: 100px;
+    background-color: aqua;
+    margin-right: 30px;
+    /* margin-top: 10px; */
+    border-radius: 10px;
+    cursor: pointer;
+}
+.user-list {
     height: 95%;
     width: 95%;
-    /* background-color: aqua; */
-    
     margin: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
+    overflow-y: auto; /* Enables vertical scrolling */
 }
-.index-list{
+.edit-users{
+    height: 100%;
+    width: 33%;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 15px;
+    /* padding-left: 15px; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: start;
+    background-color: rgb(30 30 30);
+}
+.user-edit{
+height: 95%;
+width: 100%;
+padding: 20px;
+/* background-color: aqua; */
+}
+select{
+    height: 40px;
+    width: 320px;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    border: 2px;
+    font-size: 15px;
+    font-weight: 300;
+    color: rgb(255, 255, 255);
+    border-width: 2px;
+    border-color: rgba(64, 62, 62, 0.678);
+    border-radius: 10px;
+    background-color: rgba(173, 172, 172, 0.409);
+}
+.but{
+    height: 50px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+.index-list {
     height: 85px;
     width: 90%;
-    /* background-color:   rgba(34, 32, 32, 0.841); */
     border-radius: 15px;
-display: flex;
-flex-direction: row;
-justify-content: space-between;
-align-items: start;
+    display: flex;
+    background-color:   rgb(45, 44, 44);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 10px;
+}
 
-}.name-image{
+
+.name-image {
     height: 80px;
     width: 150px;
     display: flex;
@@ -71,18 +125,123 @@ align-items: start;
     justify-content: center;
     align-items: center;
 }
-img{
-    height: 60px;
-    width: 60px;
+input{
+    height: 40px;
+    width: 310px;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+    border: 2px;
+    padding-left: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0.678);
+    border-radius: 10px;
+    background-color: rgba(173, 172, 172, 0.409);
+}
+img {
+    height: 40px;
+    width: 40px;
     padding: 10px;
 }
-h6{
+
+h6 {
+    font-size: 13px;
+    font-weight: 300;
+}
+h3 {
+    font-size: 13px;
+    font-weight: 600;
+}
+h5 {
     font-size: 13px;
     font-weight: 400;
-
 }
-i{
+
+i {
     margin-top: 5px;
     margin-right: 5px;
+    margin-left: 5px;
+}
+.bx-edit{
+    color: rgb(1, 161, 247);
+}
+.bx-trash{
+    color: red;
+}
+.datas {
+    height: 100%;
+    width: 35%;
+    margin-left: 5px;
+    margin-right: 10px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: start;
     
+}
+.role, .position{
+    height: 49%;
+    width: 100%;
+    margin: 5px;
+    background-color: rgb(30 30 30);
+    border-radius: 10px;
+}
+.fii{
+    height: 50px;
+    /* background-color: aqua; */
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.tablee {
+    width: 100%;
+    height: 70%; /* Set the height of the table container */
+    display: flex;
+    flex-direction: column; /* Arrange header and body vertically */
+}
+
+.table-header {
+    /* background-color: #555; Set header background color */
+    color: white;
+    z-index: 1; /* Ensure header is above the body */
+}
+
+.table-body {
+    max-height: 300px; /* Set a maximum height for the scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+    flex: 1; /* Allow body to take available space */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 0.01px solid #3b3a3a;
+    width: 33.33%; /* Each column takes equal width */
+}
+
+th {
+    font-size: 16px;
+}
+
+td {
+    font-size: 14px;
+    font-weight: 300;
+}
+
+
+
+button:hover {
+    opacity: 0.8;
 }

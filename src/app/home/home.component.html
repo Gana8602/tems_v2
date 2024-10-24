@@ -6,5 +6,24 @@
     <img src="../../assets/six.png" alt="Floating Image 3" class="floating-image3" (click)="mapChange('Landscape')">
     <img src="../../assets/five.png" alt="Floating Image 4" class="floating-image4" (click)="mapChange('Outdoors')">
     <img src="../../assets/two.png" alt="Floating Image 5" class="floating-image5" (click)="mapChange('TransportDark')">
-    <img src="../../assets/three.png" alt="Floating Image 6" class="floating-image6" (click)="mapChange('Spinal Map')">
+    <img src="../../assets/thre.png" alt="Floating Image 6" class="floating-image6" (click)="mapChange('Spinal Map')">
+
+
+    <div class="powered">
+        <div class="image"></div>
+        <span>Powered by Tridel Technologies Pvt, Ltd.,</span>
+    </div>
+
+    @if (lastBuoyRangeState !== '') {
+    <div class="bouy1">
+        {{ lastBuoyRangeState }}
+    </div>
+    }
+
+    @if (lastWarningState !== '') {
+    <div class="bouy2">
+        {{lastWarningState}}
+    </div>
+    }
+
 </main>

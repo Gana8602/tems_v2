@@ -27,8 +27,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './configurations.component.css'
 })
 export class ConfigurationsComponent implements OnInit {
-  Lat!: number ;
-  Lang!: number;
+  Lang: number = 80.19146988481407;
+  Lat: number = 14.602590765602967;
   Warning: number = 32;
   Danger:number = 18;
   tide:number = 2.3;
@@ -42,33 +42,101 @@ export class ConfigurationsComponent implements OnInit {
   selectedStationType: string = '';  // Bind this to the dropdown
   stationTypes: string[] = [];
   selectedUnit: string = 'mtr';
-
+selectedcoordinate:string = 'DD';
   slectedOption: String = 'tide';
   selectedcurrentUnit: string = 'm/s'; // Default selected unit
+  
+  latdeg!:number;
+  latmin!:number;
+  latsec!:number;
+  langdeg!:number;
+  langmin!:number;
+  langsec!:number;
+
+
+  // Inside your ConfigurationsComponent class
+  warningCircleStyle = new Style({
+      stroke: new Stroke({
+          color: 'red',
+          width: 2,
+      }),
+      fill: new Fill({
+          color: 'rgba(255, 0, 0, 0.2)', // Light red with transparency
+      }),
+  });
+  
+  dangerCircleStyle = new Style({
+      stroke: new Stroke({
+          color: 'yellow',
+          width: 2,
+      }),
+      fill: new Fill({
+          color: 'rgba(255, 255, 0, 0.2)', // Light yellow with transparency
+      }),
+  });
+  
+
   onsubmit() {
     // Convert the updated coordinates to map projection
     this.center = fromLonLat([this.Lang, this.Lat]);
+    console.log('Lat:', this.Lat, 'Lang:', this.Lang);
+    console.log('Center:', this.center);
   
     // Update the map view to center on the new coordinates
     this.map.getView().setCenter(this.center);
   
-    // Update the marker's geometry to the new position
-    const marker = this.map.getLayers().getArray().find(layer => {
-      return layer instanceof VectorLayer;
-    }) as VectorLayer;
+    const markerLayer = this.map.getLayers().getArray().find(layer => layer instanceof VectorLayer) as VectorLayer;
   
-    if (marker) {
-      const source = marker.getSource() as VectorSource;
-      const features = source.getFeatures();
-      
-      // Assuming the marker is the first feature, update its position
-      const markerFeature = features[0]; // First feature is the marker
-      markerFeature.setGeometry(new Point(this.center)); // Update the geometry
+    if (markerLayer) {
+      const source = markerLayer.getSource() as VectorSource;
+  
+      // Clear all features from the source
+      source.clear();
+  
+      // Create the marker feature at the new coordinates
+      const markerFeature = new Feature({
+        geometry: new Point(this.center),
+      });
+  
+      const markerStyle = new Style({
+        image: new Icon({
+          src: '../../assets/buoy.png',
+          scale: 0.04,
+        }),
+      });
+      markerFeature.setStyle(markerStyle);
+      source.addFeature(markerFeature);
+  
+      // Create new warning and danger circle features
+      const warningCircleFeature = new Feature({
+        geometry: new Circle(this.center, this.Warning),
+      });
+      const dangerCircleFeature = new Feature({
+        geometry: new Circle(this.center, this.Danger),
+      });
+  
+      // Style the circles
+      warningCircleFeature.setStyle(this.warningCircleStyle);
+      dangerCircleFeature.setStyle(this.dangerCircleStyle);
+  
+      // Add the updated circles back to the source
+      source.addFeature(warningCircleFeature);
+      source.addFeature(dangerCircleFeature);
+  
+      console.log('Updated Features:', source.getFeatures());
   
       // Refresh the source to ensure the map re-renders
       source.refresh();
     }
+  
+    // Force the map to update its size
+    this.map.updateSize();
   }
+  
+  
+
+
+
   selecteoption(typee: String) {
   this.slectedOption = typee;
   console.log(`selectedType : ${this.slectedOption}`);
@@ -81,6 +149,10 @@ export class ConfigurationsComponent implements OnInit {
   selectcurrentUnit(unit: string) {
     this.selectedcurrentUnit = unit;
     console.log(`Selected unit: ${this.selectedcurrentUnit}`);
+  }
+  selectcoordinate(unit: string) {
+    this.selectedcoordinate = unit;
+    console.log(`Selected unit: ${this.selectedcoordinate}`);
   }
 
 constructor (private staion:LayoutComponent){}
@@ -154,11 +226,11 @@ center = fromLonLat([ 80.19146988481407,14.602590765602967]);
         ],
         target: 'ol-map',
       });
-      for (let index = 0; index < this.staion.sensorDataList.length; index++) {
-        const element = this.staion.sensorDataList[index].StationID;
+      // for (let index = 0; index < this.staion.sensorDataList.length; index++) {
+        const element = this.staion.sensorDataList[0].StationID;
         this.stationTypes.push(element);
         
-      }
+      // }
   }
 
   clickon(typr:String){

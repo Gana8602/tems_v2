@@ -11,10 +11,10 @@ import { Component } from '@angular/core';
 export class HealthComponent {
 
   sensorStatus = [
-    { name: 'Tide', status: 'Progress', time: "04.13", date: "16/10/2024", file:'tide'},
-    { name: 'Current', status: 'Recieved' , time: "04.23", date: "16/10/2024", file:'Current-Low'},
+    { name: 'Tide', status: 'Progress', time: "14:13", date: "21/10/2024", file:'tide'},
+    { name: 'Current', status: 'Recieved' , time: "14:23", date: "21/10/2024", file:'Current-Low'},
    
-    { name: 'Battery', status: 'Progress' , time:"04.13", date: "16/10/2024", file:'Battery'},
+    { name: 'Battery', status: 'Recieved' , time:"14:23", date: "21/10/2024", file:'Battery'},
   ];
 
 }

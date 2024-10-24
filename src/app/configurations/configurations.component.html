@@ -2,7 +2,7 @@
 
     <div class="stationSetting">
         <div class="title">
-            <h3>Sensor Settings</h3>
+            <h3>Station Settings</h3>
         </div>
         <div class="fields">
             <h3>Station</h3>
@@ -19,16 +19,82 @@
             <!-- <input type="text" [(ngModel)]="battery" placeholder="Battery Voltage ">-->
             <h3>Geo Location</h3>
             <div class="location">
-                <div class="fff">
-                    <p>Latitude</p>
-                    <input type="text" [(ngModel)]="Lat" placeholder="Latitude">
-                </div>
-                <div class="fff">
-                    <p>Longitude</p>
+                <div class="locc">
+                    <div class="radioo">
+                        <!-- <p>Current Unit</p> -->
+                        <div class="unit">
+                            <div [ngClass]="{'selected': selectedcoordinate === 'DD'}" class="meter"
+                                (click)="selectcoordinate('DD')">
+                                <h4>DD</h4>
+                            </div>
+                            <div [ngClass]="{'selected': selectedcoordinate === 'DMS'}" class="knot"
+                                (click)="selectcoordinate('DMS')">
+                                <h4>DMS</h4>
+                            </div>
+                        </div>
 
-                    <input type="text" [(ngModel)]="Lang" placeholder="Longitude">
+                    </div>
+                    <div class="dd">
+                        @if(selectedcoordinate == 'DMS'){
+                        <div class="lat">
+
+                            <h3>Latitude</h3>
+                            <div class="inlat">
+                                <div class="ddfff">
+                                    <p>Deg</p>
+                                    <input type="text" [(ngModel)]="latdeg" placeholder="Degree" class="ddfff-input">
+                                </div>
+                                <div class="ddfff">
+                                    <p>Min </p>
+                                    <input type="text" [(ngModel)]="latmin" placeholder="Minutes" class="ddfff-input">
+                                </div>
+                                <div class="ddfff">
+                                    <p>Sec</p>
+                                    <input type="text" [(ngModel)]="latsec" placeholder="Seconds" class="ddfff-input">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="lat">
+
+                            <h3>Longitude</h3>
+                            <div class="inlat">
+                                <div class="ddfff">
+                                    <p>Deg</p>
+                                    <input type="text" [(ngModel)]="langdeg" placeholder="Degree" class="ddfff-input">
+                                </div>
+                                <div class="ddfff">
+                                    <p>Min</p>
+                                    <input type="text" [(ngModel)]="langmin" placeholder="Minutes" class="ddfff-input">
+                                </div>
+                                <div class="ddfff">
+                                    <p>Sec</p>
+                                    <input type="text" [(ngModel)]="langsec" placeholder="Seconds" class="ddfff-input">
+                                </div>
+                            </div>
+
+                        </div>
+                        }@else {
+                        <div class="field">
+                            <div class="fff">
+                                <p>Latitude</p>
+                                <input type="text" [(ngModel)]="Lat" placeholder="Latitude">
+                            </div>
+                            <div class="fff">
+                                <p>Longitude</p>
+
+                                <input type="text" [(ngModel)]="Lang" placeholder="Longitude">
+
+                            </div>
+                        </div>
+                        }
+
+
+                    </div>
+                    <!--  -->
 
                 </div>
+
             </div>
             <!-- <p>Location</p>
             <input type="text" [(ngModel)]="Lat" placeholder="Latitude"> -->
@@ -44,7 +110,7 @@
                     <input type="text" [(ngModel)]="Danger" placeholder="Danger Circle">
                 </div>
             </div>
-            <button class="submit">submit</button>
+            <button (click)="onsubmit()" class="submit">Submit</button>
 
         </div>
         <div class="mapbox">
@@ -125,6 +191,9 @@
                     <div class="radioo">
                         <p>Unit</p>
                         <div class="unit">
+                            <div [ngClass]="{'selected': selectedUnit === 'cm'}" class="cm" (click)="selectUnit('cm')">
+                                <h4>cm</h4>
+                            </div>
                             <div [ngClass]="{'selected': selectedUnit === 'mtr'}" class="meter"
                                 (click)="selectUnit('mtr')">
                                 <h4>mtr</h4>
@@ -133,6 +202,7 @@
                                 (click)="selectUnit('feet')">
                                 <h4>feet</h4>
                             </div>
+
                         </div>
 
                     </div>
@@ -144,9 +214,9 @@
                                 (click)="selectcurrentUnit('m/s')">
                                 <h4>m/s</h4>
                             </div>
-                            <div [ngClass]="{'selected': selectedcurrentUnit === 'knot'}" class="knot"
-                                (click)="selectcurrentUnit('knot')">
-                                <h4>Knot</h4>
+                            <div [ngClass]="{'selected': selectedcurrentUnit === 'knots'}" class="knot"
+                                (click)="selectcurrentUnit('knots')">
+                                <h4>Knots</h4>
                             </div>
                         </div>
 
@@ -167,7 +237,7 @@
                 </div>
 
 
-                <button class="submit" (click)="onsubmit()">submit</button>
+                <button class="submit" (click)="onsubmit()">Submit</button>
 
             </div>
         </div>
