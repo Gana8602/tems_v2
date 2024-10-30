@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { LayoutComponent } from '../layout/layout.component';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
@@ -10,9 +10,9 @@ import { ToastrModule, ToastrService } from 'ngx-toastr';
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.css'
 })
-export class SidenavComponent {
-  
-  constructor (private layout:LayoutComponent, private router:Router, private toastr:ToastrService){}
+export class SidenavComponent implements OnInit{
+  currentTheme: string = 'dark';
+  constructor (private layout:LayoutComponent, private router:Router, private toastr:ToastrService, private renderer:Renderer2){}
   isPageSelected(page: string): boolean {
     return this.layout.page === page;
   }
@@ -28,5 +28,14 @@ export class SidenavComponent {
       }
     }
      
+  }
+  ngOnInit(): void {
+    this.renderer.setAttribute(document.body, 'data-theme', this.currentTheme);
+  }
+
+  toggleTheme(theme:string): void {
+    this.currentTheme = theme;
+    // this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+    this.renderer.setAttribute(document.body, 'data-theme', this.currentTheme);
   }
 }

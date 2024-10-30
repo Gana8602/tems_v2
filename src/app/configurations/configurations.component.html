@@ -6,7 +6,7 @@
         </div>
         <div class="fields">
             <h3>Station</h3>
-            <select [(ngModel)]="selectedStationType">
+            <select [(ngModel)]="selectedStationType" (change)="stationTypeSelect()">
                 <option value="">--Please choose an option--</option>
                 @for (item of stationTypes; track $index) {
                 <option value="{{item}}">{{item}}</option>
@@ -110,7 +110,7 @@
                     <input type="text" [(ngModel)]="Danger" placeholder="Danger Circle">
                 </div>
             </div>
-            <button (click)="onsubmit()" class="submit">Submit</button>
+            <button (click)="onstationSubmit()" class="submit">Submit</button>
 
         </div>
         <div class="mapbox">
@@ -237,7 +237,7 @@
                 </div>
 
 
-                <button class="submit" (click)="onsubmit()">Submit</button>
+                <button class="submit" (click)="onsensorSubmit()">Submit</button>
 
             </div>
         </div>
