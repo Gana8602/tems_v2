@@ -1,0 +1,12 @@
+{
+    "options": {
+      "format": "png"
+    },
+    "data": {
+      "world": {
+        "mbtiles": "trails.mbtiles"
+      }
+    }
+  }
+  
+  

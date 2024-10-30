@@ -9,9 +9,13 @@ import { Component, Input, OnInit } from '@angular/core';
   imports: [CommonModule],
 })
 export class BatteryComponent implements OnInit {
-  @Input() batteryLevel: number = 12.4; // Default battery level in volts
+  @Input() batteryLevel: number = 3.4; // Default battery level in volts
   public batteryColor: string = 'green'; // Battery color based on level
   public fillHeight: string = '0%'; // To dynamically set battery fill height
+  above_warning:number= 6;
+  below_warning:number= 10;
+  above_danger:number=2;
+  below_danger:number=5;
 
   ngOnInit() {
     this.calculateBatteryColor();
@@ -20,12 +24,19 @@ export class BatteryComponent implements OnInit {
 
   // Calculate the color of the battery based on its level
   calculateBatteryColor() {
-    if (this.batteryLevel > 12.0) {
+    if (this.batteryLevel > this.below_warning) {
       this.batteryColor = 'green'; // Full charge
-    } else if (this.batteryLevel < 9.0) {
+    } 
+    // If battery is between 10 and 6 (inclusive), assign yellow
+    else if (this.batteryLevel <= this.below_warning && this.batteryLevel > this.above_warning) {
       this.batteryColor = 'yellow'; // Moderate charge
-    } else if(this.batteryLevel <5) {
+    } 
+    // If battery is between 5 and 2 (inclusive), assign red
+    else if (this.batteryLevel <= this.below_danger && this.batteryLevel > this.above_danger) {
       this.batteryColor = 'red'; // Low charge
+    } 
+    else {
+      this.batteryColor = 'yellow'; // Unknown or out of defined range
     }
   }
 

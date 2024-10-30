@@ -3,7 +3,7 @@
     flex: 1;
     padding-left: 7%;
     display: flex;
-    color: white;
+    color: var(--main-text);
     flex-direction: column;
 }
 
@@ -18,7 +18,7 @@ h4 {
     margin-top: 10px;
     margin-bottom: 10px;
     margin-right: 20px;
-    background-color: black;
+    background-color: var(--wholebg);
 }
 
 .sections {
@@ -40,7 +40,7 @@ h4 {
     flex-direction: column;
     justify-content: flex-start;
     align-items: start;
-    background-color: rgb(30 30 30);
+    background-color: var(--background-color);
 }
 
 
@@ -52,6 +52,8 @@ button{
     /* margin-top: 10px; */
     border-radius: 10px;
     cursor: pointer;
+    margin-top: -15px;
+    border: none;
 }
 .user-list {
     height: 95%;
@@ -74,7 +76,7 @@ button{
     flex-direction: column;
     justify-content: flex-start;
     align-items: start;
-    background-color: rgb(30 30 30);
+    background-color: var(--background-color);
 }
 .user-edit{
 height: 95%;
@@ -91,7 +93,7 @@ select{
     border: 2px;
     font-size: 15px;
     font-weight: 300;
-    color: rgb(255, 255, 255);
+    color: var(--main-text);
     border-width: 2px;
     border-color: rgba(64, 62, 62, 0.678);
     border-radius: 10px;
@@ -109,10 +111,12 @@ select{
     width: 90%;
     border-radius: 15px;
     display: flex;
-    background-color:   rgb(45, 44, 44);
+    background-color:   var(--background-color);
     flex-direction: row;
+    box-shadow: 1px 1px 4px grey;
     justify-content: space-between;
     align-items: start;
+    margin-top: 4px;
     margin-bottom: 10px;
 }
 
@@ -134,8 +138,9 @@ input{
     border: 2px;
     padding-left: 10px;
     font-size: 15px;
+    margin-right: 5px;
     font-weight: bold;
-    color: rgb(255, 255, 255);
+    color: var(--main-text);
     border-width: 2px;
     border-color: rgba(0, 0, 0, 0.678);
     border-radius: 10px;
@@ -187,7 +192,7 @@ i {
     height: 49%;
     width: 100%;
     margin: 5px;
-    background-color: rgb(30 30 30);
+    background-color: var(--background-color);
     border-radius: 10px;
 }
 .fii{
@@ -208,7 +213,7 @@ i {
 
 .table-header {
     /* background-color: #555; Set header background color */
-    color: white;
+    color: var(--main-text);
     z-index: 1; /* Ensure header is above the body */
 }
 
@@ -221,7 +226,7 @@ i {
 table {
     width: 100%;
     border-collapse: collapse;
-    color: white;
+    color: var(--main-text);
 }
 
 th, td {

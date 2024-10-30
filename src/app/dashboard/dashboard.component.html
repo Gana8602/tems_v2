@@ -1,24 +1,197 @@
-<div class="dashDiv">
-    <h1>sgf</h1>
-    <!-- <div class="chart1"> -->
-    <div class="grid-container">
-        <div class="grid-item">
+<div class="reportDiv">
+    <div class="section1">
+        <h4>Tide</h4>
+        <!-- <p style="color: white;">ROWE ADCP</p> -->
+        <div class="dataMain">
 
-            <google-chart [type]="gaugeChart.type" [data]="gaugeChart.data" [options]="gaugeChart.options"
-                [width]="gaugeChart.options.width" [height]="gaugeChart.options.height">
-            </google-chart>
-            <!-- <div class="chart1">
-                <ag-charts [options]="chartOptions"></ag-charts>
-            </div> -->
-            <!-- <circle-progress [percent]="85" [radius]="100" [outerStrokeWidth]="16" [innerStrokeWidth]="8"
-                [outerStrokeColor]="'#78C000'" [innerStrokeColor]="'#C7E596'" [animation]="true"
-                [animationDuration]="300"></circle-progress> -->
+            <div class="progress" role="progressbar" data-value="12">
+                <div class="progress-inner">
+                    <div class="progress-indicator"></div>
+                    <div class="progress-indicator"></div>
+                </div>
+                <span class="progress-label">
+                    <strong>{{tide}}</strong>
+                    <span>{{tide_unit}}</span>
+                </span>
+            </div>
+
+
         </div>
-        <div class="grid-item">2</div>
-        <div class="grid-item">3</div>
-        <div class="grid-item">4</div>
-        <div class="grid-item">5</div>
-        <div class="grid-item">6</div>
+        <h4>Battery Level</h4>
+        <div class="dataMain">
+
+            <app-battery [batteryLevel]="battery"></app-battery>
+            <div class="texts">
+
+                <!-- <p>85 v</p> -->
+            </div>
+
+        </div>
+        <h4>Location</h4>
+        <div class="dataMain">
+            <div class="location">
+                <img src="../../assets/output-onlinegiftools (1).gif" alt="location">
+                <div class="texts">
+                    <h6><span>Lat : </span>{{lat}}</h6>
+                    <h6><span>Lon : </span>{{lang}}</h6>
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+
     </div>
+    <div class="section2">
+        <h4>Surface Current Speed</h4>
+        <div class="dataMainc">
+
+            <app-gauge gaugeId="gauge-1" [value]="s_current"></app-gauge>
+        </div>
+        <h4>Mid Current Speed</h4>
+        <div class="dataMainc">
+
+            <app-gauge gaugeId="gauge-2" [value]="m_current!"></app-gauge>
+        </div>
+        <h4>Bottom Current Speed</h4>
+        <div class="dataMainc">
+
+            <app-gauge gaugeId="gauge-3" [value]="l_current"></app-gauge>
+        </div>
+    </div>
+    <div class="sectionMid">
+        <h4>Surface Current Direction</h4>
+        <div class="dataMain">
+            <div class="compp">
+                <div class="compass">
+                    <div class="compass-inner">
+                        <div class="north">N</div>
+                        <div class="NE">NE</div>
+                        <div class="east">E</div>
+                        <div class="SE">SE</div>
+                        <div class="west">W</div>
+                        <div class="SW">SW</div>
+                        <div class="south">S</div>
+                        <div class="NW">NW</div>
+                        <div class="main-arrow" [style.transform]="'rotate(' + compassvalue1 + 'deg)'">
+                            <div class="arrow-up"></div>
+                            <div class="arrow-down"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3>{{compassvalue1}}<span>° {{compval1}}</span></h3>
+        </div>
+        <h4>Mid Current Direction</h4>
+        <div class="dataMain">
+            <div class="compp">
+                <div class="compass">
+                    <div class="compass-inner">
+                        <div class="north">N</div>
+                        <div class="NE">NE</div>
+                        <div class="east">E</div>
+                        <div class="SE">SE</div>
+                        <div class="west">W</div>
+                        <div class="SW">SW</div>
+                        <div class="south">S</div>
+                        <div class="NW">NW</div>
+                        <div class="main-arrow " [style.transform]="'rotate(' + compassvalue2 + 'deg)'">
+                            <div class="arrow-up"></div>
+                            <div class="arrow-down"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <h3>{{compassvalue2}}<span>° {{compval2}}</span></h3>
+        </div>
+        <h4>Bottom Current Direction</h4>
+        <div class="dataMain">
+            <div class="compp">
+                <div class="compass">
+                    <div class="compass-inner">
+                        <div class="north">N</div>
+                        <!-- <div class="tickkk"></div> -->
+                        <div class="NE">NE</div>
+                        <!-- <div class="tickkk2"></div> -->
+                        <!-- <div class="tickkk"></div> -->
+                        <div class="east">E</div>
+                        <!-- <div class="tickkk"></div> -->
+                        <div class="SE">SE</div>
+                        <!-- <div class="tickkk"></div> -->
+                        <div class="west">W</div>
+                        <!-- <div class="tickkk"></div> -->
+                        <div class="SW">SW</div>
+                        <!-- <div class="tickkk"></div> -->
+                        <div class="south">S</div>
+                        <!-- <div class="tickkk"></div> -->
+                        <div class="NW">NW</div>
+                        <!-- <div class="tickkk"></div> -->
+                        <div class="main-arrow" [style.transform]="'rotate(' + compassvalue3 + 'deg)'">
+                            <div class="arrow-up"></div>
+                            <div class="arrow-down"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3>{{compassvalue3}}<span>° {{compval3}}</span></h3>
+        </div>
+    </div>
+    <div class="section3">
+        <h3>Buoy Location</h3>
+        <div class="mapbox">
+            <div id="leaflet-map" style="height: 100%; width: 100%;"></div>
+        </div>
+
+        <div class="sensor-health">
+            <app-health></app-health>
+            <!-- <h3>Sensor Health</h3> -->
+
+            <!-- <div class="sens">
+                <div *ngFor="let sensor of sensorStatus" class="sensor-box"
+                    [ngStyle]="{'background-color': getColor(sensor.status)}">
+                    <img src="../../assets/{{sensor.file.toLowerCase().replace(' ', '-')}}.png" alt="{{sensor.name}}">
+                    <h4>{{sensor.name}}</h4>
+                </div>
+            </div> -->
+        </div>
+
+        <!-- <app-homechart></app-homechart> -->
+    </div>
+    <!-- <div class="Mmain">
+        <div class="sec-two-three">
+            <div class="section2">
+                <div class="battery">
+                    <app-battery></app-battery>
+                    <div class="texts">
+                        <h6>Battery Level</h6>
+                        <p>70%</p>
+                    </div>
+                </div>
+                <div class="location">
+                    <img src="../../assets/output-onlinegiftools (1).gif" alt="location">
+                    <div class="texts">
+                        <h6><span>Lat : </span>13.8923789</h6>
+                        <h6><span>Lang : </span>15.8376482</h6>
+
+                    </div>
+                </div>
+
+                
+            </div>
+            <div class="section3">
+
+                <div class="mapbox">
+                    <div id="ol-map" class="map-container"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chart">
+            <app-homechart></app-homechart>
+        </div>
+    </div> -->
+
 
 </div>

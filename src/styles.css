@@ -1,3 +1,46 @@
+:root {
+  /* Default (light) theme */
+  --primary-color: #3498db;
+  --background-color: #ffffff;
+  --selected-color:rgb(169, 167, 167);
+  --text-color: #333;
+  --wholebg:#F1F3F4;
+  --main-text:#000000;
+}
+
+[data-theme="dark"] {
+  --primary-color: #3498db;
+  --background-color: #232323;
+  --selected-color:rgb(169, 167, 167);
+  --text-color: #ffffff;
+  --wholebg:#000000;
+  --main-text:#ffffff;
+  --radio-selected-text:black;
+  --drop-text:white ;
+}
+
+/* Additional theme example */
+[data-theme="light"] {
+  --primary-color: #3498db;
+  --background-color: #ffffff;
+  --selected-color:rgb(169, 167, 167);
+  --text-color: #333;
+  --wholebg:#F1F3F4;
+  --main-text:#000000;
+  --radio-selected-text:white;
+  --drop-text:white;
+}
+[data-theme="blue"]{
+  --primary-color: #3498db;
+  --background-color: rgb(213, 231, 255);
+  --selected-color:rgb(169, 167, 167);
+  --text-color: #333;
+  --wholebg:#F1F3F4;
+  --main-text:#000000;
+  --radio-selected-text:white;
+  --drop-text:white;
+}
+
 *{
     margin: 0;
     /* background-color: black; */
@@ -5,8 +48,8 @@
   font-weight: 400;
   font-style: normal;
 }
-body{
-    background-color: black;
+body{ 
+    background-color:var(--wholebg);
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

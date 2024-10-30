@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { response } from 'express';
+import { use } from 'echarts';
 
 @Component({
   selector: 'app-user',
@@ -22,8 +23,9 @@ export class UserComponent implements OnInit{
   designationEntered:String = '';
   Roles: { id: number; role: string; created_at: string }[] = []; // Example roles
   Designation: {id:number; designation:string; created_at:string}[]=[]; // Example positions
-  
+  state:string = "Add";
   users = [];
+  id!:string;
   baseUrl:String = 'http://localhost:3000/api/users/';
   constructor(private http: HttpClient) {}
   ngOnInit(): void {
@@ -33,8 +35,56 @@ export class UserComponent implements OnInit{
   }
   
 
+  editUser(){
+    const editUser = {
+      id:this.id,
+      name: this.name,
+      username: this.username,
+      role: this.selectedRole,
+      designation: this.selectedDesignation,
+      email: this.email,
+      password: this.password,
+  };
+  this.http.post('http://localhost:3000/api/users/edit', editUser).subscribe({
+    next:(response:any)=>{
+      console.log('user edit successfully', response);
+
+this.getUsers();
+            this.resetForm();
+            this.state = "Add";
+    },
+    error:(err)=>{
+      console.log("error:", err);
+    }
+  })
+  }
+naaavigate(){
+  if(this.state == "Add"){
+    this.registerUser();
+  }else if(this.state == "Edit"){
+    this.editUser();
+  }
+
+}
+
+
+
+preEdit(users:any){
+  this.state = "Edit";
+  console.log(this.state, users['id']);
+  this.name = users['name'];
+  this.username = users['username'];
+  this.password = users['password'];
+  this.selectedRole = users['role'];
+  this.selectedDesignation = users['designation'];
+  this.email = users['email'];
+  this.id = users['id'];
+  
+ 
+}
   registerUser() {
     const newUser = {
+      id: this.id,
         name: this.name,
         username: this.username,
         role: this.selectedRole,

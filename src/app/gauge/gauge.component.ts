@@ -1,5 +1,7 @@
 import { Component, Input, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import * as echarts from 'echarts';
+import { Config } from '../../model/config.model';
+import { LayoutComponent } from '../layout/layout.component';
 
 @Component({
   selector: 'app-gauge',
@@ -10,12 +12,18 @@ import * as echarts from 'echarts';
 export class GaugeComponent implements AfterViewInit, OnChanges {
   @Input() gaugeId!: string;  // Dynamically assigned ID
   @Input() value!: number;
-  speedType: string = 'Knots';
+  speedType: string = '';
   
+
+  constructor(private lay:LayoutComponent){}
   ngAfterViewInit(): void {
+    this.data();
     this.initChart();
   }
-
+data(){
+this.speedType = this.lay.configs[1].unit;
+console.log(this.speedType);
+}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['value']) {
       this.initChart();
