@@ -227,12 +227,18 @@ const loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid password' });
         }
-
-        // Return user data upon successful login
-        res.json({
+        const userWithoutPassword = {
             id: user.id,
             userName: user.userName,
-        });
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            // Add other fields as needed, but exclude 'password'
+        };
+        // Return user data upon successful login
+        res.json(
+            userWithoutPassword
+        );
     } catch (err) {
         console.error('Database error:', err);
         res.status(500).send(err);
@@ -743,6 +749,34 @@ const getStationconfigs = async (req, res) => {
     }
 };
 
+
+
+//logs
+const addLog = async (req, res)=>{
+    console.log('Received update request with body:', req.body);
+    const {log} = req.body;
+
+    if (!log) {
+        return res.status(400).json({ message: 'log required' });
+    }
+
+    try {
+        const query = `INSERT INTO logs (log) VALUES(@log)`;
+
+        const request = new sql.Request();
+            request.input('log', sql.VarChar, log);
+            const result = await request.query(query);
+            res.status(201).json({
+                status: 'success',
+                message: 'Log added successfully',
+                logId: result.rowsAffected[0]
+            })
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).send(error);
+    }
+}
+
 module.exports = {
     addRole,
     getUsers,
@@ -761,7 +795,8 @@ module.exports = {
     getconfigs,
     updateStationConfig,
     getStationconfigs,
-    editUser
+    editUser,
+    addLog
 };
 
 

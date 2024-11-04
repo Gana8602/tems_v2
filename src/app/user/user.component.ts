@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { response } from 'express';
 import { use } from 'echarts';
+import { ConfigDataService } from '../config-data.service';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,],
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css']
 })
@@ -27,7 +29,7 @@ export class UserComponent implements OnInit{
   users = [];
   id!:string;
   baseUrl:String = 'http://localhost:3000/api/users/';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private config:ConfigDataService) {}
   ngOnInit(): void {
     this.getUsers();
     this.getRoles();
@@ -132,13 +134,25 @@ this.http.post('http://localhost:3000/api/users/addrole',newrole).subscribe({
   next: (response: any) => {
     console.log('Role added successfully', response);
     this.getRoles();
-
+    this.addLog(`Added new role (${this.roleentered}) `);
   },error: (error) => {
     console.error('Error adding new role', error);
     alert('Error adding new role. Please try again.'); // Show error message
 },
 });
 
+}
+
+addLog(logData:string){
+  const newlog= {
+    log: logData
+  }
+
+  this.config.AddLog(newlog).subscribe(response=>{
+    console.log(response);
+  });
+
+  
 }
 
 addDesignation(){

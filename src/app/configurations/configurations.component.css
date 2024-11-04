@@ -121,7 +121,7 @@ button{
     width: 100px;
     border-radius: 15px;
     background-color: rgb(0, 255, 255);
-    color: rgb(0, 0, 0);
+    color: var(--main-text);
     font-weight: 500;
     border: none;
     margin-top: 30px;
@@ -270,7 +270,7 @@ svg{
 .meter, .knot, .cm{
     height: 40px;
     width: 40%;
-    background-color: var(--background-color);
+    background-color:#606060;
     border-radius: 20px;
     margin-right: 5px;
     color: black;

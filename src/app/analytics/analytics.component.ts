@@ -15,6 +15,7 @@ import * as echarts from 'echarts';
 
 import { StationService, buoys, BuoyData} from '../station_service/station.service';
 import { time } from 'console';
+import { max, min } from '@amcharts/amcharts4/.internal/core/utils/Math';
 interface currentModel{
   time:string,
   speed:number,
@@ -1255,7 +1256,13 @@ bottomSpeedDirection(): void {
       angleAxis: {
         type: 'value',
         data: angleData,
-        startAngle: 0
+        startAngle: 0,
+        // min:0,
+        // max:360,
+        // interval: 10,
+        // axisLabel: {
+        //   formatter: '{value}°'
+        // }
       },
       radiusAxis: {
         max: 2 // Adjust based on maximum speed value

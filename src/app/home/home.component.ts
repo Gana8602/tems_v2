@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit {
   buoy2danger!:number;
   vectorLayer!: VectorLayer;
   currentLayer!: TileLayer;
-  showPaths = false;
+  
   stationCOnfig: StationConfigs[]=[];
   sensorsliveData:SensorData[]=[];
   sensorsliveData2:SensorData2[]=[];
@@ -51,7 +51,12 @@ export class HomeComponent implements OnInit {
   selectedBuoy!:string;
   trackpath1:[number, number][]=[this.center];
   trackpath2:[number, number][]=[this.buoy2];
-  
+  showTrackPath: boolean = false;
+
+  toggleTrackPath(event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    this.showTrackPath = checkbox.checked;
+  }
   mapUrl = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
 mapChange(name:String){
   console.log('taped');
@@ -193,7 +198,30 @@ coordassign(configs: StationConfigs[]): boolean {
 
 
   constructor(private layout: LayoutComponent, private data:ConfigDataService) {}
+  createLinesAroundBuoy1() {
+    const lineCoordinates: [number, number][] = [
+      this.livelocationbuoy1,                       // Start from the buoy location
+      [this.livelocationbuoy1[0] + 100, this.livelocationbuoy1[1]], // Point 1
+      [this.livelocationbuoy1[0] - 100, this.livelocationbuoy1[1]], // Point 2
+      [this.livelocationbuoy1[0], this.livelocationbuoy1[1] + 100], // Point 3
+      [this.livelocationbuoy1[0], this.livelocationbuoy1[1] - 100], // Point 4
+      this.livelocationbuoy1                       // Back to buoy location
+    ];
   
+    const lineFeature = new Feature({
+      geometry: new LineString(lineCoordinates),
+    });
+  
+    const lineStyle = new Style({
+      stroke: new Stroke({
+        color: 'blue', // Line color
+        width: 2,      // Line width
+      }),
+    });
+  
+    lineFeature.setStyle(lineStyle);
+    this.vectorLayer.getSource()?.addFeature(lineFeature);
+  }
   MapInit(): void {
     
     // this.assign();
@@ -242,96 +270,17 @@ coordassign(configs: StationConfigs[]): boolean {
             }
           });
         });
+   
       }
     }, 2);
       
   // }
     
   }
-  togglePaths() {
-    this.showPaths = !this.showPaths; // Toggle the visibility flag
-
-    const vectorSource = this.vectorLayer.getSource() as VectorSource;
-    console.log('showPaths:', this.showPaths);
-    console.log('Vector source features:', vectorSource.getFeatures());
-    if (this.showPaths) {
-      const traveledPath: [number, number][] = [
-        
-        this.livelocationbuoy1,
-        fromLonLat([80.198665, 14.591018]) as [number , number],
-        fromLonLat([80.196796, 14.591477]) as [number , number], 
-        fromLonLat([80.195717, 14.590024]) as [number, number],
-        fromLonLat([80.195927, 14.587961]) as [number, number],
-        fromLonLat([80.198033, 14.587043]) as [number, number],
-        fromLonLat([80.199560, 14.589617]) as [number, number],
-      ];
-
-      const traveledPath2: [number, number][] = [
-        this.livelocationbuoy2,
-        fromLonLat([80.185170, 14.619721]) as [number , number],
-        fromLonLat([80.182909, 14.617035]) as [number , number], 
-        fromLonLat([80.191029, 14.616439]) as [number, number],
-        fromLonLat([80.194832, 14.621610]) as [number, number],
-      ];
-
-      this.createPathLine(traveledPath, vectorSource);
-      this.createPathLine(traveledPath2, vectorSource);
-    } else {
-      // Optionally, clear paths when hiding
-      vectorSource.clear(); // This clears all features; you can adapt to remove only the paths if needed
-      this.createMarker(this.livelocationbuoy1, 'Buoy 1', vectorSource);
-      this.createMarker(this.livelocationbuoy2, 'Buoy 2', vectorSource);
-      this.createCircle(this.center, this.buoy1danger, 'red', vectorSource);
-      this.createCircle(this.buoy2, this.buoy2danger, 'red', vectorSource);
-      this.createCircle(this.center, this.bouy1wrange, 'yellow', vectorSource);
-      this.createCircle(this.buoy2, this.buoy2wrange, 'yellow', vectorSource);
-    }
-  }
+ 
 
 
-  createPathLine(coords: [number, number][], vectorSource: VectorSource) {
-    const lineString = new Feature({
-      geometry: new LineString(coords),
-    });
-  
-    const lineStyle = new Style({
-      
-      stroke: new Stroke({
-        color: 'blue',
-        width: 1,
-      }),
-    });
-  
-    lineString.setStyle(lineStyle);
-    vectorSource.addFeature(lineString);
-    this.addArrowsAlongLine(coords, vectorSource);
-  }
-  addArrowsAlongLine(coords: [number, number][], vectorSource: VectorSource) {
-    const arrowIcon = new Style({
-      image: new Icon({
-        src: '../../assets/arrow-point-to-right (1).png', // Path to your arrow icon image
-        scale: 0.5,
-        color: '#0000', // Adjust the scale as necessary
-        rotation: 90, // You can calculate rotation based on the line's direction
-      }),
-    });
-  
-    const arrowSpacing = 20; // Distance between arrows in meters
-    const line = new LineString(coords);
-    const length = line.getLength(); // Get the total length of the line
-  
-    for (let i = 0; i < length; i += arrowSpacing) {
-      const point = line.getCoordinateAt(i / length); // Get coordinates at the current position
-  
-      const arrowFeature = new Feature({
-        geometry: new Point(point),
-      });
-  
-      arrowFeature.setStyle(arrowIcon);
-      vectorSource.addFeature(arrowFeature);
-    }
-  }
-  
+
   createMarker(coordinate: [number, number], name: string, vectorSource: VectorSource) {
     const markerStyle = new Style({
       image: new Icon({

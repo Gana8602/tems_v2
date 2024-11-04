@@ -65,3 +65,11 @@ export interface Config {
     buoy1:SensorData[];
     buoy2:SensorData2[];
   }
+
+  export interface CurrentUser{
+    id: number,
+    userName: string,
+    name: string,
+    email: string,
+    role: string,
+  }
