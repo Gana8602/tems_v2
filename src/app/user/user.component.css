@@ -52,6 +52,7 @@ button{
     /* margin-top: 10px; */
     border-radius: 10px;
     cursor: pointer;
+    color: var(--main-text);
     margin-top: -15px;
     border: none;
 }

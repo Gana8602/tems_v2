@@ -63,7 +63,7 @@ constructor(private configss:ConfigDataService){}
 
   sensors() {
    
-    this.httpClient.get('http://localhost:3000/api/users/sensorData?fromDate=2024-01-10&toDate=2024-01-10')
+    this.httpClient.get('http://192.168.0.100:3000/api/users/sensorData?fromDate=2024-01-10&toDate=2024-01-10')
   .subscribe((data: any) => {
       console.log('sensorData:== ', data);
       // this.sensorDataList = data;
@@ -73,7 +73,7 @@ constructor(private configss:ConfigDataService){}
   }
 
   getConfigs(){
-    this.httpClient.get('http://localhost:3000/api/getconfigs')
+    this.httpClient.get('http://192.168.0.100:3000/api/getconfigs')
     .subscribe((data:any)=>{
     
       this.configs=data;
@@ -82,7 +82,7 @@ constructor(private configss:ConfigDataService){}
   }
 
   // getStationConfig(){
-  //   this.httpClient.get('http://localhost:3000/api/getstationconfig')
+  //   this.httpClient.get('http://192.168.0.100:3000/api/getstationconfig')
   //   .subscribe((data:any)=>{
   //     this.StationConfig=data;
   //     console.log('Station Configs',this.StationConfig);

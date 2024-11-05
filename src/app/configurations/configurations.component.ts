@@ -13,7 +13,7 @@
 
   import Feature from 'ol/Feature';
   import { Point, Circle } from 'ol/geom';
-  import { number } from 'echarts';
+  import { number, vector } from 'echarts';
   import { parseNumber } from 'devextreme/localization';
   import { UnitsComponent } from "../units/units.component";
   import { CommonModule } from '@angular/common';
@@ -21,6 +21,7 @@
   import { FLOAT } from 'ol/webgl';
   import { ConfigDataService } from '../config-data.service';
   import { Config, StationConfigs } from '../../model/config.model';
+
 
 
   @Component({
@@ -60,22 +61,30 @@
     sensor:Config[]=[];
 
 
-    stationTypeSelect(){
-      console.log("clicked")
-      if(this.selectedStationType == this.stations[0].station_name){
-        this.selectedcoordinate = this.stations[0].geo_format;
-        if(this.selectedcoordinate == "DMS"){
-          this.latdeg = this.stations[0].latitude_deg;
-          this.latmin = this.stations[0].latitude_min;
-          this.latsec = this.stations[0].latitude_sec;
-          this.langdeg = this.stations[0].longitude_deg;
-          this.langmin = this.stations[0].longitude_min;
-          this.langsec = this.stations[0].longitude_sec;
+    stationTypeSelect() {
+      console.log("Station selected:", this.selectedStationType);
+    
+      const selectedStation = this.stations.find(
+        (station) => station.station_name === this.selectedStationType
+      );
+    
+      if (selectedStation) {
+        this.selectedcoordinate = selectedStation.geo_format;
+    
+        if (this.selectedcoordinate === "DMS") {
+          // Set DMS values
+          this.latdeg = selectedStation.latitude_deg;
+          this.latmin = selectedStation.latitude_min;
+          this.latsec = selectedStation.latitude_sec;
+          this.langdeg = selectedStation.longitude_deg;
+          this.langmin = selectedStation.longitude_min;
+          this.langsec = selectedStation.longitude_sec;
           this.Lat = 0;
           this.Lang = 0;
-        }else if(this.selectedcoordinate == "DD"){
-          this.Lat = this.stations[0].latitude_dd;
-          this.Lang = this.stations[0].longitude_dd;
+        } else if (this.selectedcoordinate === "DD") {
+          // Set DD values
+          this.Lat = selectedStation.latitude_dd;
+          this.Lang = selectedStation.longitude_dd;
           this.latdeg = 0;
           this.latmin = 0;
           this.latsec = 0;
@@ -83,35 +92,20 @@
           this.langmin = 0;
           this.langsec = 0;
         }
-        this.Warning = this.stations[0].warning_circle;
-        this.Danger = this.stations[0].danger_circle;
-      }else if(this.selectedStationType == this.stations[1].station_name){
-        this.selectedcoordinate = this.stations[1].geo_format;
-        if(this.selectedcoordinate == "DMS"){
-          this.latdeg = this.stations[1].latitude_deg;
-          this.latmin = this.stations[1].latitude_min;
-          this.latsec = this.stations[1].latitude_sec;
-          this.langdeg = this.stations[1].longitude_deg;
-          this.langmin = this.stations[1].longitude_min;
-          this.langsec = this.stations[1].longitude_sec;
-          this.Lat = 0;
-          this.Lang = 0;
-        }else if(this.selectedcoordinate == "DD"){
-          this.Lat = this.stations[1].latitude_dd;
-          this.Lang = this.stations[1].longitude_dd;
-          this.latdeg = 0;
-          this.latmin = 0;
-          this.latsec = 0;
-          this.langdeg = 0;
-          this.langmin = 0;
-          this.langsec = 0;
+    
+        this.Warning = selectedStation.warning_circle;
+        this.Danger = selectedStation.danger_circle;
+    
+        // Update center and render the map with new station coordinates
+        this.center = fromLonLat([this.Lang, this.Lat]);
+        if(this.selectedStationType == "CWPRS01"){
+          this.RenderMap();
+        }else{
+          this.RenderMap2();
         }
-        
-        
-        this.Warning = this.stations[1].warning_circle;
-        this.Danger = this.stations[1].danger_circle;
       }
     }
+    
     assign(){
     this.tideOffset =  parseFloat(this.sensor[0].value);
     this.selectedUnit = this.sensor[0].unit;  
@@ -119,7 +113,8 @@
     this.belowwarning = parseFloat(this.sensor[2].below_warning);
     this.abovewarning = parseFloat(this.sensor[2].above_warning);
     this.belowdanger=parseFloat(this.sensor[2].below_danger);
-    this.abovedanger=parseFloat(this.sensor[2].above_danger);
+    this.abovedanger=parseFloat(this.staion.configs[2].above_danger);
+    
     }
     // Inside your ConfigurationsComponent class
     warningCircleStyle = new Style({
@@ -141,67 +136,6 @@
             color: 'rgba(255, 255, 0, 0.2)', // Light yellow with transparency
         }),
     });
-    
-
-    onsubmit() {
-      // Convert the updated coordinates to map projection
-      this.center = fromLonLat([this.Lang, this.Lat]);
-      console.log('Lat:', this.Lat, 'Lang:', this.Lang);
-      console.log('Center:', this.center);
-    
-      // Update the map view to center on the new coordinates
-      this.map.getView().setCenter(this.center);
-    
-      const markerLayer = this.map.getLayers().getArray().find(layer => layer instanceof VectorLayer) as VectorLayer;
-    
-      if (markerLayer) {
-        const source = markerLayer.getSource() as VectorSource;
-    
-        // Clear all features from the source
-        source.clear();
-    
-        // Create the marker feature at the new coordinates
-        const markerFeature = new Feature({
-          geometry: new Point(this.center),
-        });
-    
-        const markerStyle = new Style({
-          image: new Icon({
-            src: '../../assets/buoy.png',
-            scale: 0.04,
-          }),
-        });
-        markerFeature.setStyle(markerStyle);
-        source.addFeature(markerFeature);
-    
-        // Create new warning and danger circle features
-        const warningCircleFeature = new Feature({
-          geometry: new Circle(this.center, this.Warning),
-        });
-        const dangerCircleFeature = new Feature({
-          geometry: new Circle(this.center, this.Danger),
-        });
-    
-        // Style the circles
-        warningCircleFeature.setStyle(this.warningCircleStyle);
-        dangerCircleFeature.setStyle(this.dangerCircleStyle);
-    
-        // Add the updated circles back to the source
-        source.addFeature(warningCircleFeature);
-        source.addFeature(dangerCircleFeature);
-    
-        console.log('Updated Features:', source.getFeatures());
-    
-        // Refresh the source to ensure the map re-renders
-        source.refresh();
-      }
-    
-      // Force the map to update its size
-      this.map.updateSize();
-    }
-    
-    
-
 
 
     selecteoption(typee: String) {
@@ -231,92 +165,138 @@
 
     this.data.getsensorConfigs().subscribe(sensor=>{
       this.sensor = sensor;
-      this.assign();
     })
 
   })
-      this.RenderMap();
       
+      this.assign();
+      this.map = new Map({
+        target: 'ol-map',
+        view: new View({
+          center: this.center,
+          zoom: 17,
+        }),
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4',
+            }),
+          }),
+        ],
+      });
   }
 
   constructor (private staion:LayoutComponent, private http:HttpClient, private data:ConfigDataService){}
   map!: Map;
+  vectorLayer!: VectorLayer;
+  map2!:Map;
   center = fromLonLat([ 80.19146988481407,14.602590765602967]);
-    RenderMap(): void {
-      // this.center = fromLonLat([this.Lang, this.Lat]);
-    // Check if running in the browser
-        const markerStyle = new Style({
-          image: new Icon({
-            src: '../../assets/buoy.png',
-          scale: 0.04,
-          }),
-        });
-
-        const marker = new Feature({
-          geometry: new Point(this.center), // Start at center
-        });
-        marker.setStyle(markerStyle);
-
-        // Create a circle geometry around the marker
-        const circleFeature = new Feature({
-          geometry: new Circle(this.center, this.Warning), // 180 meters radius
-        });
-        const circleFeature2 = new Feature({
-          geometry: new Circle(this.center, this.Danger), // 180 meters radius
-        });
-
-        // Style the circle
-        const circleStyle = new Style({
-          stroke: new Stroke({
-            color: 'red',
-            width: 2,
-          }),
-          fill: new Fill({
-            color: 'rgba(0, 0, 255, 0.1)', // light blue with transparency
-          }),
-        });
-        circleFeature.setStyle(circleStyle);
-        const circleStyle2 = new Style({
-          stroke: new Stroke({
-            color: 'yellow',
-            width: 2,
-          }),
-          fill: new Fill({
-            color: 'rgba(0, 0, 255, 0.1)', // light blue with transparency
-          }),
-        });
-        circleFeature2.setStyle(circleStyle2);
-
-        const vectorSource = new VectorSource({
-          features: [marker, circleFeature,circleFeature2], // Add both marker and circle
-        });
-
-        const vectorLayer = new VectorLayer({
-          source: vectorSource,
-        });
-
-        this.map = new Map({
-          view: new View({
-            center: this.center,
-            zoom: 17, // Adjust zoom level as needed
-          }),
-          layers: [
-            new TileLayer({
-              source: new XYZ(
-              {url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4',}
-              ),
+  RenderMap(): void {
+    
+    // Initialize `this.map` if it hasn't been created yet
+    if (!this.map) {
+      this.map = new Map({
+        view: new View({
+          center: this.center,
+          zoom: 17,
+        }),
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4',
             }),
-            vectorLayer,
-          ],
-          target: 'ol-map',
-        });
-        // for (let index = 0; index < this.staion.sensorDataList.length; index++) {
-          const element = this.staion.sensorDataList[0].StationID;
-          this.stationTypes.push(element);
-          
-        // }
+          }),
+        ],
+        target: 'ol-map',
+      });
     }
-
+  
+    // Clear layers if `this.map` is already initialized
+    else {
+     
+    }
+   
+  
+    // Add layers
+    const marker = new Feature({ geometry: new Point(this.center) });
+    marker.setStyle(new Style({
+      image: new Icon({ src: '../../assets/buoy.png', scale: 0.04 })
+    }));
+  
+    const circleFeature = new Feature({
+      geometry: new Circle(this.center, this.Warning),
+    });
+    circleFeature.setStyle(new Style({
+      stroke: new Stroke({ color: 'red', width: 2 }),
+      fill: new Fill({ color: 'rgba(0, 0, 255, 0.1)' }),
+    }));
+  
+    const circleFeature2 = new Feature({
+      geometry: new Circle(this.center, this.Danger),
+    });
+    circleFeature2.setStyle(new Style({
+      stroke: new Stroke({ color: 'yellow', width: 2 }),
+      fill: new Fill({ color: 'rgba(0, 0, 255, 0.1)' }),
+    }));
+  
+    const vectorSource = new VectorSource({ features: [marker, circleFeature, circleFeature2] });
+    const vectorLayer = new VectorLayer({ source: vectorSource });
+    
+    // Add `vectorLayer` to the map
+    this.map.addLayer(vectorLayer);
+    // this.map.getLayers().clear();
+  }
+  
+  RenderMap2(): void {
+    // Same logic as RenderMap for `this.map2`
+    if (!this.map2) {
+      this.map2 = new Map({
+        view: new View({
+          center: this.center,
+          zoom: 17,
+        }),
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4',
+            }),
+          }),
+        ],
+        target: 'ol-map',
+      });
+    } else {
+      this.map2.getLayers().clear();
+    }
+  
+    const marker = new Feature({ geometry: new Point(this.center) });
+    marker.setStyle(new Style({
+      image: new Icon({ src: '../../assets/buoy.png', scale: 0.04 })
+    }));
+  
+    const circleFeature = new Feature({
+      geometry: new Circle(this.center, this.Warning),
+    });
+    circleFeature.setStyle(new Style({
+      stroke: new Stroke({ color: 'red', width: 2 }),
+      fill: new Fill({ color: 'rgba(0, 0, 255, 0.1)' }),
+    }));
+  
+    const circleFeature2 = new Feature({
+      geometry: new Circle(this.center, this.Danger),
+    });
+    circleFeature2.setStyle(new Style({
+      stroke: new Stroke({ color: 'yellow', width: 2 }),
+      fill: new Fill({ color: 'rgba(0, 0, 255, 0.1)' }),
+    }));
+  
+    const vectorSource = new VectorSource({ features: [marker, circleFeature, circleFeature2] });
+    const vectorLayer = new VectorLayer({ source: vectorSource });
+    
+    // Add `vectorLayer` to the map
+    this.map2.addLayer(vectorLayer);
+  }
+  
+  
     clickon(typr:String){
       console.log(typr);
     }
@@ -354,7 +334,7 @@
           console.log(data);
       }
 
-      this.http.put('http://localhost:3000/api/config', data).subscribe({
+      this.http.put('http://192.168.0.100:3000/api/config', data).subscribe({
         next: (res) => {
           console.log(res);
         }
@@ -397,7 +377,7 @@
         longitude_sec: this.langsec,
       }
     }
-    this.http.put('http://localhost:3000/api/updatestationconfig',stationConfigData).subscribe(
+    this.http.put('http://192.168.0.100:3000/api/updatestationconfig',stationConfigData).subscribe(
       {
         next: (res) => {
           console.log('response station config ==', res);
@@ -409,5 +389,9 @@
       }
     );
   }
+
+
+
+  
 
   }

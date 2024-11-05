@@ -16,6 +16,7 @@ import { SensorData, StationConfigs, SensorData2 } from '../../model/config.mode
 import { ConfigDataService } from '../config-data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { config } from 'process';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 
 @Component({
   selector: 'app-home',
@@ -40,7 +41,7 @@ export class HomeComponent implements OnInit {
   buoy2danger!:number;
   vectorLayer!: VectorLayer;
   currentLayer!: TileLayer;
-  showPaths = false;
+  showPaths:boolean = false;
   stationCOnfig: StationConfigs[]=[];
   sensorsliveData:SensorData[]=[];
   sensorsliveData2:SensorData2[]=[];
@@ -51,14 +52,16 @@ export class HomeComponent implements OnInit {
   selectedBuoy!:string;
   trackpath1:[number, number][]=[this.center];
   trackpath2:[number, number][]=[this.buoy2];
-  
+  showTrackPath: boolean = false;
+
+ 
   mapUrl = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
 mapChange(name:String){
-  console.log('taped');
+  
   switch (name) {
     case 'OpenCycleMap':
       this.mapUrl = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
-      console.log("ok");
+     
       break;
       case 'Transport':
         this.mapUrl = 'https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
@@ -93,38 +96,50 @@ updateMapLayer() {
 }
 
 ngOnInit(): void {
-  
-  this.data.getSensorLiveData('2024-01-01', '2024-10-25').subscribe(sensors=>{
+  console.log("init called");
+  forkJoin([
+    this.data.getSensorLiveData('2024-01-01', '2024-10-30'),
+    this.data.getStationNames()
+  ]).subscribe(([sensors, configs]) => {
     this.sensorsliveData = sensors.buoy1;
     this.sensorsliveData2 = sensors.buoy2;
-    console.log(this.sensorsliveData);
-   
 
-    console.log('sensorsd == ', this.sensorsliveData2);
     this.livelocationbuoy1 = fromLonLat([this.sensorsliveData[0].LONG, this.sensorsliveData[0].LAT]) as [number, number];
-    this.livelocationbuoy2 = fromLonLat([this.sensorsliveData2[0].LAT, this.sensorsliveData2[0].LONG]) as [number, number];
-    console.log("live location: ==",this.livelocationbuoy1);
+    this.livelocationbuoy2 = fromLonLat([this.sensorsliveData2[0].LONG, this.sensorsliveData2[0].LAT]) as [number, number];
 
-    //2nd run
-    this.data.getStationNames().subscribe(configs=>{
-      this.bouy1wrange = configs[0].warning_circle;
-      this.buoy2wrange = configs[1].warning_circle;
-      this.buoy1danger = configs[0].danger_circle;
-      this.buoy2danger = configs[1].danger_circle;
-   const status =  this.coordassign(configs);
-        if(status == true){
-          console.log("sucess");
-          if (!this.map) {
-            this.MapInit();
-          }
-        }
+    this.bouy1wrange = configs[0].warning_circle;
+    this.buoy2wrange = configs[1].warning_circle;
+    this.buoy1danger = configs[0].danger_circle;
+    this.buoy2danger = configs[1].danger_circle;
 
-    })
-        });
-    
-    
-    
+    const status = this.coordassign(configs);
+    if (status && !this.map) {
+      this.MapInit();
+    }
+  });
 }
+
+traveledPath: [number, number][] = [
+  // this.livelocationbuoy1,
+  fromLonLat([72.808716, 18.999682]) as [number, number],
+  fromLonLat([72.809211, 18.997958]) as [number, number],
+  fromLonLat([72.809304, 18.997888]) as [number, number],
+
+  fromLonLat([72.809203, 18.997802]) as [number, number],
+  fromLonLat([72.809050, 18.997865]) as [number, number],
+  fromLonLat([72.808994, 18.997960]) as [number, number],
+  fromLonLat([72.809103, 18.998111]) as [number, number],
+  // fromLonLat([80.199560, 14.589617]) as [number, number],
+];
+
+traveledPath2: [number, number][] = [
+  // this.livelocationbuoy2,
+  fromLonLat([80.178118, 14.607975]) as [number, number],
+  fromLonLat([80.185170, 14.619721]) as [number, number],
+  fromLonLat([80.182909, 14.617035]) as [number, number],
+  fromLonLat([80.191029, 14.616439]) as [number, number],
+  fromLonLat([80.194832, 14.621610]) as [number, number],
+];
 
 
 coordassign(configs: StationConfigs[]): boolean {
@@ -143,46 +158,31 @@ coordassign(configs: StationConfigs[]): boolean {
     return deg + (min / 60) + (sec / 3600);
   };
 
-  if (configs[0].geo_format === "DMS") {
-    // Convert from DMS to Decimal Degrees for Station 1
-    const lat1 = convertDMSToDD(configs[0].latitude_deg, configs[0].latitude_min, configs[0].latitude_sec);
-    const lon1 = convertDMSToDD(configs[0].longitude_deg, configs[0].longitude_min, configs[0].longitude_sec);
+  // Helper function to assign locations based on geo_format
+  const assignLocation = (config: StationConfigs): [number, number] => {
+    if (config.geo_format === "DMS") {
+      return fromLonLat([
+        convertDMSToDD(config.longitude_deg, config.longitude_min, config.longitude_sec),
+        convertDMSToDD(config.latitude_deg, config.latitude_min, config.latitude_sec)
+      ]) as [number, number];
+    } else if (config.geo_format === "DD") {
+      return fromLonLat([
+        config.longitude_deg,
+        config.latitude_deg
+      ]) as [number, number];
+    } else {
+      console.error("Unknown geo_format encountered:", config.geo_format);
+      return [0, 0]; // Return a default value or handle as needed
+    }
+  };
 
-    // Convert from DMS to Decimal Degrees for Station 2
-    const lat2 = convertDMSToDD(configs[1].latitude_deg, configs[1].latitude_min, configs[1].latitude_sec);
-    const lon2 = convertDMSToDD(configs[1].longitude_deg, configs[1].longitude_min, configs[1].longitude_sec);
+  // Assign buoy locations
+  this.livelocationbuoy1 = assignLocation(configs[0]);
+  this.buoy2 = assignLocation(configs[1]);
 
-    // Log the converted coordinates
-    console.log("Station 1 Coordinates (DMS to DD):", lat1, lon1);
-    console.log("Station 2 Coordinates (DMS to DD):", lat2, lon2);
-
-    // Convert to map coordinates and assign
-    this.livelocationbuoy1 = fromLonLat([lon1, lat1]) as [number, number];
-    this.buoy2 = fromLonLat([lon2, lat2]) as [number, number];
-
-    console.log("Mapped Coordinates:", this.livelocationbuoy1, this.buoy2);
-
-  } else if (configs[0].geo_format === "DD") {
-    // Assume the latitude and longitude are in decimal degrees for both stations
-    const lat1 = configs[0].latitude_deg;
-    const lon1 = configs[0].longitude_deg;
-    const lat2 = configs[1].latitude_deg;
-    const lon2 = configs[1].longitude_deg;
-
-    // Log the provided coordinates
-    console.log("Station 1 Coordinates (DD):", lat1, lon1);
-    console.log("Station 2 Coordinates (DD):", lat2, lon2);
-
-    // Convert to map coordinates and assign
-    this.livelocationbuoy1 = fromLonLat([lon1, lat1]) as [number, number];
-    this.buoy2 = fromLonLat([lon2, lat2]) as [number, number];
-
-    console.log("Mapped Coordinates:", this.livelocationbuoy1, this.buoy2);
-
-  } else {
-    console.error("Unknown geo_format encountered:", configs[0].geo_format);
-    return false;
-  }
+  // Log buoy locations for debugging
+  console.log("buoy 1 location:", this.livelocationbuoy1);
+  console.log("buoy 2 location:", this.buoy2);
 
   // If all went well, return true
   return true;
@@ -192,7 +192,11 @@ coordassign(configs: StationConfigs[]): boolean {
 
 
 
+
   constructor(private layout: LayoutComponent, private data:ConfigDataService) {}
+  
+
+
   
   MapInit(): void {
     
@@ -234,7 +238,7 @@ coordassign(configs: StationConfigs[]): boolean {
             if (feature instanceof Feature) {
               const name = feature.get('name');
               if (name) {
-                console.log('Clicked marker: ' + name);
+               
                 this.layout.selectedBuoy = name;
                 // this.layout.sensors();
                 this.layout.page = 'Dashboard';
@@ -242,96 +246,33 @@ coordassign(configs: StationConfigs[]): boolean {
             }
           });
         });
+        this.addPathLines(this.traveledPath);
+        this.addPathLines(this.traveledPath2);
+   
       }
     }, 2);
       
   // }
     
   }
-  togglePaths() {
-    this.showPaths = !this.showPaths; // Toggle the visibility flag
-
-    const vectorSource = this.vectorLayer.getSource() as VectorSource;
-    console.log('showPaths:', this.showPaths);
-    console.log('Vector source features:', vectorSource.getFeatures());
-    if (this.showPaths) {
-      const traveledPath: [number, number][] = [
-        
-        this.livelocationbuoy1,
-        fromLonLat([80.198665, 14.591018]) as [number , number],
-        fromLonLat([80.196796, 14.591477]) as [number , number], 
-        fromLonLat([80.195717, 14.590024]) as [number, number],
-        fromLonLat([80.195927, 14.587961]) as [number, number],
-        fromLonLat([80.198033, 14.587043]) as [number, number],
-        fromLonLat([80.199560, 14.589617]) as [number, number],
-      ];
-
-      const traveledPath2: [number, number][] = [
-        this.livelocationbuoy2,
-        fromLonLat([80.185170, 14.619721]) as [number , number],
-        fromLonLat([80.182909, 14.617035]) as [number , number], 
-        fromLonLat([80.191029, 14.616439]) as [number, number],
-        fromLonLat([80.194832, 14.621610]) as [number, number],
-      ];
-
-      this.createPathLine(traveledPath, vectorSource);
-      this.createPathLine(traveledPath2, vectorSource);
-    } else {
-      // Optionally, clear paths when hiding
-      vectorSource.clear(); // This clears all features; you can adapt to remove only the paths if needed
-      this.createMarker(this.livelocationbuoy1, 'Buoy 1', vectorSource);
-      this.createMarker(this.livelocationbuoy2, 'Buoy 2', vectorSource);
-      this.createCircle(this.center, this.buoy1danger, 'red', vectorSource);
-      this.createCircle(this.buoy2, this.buoy2danger, 'red', vectorSource);
-      this.createCircle(this.center, this.bouy1wrange, 'yellow', vectorSource);
-      this.createCircle(this.buoy2, this.buoy2wrange, 'yellow', vectorSource);
-    }
-  }
-
-
-  createPathLine(coords: [number, number][], vectorSource: VectorSource) {
+ 
+  addPathLines(coords: [number, number][]) {
     const lineString = new Feature({
       geometry: new LineString(coords),
     });
-  
+
     const lineStyle = new Style({
-      
       stroke: new Stroke({
         color: 'blue',
-        width: 1,
+        width: 2,
       }),
     });
-  
+
     lineString.setStyle(lineStyle);
-    vectorSource.addFeature(lineString);
-    this.addArrowsAlongLine(coords, vectorSource);
+    this.vectorLayer.getSource()?.addFeature(lineString);
   }
-  addArrowsAlongLine(coords: [number, number][], vectorSource: VectorSource) {
-    const arrowIcon = new Style({
-      image: new Icon({
-        src: '../../assets/arrow-point-to-right (1).png', // Path to your arrow icon image
-        scale: 0.5,
-        color: '#0000', // Adjust the scale as necessary
-        rotation: 90, // You can calculate rotation based on the line's direction
-      }),
-    });
-  
-    const arrowSpacing = 20; // Distance between arrows in meters
-    const line = new LineString(coords);
-    const length = line.getLength(); // Get the total length of the line
-  
-    for (let i = 0; i < length; i += arrowSpacing) {
-      const point = line.getCoordinateAt(i / length); // Get coordinates at the current position
-  
-      const arrowFeature = new Feature({
-        geometry: new Point(point),
-      });
-  
-      arrowFeature.setStyle(arrowIcon);
-      vectorSource.addFeature(arrowFeature);
-    }
-  }
-  
+
+
   createMarker(coordinate: [number, number], name: string, vectorSource: VectorSource) {
     const markerStyle = new Style({
       image: new Icon({
@@ -391,7 +332,7 @@ coordassign(configs: StationConfigs[]): boolean {
     const distance = getDistance(this.center, markerCoords);
     const newState = distance > this.radius ? 'Buoy 1 missing or out of range' : 'Buoy 1 within range';
     if (newState !== this.lastBuoyRangeState) {
-      console.log(newState);
+      
       this.lastBuoyRangeState = newState;
     }
   }
@@ -400,7 +341,7 @@ coordassign(configs: StationConfigs[]): boolean {
     const distance = getDistance(this.center, markerCoords);
     const newWarningState = distance > this.wrange ? 'Buoy 2 far beyond range' : 'Buoy 2 within warning range';
     if (newWarningState !== this.lastWarningState) {
-      console.log(newWarningState);
+      
       this.lastWarningState = newWarningState;
     }
   }
