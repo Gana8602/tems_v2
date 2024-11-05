@@ -90,7 +90,10 @@ ngOnInit(): void {
       
       console.log(this.sensorDatelist[0].StationID);
      
-    })
+    },
+  (error) => {
+    console.error('Error fetching sensor data:', error);
+  });
 
   } 
   fetch(){

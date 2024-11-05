@@ -37,7 +37,7 @@ export class LoginComponent {
       this.router.navigate(['/base']);
       this.toast.success("Logged in Succesfully", 'Access Granted ')
     })
-//     this.http.post('http://localhost:3000/api/users/login', user).subscribe({
+//     this.http.post('http://192.168.0.100:3000/api/users/login', user).subscribe({
 //       next: (response) => {
 //         console.log(response);
 //         // Navigate to the base route upon successful login

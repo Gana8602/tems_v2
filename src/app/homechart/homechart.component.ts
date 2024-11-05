@@ -62,7 +62,7 @@ fetchSensorData(): void {
     // Log before fetching data
     console.log('Fetching new sensor data...');
 
-    this.httpClient.get<SensorData[]>('http://localhost:3000/api/users/sensorData')
+    this.httpClient.get<SensorData[]>('http://192.168.0.100:3000/api/users/sensorData')
       .subscribe((data) => {
         console.log('New data fetched:', data);
         

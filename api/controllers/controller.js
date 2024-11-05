@@ -304,7 +304,7 @@ const saveSensorData = async (req, res) => {
 
         // Send response
         res.status(201).json({ message: 'Sensor data saved successfully', data: req.body });
-       await axios.get('http://localhost:3000/api/split');
+       await axios.get('http://192.168.0.100:3000/api/split');
        console.log('Successfully triggered test API for tide and currents');
     } catch (err) {
         console.error('Database error:', err);
@@ -369,7 +369,7 @@ const saveSensorData2 = async (req, res) => {
 
         // Send response
         res.status(201).json({ message: 'Sensor data saved successfully', data: req.body });
-       await axios.get('http://localhost:3000/api/split');
+       await axios.get('http://192.168.0.100:3000/api/split');
        console.log('Successfully triggered test API for tide and currents');
     } catch (err) {
         console.error('Database error:', err);

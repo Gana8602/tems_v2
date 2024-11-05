@@ -31,7 +31,7 @@ export interface buoys{
 export class StationService {
 
 
-  private apiUrl = 'http://localhost:3000/api/users/sensorData';
+  private apiUrl = 'http://192.168.0.100:3000/api/users/sensorData';
 
   constructor(private http: HttpClient) { }
 
