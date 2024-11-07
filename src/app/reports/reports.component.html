@@ -180,6 +180,8 @@
             <!-- Table Header -->
             <ng-template pTemplate="header" let-columns>
                 <tr>
+                    <th pSortableColumn="Stationname" style="width: 11.5%">Stationname<p-sortIcon field="Stationname" />
+                    </th>
                     <th pSortableColumn="StationID" style="width: 11.5%">StationID<p-sortIcon field="StationID" /></th>
                     <th pSortableColumn="Date" style="width: 11.5%">Date <p-sortIcon field="Date" /></th>
                     <th pSortableColumn="Time" style="width: 11.5%">Time <p-sortIcon field="Time" /></th>
@@ -192,6 +194,7 @@
             <!-- Table Body -->
             <ng-template pTemplate="body" let-buoy let-columns="columns">
                 <tr>
+                    <td>{{i+1}}</td>
                     <td>{{ buoy.StationID }}</td>
                     <td>{{ buoy.Date?.split('T')[0] }}</td>
                     <td>{{ buoy.Time?.split('T')[1]?.split('.')[0] }}</td>

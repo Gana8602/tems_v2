@@ -11,6 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
+    // AppComponent
      // Declare AppComponent here
   ],
   imports: [
@@ -29,7 +30,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       animation: true,
     }),
     BrowserAnimationsModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({
+      positionClass :'toast-bottom-right'
+    })
   ],
   providers: [],
   bootstrap: [] // Make sure to bootstrap AppComponent

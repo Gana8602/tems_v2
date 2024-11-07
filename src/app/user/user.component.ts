@@ -30,7 +30,7 @@ export class UserComponent implements OnInit{
   state:string = "Add";
   users = [];
   id!:string;
-  baseUrl:String = 'http://192.168.0.100:3000/api/users/';
+  baseUrl:String = 'http://192.168.0.115:3000/api/users/';
   constructor(private http: HttpClient, private config:ConfigDataService, private toast:ToastrService) {}
   ngOnInit(): void {
     this.getUsers();
@@ -49,16 +49,18 @@ export class UserComponent implements OnInit{
       email: this.email,
       password: this.password,
   };
-  this.http.post('http://192.168.0.100:3000/api/users/edit', editUser).subscribe({
+  this.http.post('http://192.168.0.115:3000/api/users/edit', editUser).subscribe({
     next:(response:any)=>{
       console.log('user edit successfully', response);
 
 this.getUsers();
+this.toast.success(`User ${editUser.name} edited`, "Success");
             this.resetForm();
             this.state = "Add";
     },
     error:(err)=>{
       console.log("error:", err);
+      this.toast.error(`Error editing user ${editUser.name}`, "Error");
     }
   })
   }
@@ -98,7 +100,7 @@ preEdit(users:any){
     };
 
     // Send the new user data to your backend API
-    this.http.post('http://192.168.0.100:3000/api/users/register', newUser).subscribe({
+    this.http.post('http://192.168.0.115:3000/api/users/register', newUser).subscribe({
         next: (response: any) => {
             console.log('User registered successfully', response);
             // Optional: You can show a success message to the user
@@ -107,7 +109,9 @@ preEdit(users:any){
             // Optionally, you can update the users array to reflect the new user
             // this.users.push(newUser); // Update the users list
             this.getUsers();
+            this.toast.success(`User ${this.name} Created`, "Sucess");
             this.resetForm(); // Reset the form fields after successful registration
+            
         },
         error: (error) => {
             console.error('Error registering user', error);
@@ -117,7 +121,7 @@ preEdit(users:any){
 }
 
 getUsers(){
-  this.http.get('http://192.168.0.100:3000/api/users').subscribe((response:any)=>{
+  this.http.get('http://192.168.0.115:3000/api/users').subscribe((response:any)=>{
     console.log(response);
     this.users=response;
   },
@@ -127,7 +131,7 @@ getUsers(){
 );
 }
 getRoles(){
-  this.http.get('http://192.168.0.100:3000/api/users/getroles').subscribe((response:any)=>{
+  this.http.get('http://192.168.0.115:3000/api/users/getroles').subscribe((response:any)=>{
     console.log("roles",response);
     this.Roles=response;
   },
@@ -140,14 +144,16 @@ addRole(){
   const newrole= {
     role: this.roleentered
   }
-this.http.post('http://192.168.0.100:3000/api/users/addrole',newrole).subscribe({
+this.http.post('http://192.168.0.115:3000/api/users/addrole',newrole).subscribe({
   next: (response: any) => {
     console.log('Role added successfully', response);
     this.getRoles();
     this.addLog(`Added new role (${this.roleentered}) `);
+    this.toast.success(`Role ${newrole.role} Added`, "Success");
+
   },error: (error) => {
     console.error('Error adding new role', error);
-    alert('Error adding new role. Please try again.'); // Show error message
+    this.toast.error(`Error adding ${newrole.role}`, "Please try again");
 },
 });
 
@@ -173,19 +179,21 @@ addDesignation(){
   const newdesignation= {
     designation: this.selectedDesignation
   }
-this.http.post('http://192.168.0.100:3000/api/users/adddesignation',newdesignation).subscribe({
+this.http.post('http://192.168.0.115:3000/api/users/adddesignation',newdesignation).subscribe({
   next: (response: any) => {
     console.log('Designation added successfully', response);
     this.getDesignation();
+    this.toast.success(`Designation ${newdesignation.designation} Added`, "Success");
 
   },error: (error) => {
     console.error('Error adding new Designation', error);
-    alert('Error adding new Designation. Please try again.'); // Show error message
+    // alert('Error adding new Designation. Please try again.'); // Show error message
+    this.toast.error(`Error adding ${newdesignation.designation}`, "Please try again");
 },
 });
 };
 getDesignation(){
-  this.http.get('http://192.168.0.100:3000/api/users/getdesignation').subscribe((response:any)=>{
+  this.http.get('http://192.168.0.115:3000/api/users/getdesignation').subscribe((response:any)=>{
     console.log('designation',response);
     this.Designation=response;
   },
@@ -196,27 +204,31 @@ getDesignation(){
 };
 
 DeleteRole(id:number){
-  this.http.delete(`http://192.168.0.100:3000/api/users/deleteRole/${id}`).subscribe({
+  this.http.delete(`http://192.168.0.115:3000/api/users/deleteRole/${id}`).subscribe({
     next: (response) => {
       console.log('Role deleted successfully', response);
       this.getRoles();
+      this.toast.success(`Role deleted`, "Success");
       // You can add logic here to update your UI or users list
     },
     error: (error) => {
       console.error('Error deleting role', error);
+      this.toast.error("Error deleting role", "Please try again");
     },
   });
 };
 //delete desig
 DeleteDesignation(id:number){
-  this.http.delete(`http://192.168.0.100:3000/api/users/deleteDesignation/${id}`).subscribe({
+  this.http.delete(`http://192.168.0.115:3000/api/users/deleteDesignation/${id}`).subscribe({
     next: (response) => {
       console.log('Designation deleted successfully', response);
       this.getDesignation();
+      this.toast.success(`Designation deleted`, "Success");
       // You can add logic here to update your UI or users list
     },
     error: (error) => {
       console.error('Error deleting Designation', error);
+      this.toast.error("Error deleting Designation", "Please try again");
     },
   });
 }

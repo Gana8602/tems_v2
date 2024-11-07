@@ -10,6 +10,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
   {
@@ -22,8 +23,9 @@ export const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: 'base', // Correct path to navigate after login
+    path: 'base/:page', // Correct path to navigate after login
     component: LayoutComponent,
+    canActivate:[AuthGuard],
     children: [
       // {
       //   path: 'home',
@@ -43,5 +45,6 @@ export const routes: Routes = [
       // }
     ]
   },
+  { path: '**', redirectTo: 'login' }
   
 ];

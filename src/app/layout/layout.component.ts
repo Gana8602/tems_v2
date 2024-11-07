@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router'; // Import RouterModule
+import { ActivatedRoute, Router, RouterModule } from '@angular/router'; // Import RouterModule
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { HomeComponent } from '../home/home.component';
 import { DashboardComponent } from '../dashboard/dashboard.component';
@@ -8,9 +8,10 @@ import { ReportsComponent } from '../reports/reports.component';
 import { AnalyticsComponent } from '../analytics/analytics.component';
 import { ConfigurationsComponent } from '../configurations/configurations.component';
 import { UserComponent } from '../user/user.component';
-import { ToastrModule } from 'ngx-toastr';
-import { SensorData, Config, StationConfigs } from '../../model/config.model';
+import { TOAST_CONFIG, ToastrModule, ToastrService } from 'ngx-toastr';
+import { SensorData, Config, StationConfigs, CurrentUser } from '../../model/config.model';
 import { ConfigDataService } from '../config-data.service';
+import { LoginComponent } from '../login/login.component';
 
 
 
@@ -31,7 +32,7 @@ import { ConfigDataService } from '../config-data.service';
   ],
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.css'], // Fix typo from styleUrl to styleUrls,
-  providers:[ConfigDataService]
+  providers:[ConfigDataService, ToastrService]
 
 })
 export class LayoutComponent implements OnInit {
@@ -43,9 +44,14 @@ export class LayoutComponent implements OnInit {
   StationConfig:StationConfigs[]=[];
   stationName1!:string;
   stationName2!:string;
+  // currentUser!:CurrentUser;
   
-constructor(private configss:ConfigDataService){}
+constructor(private configss:ConfigDataService, private route: ActivatedRoute, private router: Router){}
   ngOnInit(): void {
+    // console.log("username",this.configss.CurrentUser.name);
+    this.route.paramMap.subscribe(params => {
+      this.page = params.get('page') || 'home';
+    });
     // this.getStationConfig();
     this.sensors();
     this.getConfigs();
@@ -63,7 +69,7 @@ constructor(private configss:ConfigDataService){}
 
   sensors() {
    
-    this.httpClient.get('http://192.168.0.100:3000/api/users/sensorData?fromDate=2024-01-10&toDate=2024-01-10')
+    this.httpClient.get('http://192.168.0.115:3000/api/users/sensorData?fromDate=2024-01-10&toDate=2024-01-10')
   .subscribe((data: any) => {
       console.log('sensorData:== ', data);
       // this.sensorDataList = data;
@@ -73,7 +79,7 @@ constructor(private configss:ConfigDataService){}
   }
 
   getConfigs(){
-    this.httpClient.get('http://192.168.0.100:3000/api/getconfigs')
+    this.httpClient.get('http://192.168.0.115:3000/api/getconfigs')
     .subscribe((data:any)=>{
     
       this.configs=data;
@@ -82,7 +88,7 @@ constructor(private configss:ConfigDataService){}
   }
 
   // getStationConfig(){
-  //   this.httpClient.get('http://192.168.0.100:3000/api/getstationconfig')
+  //   this.httpClient.get('http://192.168.0.115:3000/api/getstationconfig')
   //   .subscribe((data:any)=>{
   //     this.StationConfig=data;
   //     console.log('Station Configs',this.StationConfig);

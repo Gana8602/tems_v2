@@ -36,6 +36,56 @@ interface Tide{
   providers:[StationService]
 })
 export class AnalyticsComponent implements AfterViewInit{
+  sampleDataAdcp = [
+    { timestamp: '2024-10-01T00:00:00Z', current_speed: 1.2, current_direction: 30 },
+    { timestamp: '2024-10-01T01:00:00Z', current_speed: 1.5, current_direction: 45 },
+    { timestamp: '2024-10-01T02:00:00Z', current_speed: 0.8, current_direction: 60 },
+    { timestamp: '2024-10-01T03:00:00Z', current_speed: 2.1, current_direction: 90 },
+    { timestamp: '2024-10-01T04:00:00Z', current_speed: 1.9, current_direction: 120 },
+    { timestamp: '2024-10-01T05:00:00Z', current_speed: 1.6, current_direction: 150 },
+    { timestamp: '2024-10-01T06:00:00Z', current_speed: 0.5, current_direction: 180 },
+    { timestamp: '2024-10-01T07:00:00Z', current_speed: 1.3, current_direction: 210 },
+    { timestamp: '2024-10-01T08:00:00Z', current_speed: 1.4, current_direction: 240 },
+    { timestamp: '2024-10-01T09:00:00Z', current_speed: 0.9, current_direction: 270 },
+    { timestamp: '2024-10-01T10:00:00Z', current_speed: 1.1, current_direction: 300 },
+    { timestamp: '2024-10-01T11:00:00Z', current_speed: 1.0, current_direction: 330 },
+    { timestamp: '2024-10-01T12:00:00Z', current_speed: 1.4, current_direction: 360 },
+    { timestamp: '2024-10-01T13:00:00Z', current_speed: 2.0, current_direction: 15 },
+    { timestamp: '2024-10-01T14:00:00Z', current_speed: 1.7, current_direction: 30 },
+    { timestamp: '2024-10-01T15:00:00Z', current_speed: 1.8, current_direction: 45 },
+    { timestamp: '2024-10-01T16:00:00Z', current_speed: 1.2, current_direction: 60 },
+    { timestamp: '2024-10-01T17:00:00Z', current_speed: 0.7, current_direction: 90 },
+    { timestamp: '2024-10-01T18:00:00Z', current_speed: 1.4, current_direction: 120 },
+    { timestamp: '2024-10-01T19:00:00Z', current_speed: 1.6, current_direction: 150 },
+    { timestamp: '2024-10-01T20:00:00Z', current_speed: 0.4, current_direction: 180 },
+    { timestamp: '2024-10-01T21:00:00Z', current_speed: 1.1, current_direction: 210 },
+    { timestamp: '2024-10-01T22:00:00Z', current_speed: 1.5, current_direction: 240 },
+    { timestamp: '2024-10-01T23:00:00Z', current_speed: 0.9, current_direction: 270 },
+    { timestamp: '2024-10-02T00:00:00Z', current_speed: 1.0, current_direction: 300 },
+    { timestamp: '2024-10-02T01:00:00Z', current_speed: 1.2, current_direction: 330 },
+    { timestamp: '2024-10-02T02:00:00Z', current_speed: 1.5, current_direction: 360 },
+    { timestamp: '2024-10-02T03:00:00Z', current_speed: 1.8, current_direction: 15 },
+    { timestamp: '2024-10-02T04:00:00Z', current_speed: 1.6, current_direction: 30 },
+    { timestamp: '2024-10-02T05:00:00Z', current_speed: 1.4, current_direction: 45 },
+    { timestamp: '2024-10-02T06:00:00Z', current_speed: 0.9, current_direction: 60 },
+    { timestamp: '2024-10-02T07:00:00Z', current_speed: 1.1, current_direction: 90 },
+    { timestamp: '2024-10-02T08:00:00Z', current_speed: 1.3, current_direction: 120 },
+    { timestamp: '2024-10-02T09:00:00Z', current_speed: 1.2, current_direction: 150 },
+    { timestamp: '2024-10-02T10:00:00Z', current_speed: 1.5, current_direction: 180 },
+    { timestamp: '2024-10-02T11:00:00Z', current_speed: 1.7, current_direction: 210 },
+    { timestamp: '2024-10-02T12:00:00Z', current_speed: 1.4, current_direction: 240 },
+    { timestamp: '2024-10-02T13:00:00Z', current_speed: 1.8, current_direction: 270 },
+    { timestamp: '2024-10-02T14:00:00Z', current_speed: 1.0, current_direction: 300 },
+    { timestamp: '2024-10-02T15:00:00Z', current_speed: 1.2, current_direction: 330 },
+    { timestamp: '2024-10-02T16:00:00Z', current_speed: 1.5, current_direction: 360 },
+    { timestamp: '2024-10-02T17:00:00Z', current_speed: 1.3, current_direction: 15 },
+    { timestamp: '2024-10-02T18:00:00Z', current_speed: 0.6, current_direction: 30 },
+    { timestamp: '2024-10-02T19:00:00Z', current_speed: 1.2, current_direction: 45 },
+    { timestamp: '2024-10-02T20:00:00Z', current_speed: 1.1, current_direction: 60 },
+    { timestamp: '2024-10-02T21:00:00Z', current_speed: 0.8, current_direction: 90 },
+    { timestamp: '2024-10-02T22:00:00Z', current_speed: 1.4, current_direction: 120 },
+    { timestamp: '2024-10-02T23:00:00Z', current_speed: 1.6, current_direction: 150 }
+  ];
   sampleDataTide:Tide[] = [];
   sampleData:currentModel[] = [
     ];
@@ -278,6 +328,7 @@ onSensorChange() {
             this.midSpeedDirection();
             this.bottomSpeedDirection();
             this.polar();
+            this.polar2();
             // Optionally, uncomment if needed:
             // this.polar1();
             // this.polar2();
@@ -305,7 +356,384 @@ Tide(): void {
     this.loading = true;
     const tide = document.getElementById('tide');
     
-    
+    const sampleData = [
+      [
+      "2000-06-05",
+      116
+      ],
+      [
+      "2000-06-06",
+      129
+      ],
+      [
+      "2000-06-07",
+      135
+      ],
+      [
+      "2000-06-08",
+      86
+      ],
+      [
+      "2000-06-09",
+      73
+      ],
+      [
+      "2000-06-10",
+      85
+      ],
+      [
+      "2000-06-11",
+      73
+      ],
+      [
+      "2000-06-12",
+      68
+      ],
+      [
+      "2000-06-13",
+      92
+      ],
+      [
+      "2000-06-14",
+      130
+      ],
+      [
+      "2000-06-15",
+      245
+      ],
+      [
+      "2000-06-16",
+      139
+      ],
+      [
+      "2000-06-17",
+      115
+      ],
+      [
+      "2000-06-18",
+      111
+      ],
+      [
+      "2000-06-19",
+      309
+      ],
+      [
+      "2000-06-20",
+      206
+      ],
+      [
+      "2000-06-21",
+      137
+      ],
+      [
+      "2000-06-22",
+      128
+      ],
+      [
+      "2000-06-23",
+      85
+      ],
+      [
+      "2000-06-24",
+      94
+      ],
+      [
+      "2000-06-25",
+      71
+      ],
+      [
+      "2000-06-26",
+      106
+      ],
+      [
+      "2000-06-27",
+      84
+      ],
+      [
+      "2000-06-28",
+      93
+      ],
+      [
+      "2000-06-29",
+      85
+      ],
+      [
+      "2000-06-30",
+      73
+      ],
+      [
+      "2000-07-01",
+      83
+      ],
+      [
+      "2000-07-02",
+      125
+      ],
+      [
+      "2000-07-03",
+      107
+      ],
+      [
+      "2000-07-04",
+      82
+      ],
+      [
+      "2000-07-05",
+      44
+      ],
+      [
+      "2000-07-06",
+      72
+      ],
+      [
+      "2000-07-07",
+      106
+      ],
+      [
+      "2000-07-08",
+      107
+      ],
+      [
+      "2000-07-09",
+      66
+      ],
+      [
+      "2000-07-10",
+      91
+      ],
+      [
+      "2000-07-11",
+      92
+      ],
+      [
+      "2000-07-12",
+      113
+      ],
+      [
+      "2000-07-13",
+      107
+      ],
+      [
+      "2000-07-14",
+      131
+      ],
+      [
+      "2000-07-15",
+      111
+      ],
+      [
+      "2000-07-16",
+      64
+      ],
+      [
+      "2000-07-17",
+      69
+      ],
+      [
+      "2000-07-18",
+      88
+      ],
+      [
+      "2000-07-19",
+      77
+      ],
+      [
+      "2000-07-20",
+      83
+      ],
+      [
+      "2000-07-21",
+      111
+      ],
+      [
+      "2000-07-22",
+      57
+      ],
+      [
+      "2000-07-23",
+      55
+      ],
+      [
+      "2000-07-24",
+      60
+      ],
+      [
+      "2000-07-25",
+      44
+      ],
+      [
+      "2000-07-26",
+      127
+      ],
+      [
+      "2000-07-27",
+      114
+      ],
+      [
+      "2000-07-28",
+      86
+      ],
+      [
+      "2000-07-29",
+      73
+      ],
+      [
+      "2000-07-30",
+      52
+      ],
+      [
+      "2000-07-31",
+      69
+      ],
+      [
+      "2000-08-01",
+      86
+      ],
+      [
+      "2000-08-02",
+      118
+      ],
+      [
+      "2000-08-03",
+      56
+      ],
+      [
+      "2000-08-04",
+      91
+      ],
+      [
+      "2000-08-05",
+      121
+      ],
+      [
+      "2000-08-06",
+      127
+      ],
+      [
+      "2000-08-07",
+      78
+      ],
+      [
+      "2000-08-08",
+      79
+      ],
+      [
+      "2000-08-09",
+      46
+      ],
+      [
+      "2000-08-10",
+      108
+      ],
+      [
+      "2000-08-11",
+      80
+      ],
+      [
+      "2000-08-12",
+      79
+      ],
+      [
+      "2000-08-13",
+      69
+      ],
+      [
+      "2000-08-14",
+      80
+      ],
+      [
+      "2000-08-15",
+      105
+      ],
+      [
+      "2000-08-16",
+      119
+      ],
+      [
+      "2000-08-17",
+      105
+      ],
+      [
+      "2000-08-18",
+      55
+      ],
+      [
+      "2000-08-19",
+      74
+      ],
+      [
+      "2000-08-20",
+      41
+      ],
+      [
+      "2000-08-21",
+      62
+      ],
+      [
+      "2000-08-22",
+      104
+      ],
+      [
+      "2000-08-23",
+      118
+      ],
+      [
+      "2000-08-24",
+      121
+      ],
+      [
+      "2000-08-25",
+      126
+      ],
+      [
+      "2000-08-26",
+      99
+      ],
+      [
+      "2000-08-27",
+      92
+      ],
+      [
+      "2000-08-28",
+      75
+      ],
+      [
+      "2000-08-29",
+      91
+      ],
+      [
+      "2000-08-30",
+      94
+      ],
+      [
+      "2000-08-31",
+      69
+      ],
+      [
+      "2000-09-01",
+      93
+      ],
+      [
+      "2000-09-02",
+      124
+      ],
+      [
+      "2000-09-03",
+      120
+      ],
+      [
+      "2000-09-04",
+      93
+      ],
+      [
+      "2000-09-05",
+      26
+      ],
+      [
+      "2000-09-06",
+      32
+      ],
+    ]
    
       
       if(this.selectedStation.toLowerCase() == "cwprs1"){
@@ -458,8 +886,9 @@ Tide(): void {
         series: [
           {
             name: 'Water Level',
-            // data:  dates.map((date, index) => ({ value: [date, waterLevels[index]] })),
-            data: this.sampleDataTide.map(item => [item.date, item.level]),
+            data:  dates.map((date, index) => ({ value: [date, waterLevels[index]] })),
+            // data: this.sampleDataTide.map(item => [item.date, item.level]),
+              //  data: sampleData.map(item => [item[0], item[1]]),
             type: chartType === 'bar' ? 'bar'  : chartType,
             smooth: chartType === 'line',
             lineStyle: chartType === 'line' ? { color: '#1ee1ff' } : { color: 'orange' },
@@ -710,7 +1139,8 @@ surfaceSpeedDirection(): void {
           ...(this.isSpeedChecked ? [{
             name: 'Current Speed (m/s)',
             // data:  dates.map((date, index) => ({ value: [date, surfaceCurrent[index]?.split(';')[0]] })), 
-            data: this.sampleData.map(item => [item.time, item.speed]),
+            // data: this.sampleData.map(item => [item.time, item.speed]),
+            data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
             type: chartType === 'bar' ? 'bar' : chartType,
             lineStyle: { normal: { color: 'orange' } },
             itemStyle: { color: 'orange' },
@@ -720,8 +1150,9 @@ surfaceSpeedDirection(): void {
   
           ...(this.isCurrentChecked ? [{
             name: 'Current Direction (°)',
-            data: this.sampleData.map(item => [item.time, item.direction]),
+            // data: this.sampleData.map(item => [item.time, item.direction]),
             // data: dates.map((date, index) => ({ value: [date, surfaceCurrent[index]?.split(';')[1]] })),
+            data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
             type:  chartType,
             lineStyle: { normal: { color: 'red', type: 'dashed' } },
             itemStyle: { color: 'red' },
@@ -928,7 +1359,8 @@ midSpeedDirection(): void {
                 ...(this.isSpeedChecked ? [
                   {
                     name: 'Current Speed (m/s)',
-                    data: this.sampleData2.map(item => [item.time, item.speed]), // Use timestamp for x value
+                    // data: this.sampleData2.map(item => [item.time, item.speed]), 
+                      data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
                     type: chartType,
                     lineStyle: {
                         normal: {
@@ -950,7 +1382,8 @@ midSpeedDirection(): void {
                   ...(this.isCurrentChecked ? [
                     {
                       name: 'Current Direction (°)',
-                      data: this.sampleData.map(item => [item.time, item.direction]), // Use timestamp for x value
+                      // data: this.sampleData.map(item => [item.time, item.direction]),
+                         data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
                       type: chartType,
                       lineStyle: {
                           normal: {
@@ -1146,7 +1579,8 @@ bottomSpeedDirection(): void {
             series: [
               ...(this.isSpeedChecked ? [{
                 name: 'Current Speed (m/s)',
-                data: this.sampleData3.map(item => [item.time, item.speed]),
+                // data: this.sampleData3.map(item => [item.time, item.speed]),
+                   data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
                 type: chartType,
                 lineStyle: { normal: { color: '#00bfff' } },  // Updated to blue
                 itemStyle: { color: '#00bfff' },  // Updated to blue
@@ -1158,7 +1592,8 @@ bottomSpeedDirection(): void {
               ...(this.isCurrentChecked ? [
                 {
                   name: 'Current Direction (°)',
-                  data: this.sampleData3.map(item => [item.time, item.direction]),
+                  // data: this.sampleData3.map(item => [item.time, item.direction]),
+                     data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
                   type: chartType,
                   lineStyle: { normal: { color: 'green', type: 'dashed' } },  // Updated to green
                   itemStyle: { color: 'green' },  // Updated to green
@@ -1336,6 +1771,179 @@ bottomSpeedDirection(): void {
         } else {
           return '#FFFFFF'; // Default color if out of bounds
         }
+      }
+
+      polar2(): void {
+        this.loading = true;
+        const polar1 = document.getElementById('sample')!;
+       
+       
+        // Sample data for current speed and direction in m/s
+        const sampleData4 = [
+          { "speed": 3.4, "direction": 45 },
+          { "speed": 1.6, "direction": 120 },
+          { "speed": 4.1, "direction": 270 },
+          { "speed": 2.4, "direction": 90 },
+          { "speed": 0.0, "direction": 180 },
+          { "speed": 4.4, "direction": 200 },
+          { "speed": 0.9, "direction": 320 },
+          { "speed": 2.8, "direction": 135 },
+          { "speed": 1.5, "direction": 270 },
+          { "speed": 1.2, "direction": 15 },
+          { "speed": 2.3, "direction": 60 },
+          { "speed": 5.1, "direction": 330 },
+          { "speed": 3.1, "direction": 75 },
+          { "speed": 2.0, "direction": 150 },
+          { "speed": 4.3, "direction": 210 },
+          { "speed": 0.7, "direction": 300 },
+          { "speed": 5.2, "direction": 10 },
+          { "speed": 0.8, "direction": 80 },
+          { "speed": 5.0, "direction": 360 },
+          { "speed": 2.5, "direction": 240 },
+          { "speed": 1.0, "direction": 30 },
+          { "speed": 3.7, "direction": 190 },
+          { "speed": 1.6, "direction": 120 },
+          { "speed": 4.0, "direction": 210 },
+          { "speed": 2.9, "direction": 260 },
+          { "speed": 2.3, "direction": 350 },
+          { "speed": 4.6, "direction": 180 },
+          { "speed": 1.3, "direction": 70 },
+          { "speed": 3.0, "direction": 45 },
+          { "speed": 0.9, "direction": 300 },
+          { "speed": 4.5, "direction": 220 },
+          { "speed": 0.6, "direction": 110 },
+          { "speed": 2.1, "direction": 190 },
+          { "speed": 3.8, "direction": 350 },
+          { "speed": 5.0, "direction": 40 },
+          { "speed": 2.6, "direction": 80 },
+          { "speed": 5.3, "direction": 140 },
+          { "speed": 3.2, "direction": 300 },
+          { "speed": 1.4, "direction": 160 },
+          { "speed": 5.7, "direction": 270 },
+          { "speed": 2.0, "direction": 30 },
+          { "speed": 1.1, "direction": 50 },
+          { "speed": 4.2, "direction": 200 },
+          { "speed": 0.8, "direction": 360 },
+          { "speed": 2.3, "direction": 120 },
+          { "speed": 3.0, "direction": 90 },
+          { "speed": 4.8, "direction": 260 },
+          { "speed": 0.5, "direction": 300 },
+          { "speed": 5.9, "direction": 15 },
+          { "speed": 3.5, "direction": 170 },
+          { "speed": 2.2, "direction": 320 },
+          { "speed": 2.8, "direction": 240 },
+          { "speed": 6.1, "direction": 360 }
+        ];
+       
+        if (polar1) {
+          const existingInstance = echarts.getInstanceByDom(polar1);
+          if (existingInstance) {
+            existingInstance.dispose();
+          }
+          const windRoseChart1 = echarts.init(polar1);
+       
+          const directionLabels = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+      const speedCategories = ['<0.5 m/s', '0.5-2 m/s', '2-4 m/s', '4-6 m/s', '6-8 m/s', '>8 m/s'] as const;
+       
+      // Type for speed categories
+      type SpeedCategory = typeof speedCategories[number];
+       
+      // Type for direction bins with each speed category as a key
+      type DirectionBin = Record<SpeedCategory, number>;
+       
+      // Function to bin speeds
+      function categorizeSpeed(speed: number): SpeedCategory {
+          if (speed < 0.5) return '<0.5 m/s';
+          if (speed < 2) return '0.5-2 m/s';
+          if (speed < 4) return '2-4 m/s';
+          if (speed < 6) return '4-6 m/s';
+          if (speed < 8) return '6-8 m/s';
+          return '>8 m/s';
+      }
+       
+      // Initialize bins
+      const dataBins:  DirectionBin[] = directionLabels.map(() => ({
+          '<0.5 m/s': 0,
+          '0.5-2 m/s': 0,
+          '2-4 m/s': 0,
+          '4-6 m/s': 0,
+          '6-8 m/s': 0,
+          '>8 m/s': 0
+      }));
+       
+      // Map directions to labels and fill dataBins with counts
+      sampleData4.forEach(({ speed, direction }) => {
+          const directionIndex = Math.round(direction / 22.5) % 16;
+          const speedCategory = categorizeSpeed(speed);
+          dataBins[directionIndex][speedCategory] += 1;
+      });
+       
+      // Extract data for each speed category to use in series
+      const seriesData = speedCategories.map(speedCategory => ({
+          name: speedCategory,
+          type: 'bar',
+          stack: 'wind-speed',
+          coordinateSystem: 'polar',
+          data: dataBins.map(bin => bin[speedCategory])
+      }));
+       
+      // Set up the chart options
+      const option = {
+          title: {
+              text: 'Wind Rose for Sample Data',
+              left: 'center'
+          },
+          legend: {
+            data: speedCategories,
+            right: 10,
+            orient: 'vertical',  // Arrange items vertically
+            top: 'center'        // Center vertically on the right side
+        },
+          polar: {},
+          angleAxis: {
+              type: 'category',
+              data: directionLabels,
+              boundaryGap: true,
+              startAngle: 100,
+              splitArea: {
+                show: true,
+                areaStyle: {
+                    color: ['rgba(255, 255, 255, 0.1)', 'rgba(200, 200, 200, 0.1)']
+                }
+            },
+             splitLine: {
+                  show: true,
+                  lineStyle: {
+                      color: '#ddd',
+                      type: 'solid'
+                  }
+              }
+          },
+          radiusAxis: {
+              min: 0,
+              axisLabel: {
+                  formatter: '{value}'
+              }
+          },
+          tooltip: {
+              trigger: 'item',
+              formatter: '{a}: {c}'
+          },
+          series: seriesData
+      };
+       
+      // Render the chart and handle resizing
+      windRoseChart1.setOption(option);
+      console.log('dataBins:', dataBins);
+      console.log('seriesData:', seriesData);
+      console.table(dataBins);
+       
+      this.loading = false;
+      window.addEventListener('resize', () => windRoseChart1.resize());
+      } else {
+      console.error("Element with id 'rose-plot' not found");
+      this.loading = false;
+      }
       }
       
 }    
