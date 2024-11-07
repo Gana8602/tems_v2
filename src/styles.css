@@ -17,6 +17,8 @@
   --main-text:#ffffff;
   --radio-selected-text:black;
   --drop-text:white ;
+  --secbackground-color: black;
+  /* --button-text:black; */
 }
 
 /* Additional theme example */
@@ -29,6 +31,7 @@
   --main-text:#000000;
   --radio-selected-text:white;
   --drop-text:white;
+  --secbackground-color: #f2f2f2;
 }
 [data-theme="blue"]{
   --primary-color: #3498db;
@@ -39,6 +42,7 @@
   --main-text:#000000;
   --radio-selected-text:white;
   --drop-text:white;
+  --secbackground-color: #f2f2f2;
 }
 
 *{

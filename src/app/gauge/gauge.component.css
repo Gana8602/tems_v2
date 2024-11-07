@@ -1,4 +1,17 @@
 /* .gauge-3{
-    margin-top: 20px;
-    padding-top: 20px;
+   height: 100%;
+   width: 100%;
 } */
+
+.guages{
+    height: 230px;
+    width: 250px;
+}
+
+@media (max-width:1300px) {
+    .guages{
+        height: 220px;
+        width: 220px;
+    }
+    
+}

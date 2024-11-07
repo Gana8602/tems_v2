@@ -8,6 +8,7 @@ import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource, XYZ } from 'ol/source';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
+// import { PointerEvent } from 'ol';
 import { fromLonLat } from 'ol/proj';
 import { Point, Circle, LineString } from 'ol/geom';
 import { LayoutComponent } from '../layout/layout.component';
@@ -17,6 +18,7 @@ import { ConfigDataService } from '../config-data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { config } from 'process';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -53,6 +55,7 @@ export class HomeComponent implements OnInit {
   trackpath1:[number, number][]=[this.center];
   trackpath2:[number, number][]=[this.buoy2];
   showTrackPath: boolean = false;
+
 
  
   mapUrl = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
@@ -193,7 +196,7 @@ coordassign(configs: StationConfigs[]): boolean {
 
 
 
-  constructor(private layout: LayoutComponent, private data:ConfigDataService) {}
+  constructor(private layout: LayoutComponent, private data:ConfigDataService, private router: Router) {}
   
 
 
@@ -213,9 +216,9 @@ coordassign(configs: StationConfigs[]): boolean {
         this.createMarker(this.livelocationbuoy1, this.stationName1, vectorSource);
         this.createMarker(this.livelocationbuoy2, this.stationName2, vectorSource);
         this.createCircle(this.livelocationbuoy1, this.radius, 'red', vectorSource);
-        this.createCircle(this.buoy2, this.radius, 'red', vectorSource);
+        this.createCircle(this.livelocationbuoy2, this.radius, 'red', vectorSource);
         this.createCircle(this.livelocationbuoy1, this.wrange, 'yellow', vectorSource);
-        this.createCircle(this.buoy2, this.wrange, 'yellow', vectorSource);
+        this.createCircle(this.livelocationbuoy2, this.wrange, 'yellow', vectorSource);
        
         this.map = new Map({
           view: new View({
@@ -238,11 +241,30 @@ coordassign(configs: StationConfigs[]): boolean {
             if (feature instanceof Feature) {
               const name = feature.get('name');
               if (name) {
-               
+                // this.router.navigate(['/base', `Dashboard_${name}`]);
                 this.layout.selectedBuoy = name;
                 // this.layout.sensors();
+                //  this.router.navigate(['/base', `Dashboard_${name}`]);
                 this.layout.page = 'Dashboard';
+               
+                
+                
+                
+                
               }
+            }
+          });
+        });
+        this.map.getViewport().addEventListener('pointermove', (event) => {
+          const pixel = this.map.getEventPixel(event);
+        
+          // Reset cursor by default
+          this.map.getTargetElement().style.cursor = '';
+        
+          // Check if a feature exists at the pixel where the pointer is hovering
+          this.map.forEachFeatureAtPixel(pixel, (feature) => {
+            if (feature instanceof Feature && feature.get('name')) { // 'name' or any unique property of marker
+              this.map.getTargetElement().style.cursor = 'pointer';
             }
           });
         });

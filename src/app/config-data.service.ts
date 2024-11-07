@@ -9,13 +9,13 @@ import { Config, CurrentUser, SensorData, sensorLiveData, StationConfigs } from 
 export class ConfigDataService {
   CurrentUser!:CurrentUser;
 
-  private apiUrl = 'http://192.168.0.100:3000/api/';
+  private apiUrl = 'http://192.168.0.115:3000/api/';
   constructor(private http: HttpClient) { }
   getStationNames(): Observable<StationConfigs[]> {
     return this.http.get<StationConfigs[]>(`${this.apiUrl}getstationconfig`); // Adjust the endpoint
   }
 
-  // http://192.168.0.100:3000/api/getconfigs
+  // http://192.168.0.115:3000/api/getconfigs
   getsensorConfigs():Observable<Config[]>{
     return this.http.get<Config[]>(`${this.apiUrl}getconfigs`);
   }

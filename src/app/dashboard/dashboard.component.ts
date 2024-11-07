@@ -11,6 +11,7 @@ import { SensorData, Config } from '../../model/config.model';
 import { ConfigDataService } from '../config-data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { cos } from '@amcharts/amcharts4/.internal/core/utils/Math';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 
@@ -59,12 +60,16 @@ export class DashboardComponent {
     @Inject(PLATFORM_ID) private platformId: any,
     private layout: LayoutComponent,
     private cdr: ChangeDetectorRef,
+    private route:ActivatedRoute,
     private data:ConfigDataService
   ) {
     // Check if the code is running in the browser
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 ngOnInit(): void {
+  // this.route.paramMap.subscribe(params => {
+  //   this.layout.page = params.get('page') || 'home';
+  // });
   this.assign()
 }
   // Initialize map only after view has been fully rendered
@@ -76,6 +81,27 @@ ngOnInit(): void {
     
   }
   sensorDatelist:SensorData[]=[];
+
+   calculateResult(existingData: number, newData: string | number): number {
+    // Check if newData is a number without any signs
+    if (typeof newData === 'number') {
+      return existingData + newData;
+    }
+  
+    // If newData is a string, check for "+" or "-" sign
+    if (typeof newData === 'string') {
+      if (newData.startsWith('-')) {
+        return existingData - parseFloat(newData); // Subtract if it has "-"
+      } else if (newData.startsWith('+')) {
+        return existingData + parseFloat(newData); // Add if it has "+"
+      } else {
+        return existingData + parseFloat(newData); // No sign means add
+      }
+    }
+  
+    // In case of an unexpected input, return the existingData
+    return existingData;
+  }
   assign(){
     
     this.tide_unit = this.layout.configs[0].unit;
@@ -97,11 +123,12 @@ ngOnInit(): void {
 
   } 
   fetch(){
-    
+    const num = this.calculateResult(this.sensorDatelist[1].S1_RelativeWaterLevel, this.layout.configs[0].value);
+    console.log("tideOffset==", num);
     if(this.sensorDatelist[0].S1_RelativeWaterLevel !=null){
-      this.tide= this.sensorDatelist[0].S1_RelativeWaterLevel;
+      this.tide= this.calculateResult(this.sensorDatelist[0].S1_RelativeWaterLevel, this.layout.configs[0].value);
     }else{
-      this.tide= this.sensorDatelist[1].S1_RelativeWaterLevel;
+      this.tide= this.calculateResult(this.sensorDatelist[1].S1_RelativeWaterLevel, this.layout.configs[0].value);
     }
     this.battery = parseFloat(this.sensorDatelist[0].Battery_Voltage);
     console.log(this.sensorDatelist[0].Battery_Voltage

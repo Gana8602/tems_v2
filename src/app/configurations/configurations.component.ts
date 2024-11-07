@@ -39,7 +39,7 @@
     // tide:number = 0;
     // battery:number = 12.3;
     stations:StationConfigs[]=[];
-    tideOffset:number = 0;
+    tideOffset!:number;
     belowwarning: number = 0;
     abovewarning:number = 0;
     belowdanger:number = 0;
@@ -114,12 +114,15 @@
     this.abovewarning = parseFloat(this.sensor[2].above_warning);
     this.belowdanger=parseFloat(this.sensor[2].below_danger);
     this.abovedanger=parseFloat(this.staion.configs[2].above_danger);
+    console.log(this.tideOffset, this.selectedUnit, this.selectedcurrentUnit, 
+      this.belowdanger,this.abovedanger, this.belowwarning, this.abovewarning
+    );
     
     }
     // Inside your ConfigurationsComponent class
     warningCircleStyle = new Style({
         stroke: new Stroke({
-            color: 'red',
+            color: 'yellow',
             width: 2,
         }),
         fill: new Fill({
@@ -129,7 +132,7 @@
     
     dangerCircleStyle = new Style({
         stroke: new Stroke({
-            color: 'yellow',
+            color: 'red',
             width: 2,
         }),
         fill: new Fill({
@@ -165,6 +168,12 @@
 
     this.data.getsensorConfigs().subscribe(sensor=>{
       this.sensor = sensor;
+      console.log("Sensors==", this.sensor);
+      if(this.sensor != null){
+        this.assign();
+
+      }
+
     })
 
   })
@@ -227,7 +236,7 @@
       geometry: new Circle(this.center, this.Warning),
     });
     circleFeature.setStyle(new Style({
-      stroke: new Stroke({ color: 'red', width: 2 }),
+      stroke: new Stroke({ color: 'yellow', width: 2 }),
       fill: new Fill({ color: 'rgba(0, 0, 255, 0.1)' }),
     }));
   
@@ -235,7 +244,7 @@
       geometry: new Circle(this.center, this.Danger),
     });
     circleFeature2.setStyle(new Style({
-      stroke: new Stroke({ color: 'yellow', width: 2 }),
+      stroke: new Stroke({ color: 'red', width: 2 }),
       fill: new Fill({ color: 'rgba(0, 0, 255, 0.1)' }),
     }));
   
@@ -248,6 +257,7 @@
   }
   
   RenderMap2(): void {
+    
     // Same logic as RenderMap for `this.map2`
     if (!this.map2) {
       this.map2 = new Map({
@@ -277,7 +287,7 @@
       geometry: new Circle(this.center, this.Warning),
     });
     circleFeature.setStyle(new Style({
-      stroke: new Stroke({ color: 'red', width: 2 }),
+      stroke: new Stroke({ color: 'yellow', width: 2 }),
       fill: new Fill({ color: 'rgba(0, 0, 255, 0.1)' }),
     }));
   
@@ -285,7 +295,7 @@
       geometry: new Circle(this.center, this.Danger),
     });
     circleFeature2.setStyle(new Style({
-      stroke: new Stroke({ color: 'yellow', width: 2 }),
+      stroke: new Stroke({ color: 'red', width: 2 }),
       fill: new Fill({ color: 'rgba(0, 0, 255, 0.1)' }),
     }));
   
@@ -334,7 +344,7 @@
           console.log(data);
       }
 
-      this.http.put('http://192.168.0.100:3000/api/config', data).subscribe({
+      this.http.put('http://192.168.0.115:3000/api/config', data).subscribe({
         next: (res) => {
           console.log(res);
         }
@@ -377,7 +387,7 @@
         longitude_sec: this.langsec,
       }
     }
-    this.http.put('http://192.168.0.100:3000/api/updatestationconfig',stationConfigData).subscribe(
+    this.http.put('http://192.168.0.115:3000/api/updatestationconfig',stationConfigData).subscribe(
       {
         next: (res) => {
           console.log('response station config ==', res);
