@@ -11,6 +11,7 @@ export interface Config {
   }
 
   export interface StationConfigs{
+    station:string;
     danger_circle:number;
     geo_format: string;
     id: number;
@@ -72,4 +73,9 @@ export interface Config {
     name: string,
     email: string,
     role: string,
+  }
+
+  export interface images{
+    image1:string,
+    iamge2:string
   }

@@ -13,7 +13,7 @@ import { fromLonLat } from 'ol/proj';
 import { Point, Circle, LineString } from 'ol/geom';
 import { LayoutComponent } from '../layout/layout.component';
 import { getDistance, offset } from 'ol/sphere';
-import { SensorData, StationConfigs, SensorData2 } from '../../model/config.model';
+import { SensorData, StationConfigs, SensorData2, images } from '../../model/config.model';
 import { ConfigDataService } from '../config-data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { config } from 'process';
@@ -55,6 +55,8 @@ export class HomeComponent implements OnInit {
   trackpath1:[number, number][]=[this.center];
   trackpath2:[number, number][]=[this.buoy2];
   showTrackPath: boolean = false;
+  imageMarker1!:string;
+  imageMarker2!:string;
 
 
  
@@ -98,51 +100,48 @@ updateMapLayer() {
   }
 }
 
+
 ngOnInit(): void {
   console.log("init called");
   forkJoin([
-    this.data.getSensorLiveData('2024-01-01', '2024-10-30'),
+    this.data.getSensorLiveData('2024-01-01', '2024-11-09'),
     this.data.getStationNames()
   ]).subscribe(([sensors, configs]) => {
+    console.log("Data from home: ",sensors);
     this.sensorsliveData = sensors.buoy1;
     this.sensorsliveData2 = sensors.buoy2;
 
     this.livelocationbuoy1 = fromLonLat([this.sensorsliveData[0].LONG, this.sensorsliveData[0].LAT]) as [number, number];
     this.livelocationbuoy2 = fromLonLat([this.sensorsliveData2[0].LONG, this.sensorsliveData2[0].LAT]) as [number, number];
-
+    // this.buoy2 = fromLonLat([configs[1].longitude_dd ,configs[1].latitude_dd]) as [number, number];
+    // console.log(`buoy2:== ${configs[1].longitude_dd}`,`${configs[1].latitude_dd}`, this.buoy2, this.livelocationbuoy1);
     this.bouy1wrange = configs[0].warning_circle;
     this.buoy2wrange = configs[1].warning_circle;
     this.buoy1danger = configs[0].danger_circle;
     this.buoy2danger = configs[1].danger_circle;
-
+// console.log(this.sensorsliveData[0].Date, this.sensorsliveData[0].Time);
     const status = this.coordassign(configs);
-    if (status && !this.map) {
+    const StatusCheck1 = this.isWithin20Minutes(this.sensorsliveData[0].Date, this.sensorsliveData[0].Time);
+    const statusCheck2 = this.isWithin20Minutes(this.sensorsliveData2[0].Date, this.sensorsliveData2[0].Time);
+    this.imageMarker1 = StatusCheck1 ? '../../assets/buoy.png' : '../../assets/buoy_offline.png';
+    this.imageMarker2 = statusCheck2 ? '../../assets/buoy.png' : '../../assets/buoy_offline.png';
+    this.layout.image1 = this.imageMarker1;
+    this.layout.image2 = this.imageMarker2;
+    
+    console.log(StatusCheck1 ? "oookkkayy" : "not ok");
+    console.log(statusCheck2 ? "oookkkayy" : "not ok");
+    if(this.imageMarker1 != null && this.imageMarker2 !=null){
+if (status && !this.map) {
+      
+
       this.MapInit();
     }
+    }
+    
   });
 }
 
-traveledPath: [number, number][] = [
-  // this.livelocationbuoy1,
-  fromLonLat([72.808716, 18.999682]) as [number, number],
-  fromLonLat([72.809211, 18.997958]) as [number, number],
-  fromLonLat([72.809304, 18.997888]) as [number, number],
 
-  fromLonLat([72.809203, 18.997802]) as [number, number],
-  fromLonLat([72.809050, 18.997865]) as [number, number],
-  fromLonLat([72.808994, 18.997960]) as [number, number],
-  fromLonLat([72.809103, 18.998111]) as [number, number],
-  // fromLonLat([80.199560, 14.589617]) as [number, number],
-];
-
-traveledPath2: [number, number][] = [
-  // this.livelocationbuoy2,
-  fromLonLat([80.178118, 14.607975]) as [number, number],
-  fromLonLat([80.185170, 14.619721]) as [number, number],
-  fromLonLat([80.182909, 14.617035]) as [number, number],
-  fromLonLat([80.191029, 14.616439]) as [number, number],
-  fromLonLat([80.194832, 14.621610]) as [number, number],
-];
 
 
 coordassign(configs: StationConfigs[]): boolean {
@@ -170,8 +169,8 @@ coordassign(configs: StationConfigs[]): boolean {
       ]) as [number, number];
     } else if (config.geo_format === "DD") {
       return fromLonLat([
-        config.longitude_deg,
-        config.latitude_deg
+        config.longitude_dd,
+        config.latitude_dd
       ]) as [number, number];
     } else {
       console.error("Unknown geo_format encountered:", config.geo_format);
@@ -180,18 +179,41 @@ coordassign(configs: StationConfigs[]): boolean {
   };
 
   // Assign buoy locations
-  this.livelocationbuoy1 = assignLocation(configs[0]);
+  this.center = assignLocation(configs[0]);
   this.buoy2 = assignLocation(configs[1]);
 
   // Log buoy locations for debugging
-  console.log("buoy 1 location:", this.livelocationbuoy1);
-  console.log("buoy 2 location:", this.buoy2);
+  // console.log("buoy 1 location:", this.livelocationbuoy1);
+  // console.log("buoy 2 location:", this.buoy2);
 
   // If all went well, return true
   return true;
 }
 
 
+isWithin20Minutes(dateTimeString: string, timeString: string): boolean {
+  // Extract date and time parts from the provided ISO strings
+  const date = new Date(dateTimeString).toISOString().split("T")[0];
+  const timee = new Date(timeString);
+  const time = timee.toISOString().substr(11, 8);
+
+  // Combine date and time into a single string without "Z" to use local time
+  const combinedDateTime = new Date(`${date}T${time}`);
+
+  // Get the current date and time
+  const currentDateTime = new Date();
+  console.log("current DAte", currentDateTime);
+  console.log("api date", combinedDateTime);
+
+  // Calculate the difference in milliseconds
+  const diffInMs = currentDateTime.getTime() - combinedDateTime.getTime();
+  console.log("minutes", diffInMs/(1000 * 60));
+  // Convert the difference to minutes
+  const diffInMinutes = diffInMs / (1000 * 60);
+
+  // Check if the difference is within 20 minutes
+  return diffInMinutes <= 25;
+}
 
 
 
@@ -213,17 +235,17 @@ coordassign(configs: StationConfigs[]): boolean {
           source: vectorSource,
         });
         
-        this.createMarker(this.livelocationbuoy1, this.stationName1, vectorSource);
-        this.createMarker(this.livelocationbuoy2, this.stationName2, vectorSource);
-        this.createCircle(this.livelocationbuoy1, this.radius, 'red', vectorSource);
-        this.createCircle(this.livelocationbuoy2, this.radius, 'red', vectorSource);
-        this.createCircle(this.livelocationbuoy1, this.wrange, 'yellow', vectorSource);
-        this.createCircle(this.livelocationbuoy2, this.wrange, 'yellow', vectorSource);
+        this.createMarker(this.livelocationbuoy1, this.stationName1, vectorSource, this.imageMarker1);
+        this.createMarker(this.livelocationbuoy2, this.stationName2, vectorSource, this.imageMarker2);
+        this.createCircle(this.center, this.buoy1danger, 'red', vectorSource);
+        this.createCircle(this.buoy2, this.buoy2danger, 'red', vectorSource);
+        this.createCircle(this.center, this.bouy1wrange, 'yellow', vectorSource);
+        this.createCircle(this.buoy2, this.buoy2wrange, 'yellow', vectorSource);
        
         this.map = new Map({
           view: new View({
-            center: this.livelocationbuoy1,
-            zoom: 15,
+            center: this.buoy2,
+            zoom: 17,
           }),
           layers: [
             new TileLayer({
@@ -268,8 +290,7 @@ coordassign(configs: StationConfigs[]): boolean {
             }
           });
         });
-        this.addPathLines(this.traveledPath);
-        this.addPathLines(this.traveledPath2);
+        
    
       }
     }, 2);
@@ -278,28 +299,12 @@ coordassign(configs: StationConfigs[]): boolean {
     
   }
  
-  addPathLines(coords: [number, number][]) {
-    const lineString = new Feature({
-      geometry: new LineString(coords),
-    });
 
-    const lineStyle = new Style({
-      stroke: new Stroke({
-        color: 'blue',
-        width: 2,
-      }),
-    });
-
-    lineString.setStyle(lineStyle);
-    this.vectorLayer.getSource()?.addFeature(lineString);
-  }
-
-
-  createMarker(coordinate: [number, number], name: string, vectorSource: VectorSource) {
+  createMarker(coordinate: [number, number], name: string, vectorSource: VectorSource, img:string) {
     const markerStyle = new Style({
       image: new Icon({
-        src: '../../assets/buoy.png',
-        scale: 0.04,
+        src: img,
+        scale: 0.06,
       }),
       text: new Text({
         font: '12px Calibri,sans-serif',
@@ -347,24 +352,50 @@ coordassign(configs: StationConfigs[]): boolean {
   }
 
   // Adding flags to prevent multiple identical logs
-  lastBuoyRangeState ='';
-  lastWarningState = '';
-  
+  buoy1range ='';
+  buoy2range = '';
+   formatDistance(distancee:number) {
+    return distancee.toFixed(14); // Formats to 14 decimal places
+}
   checkBuoyRange(markerCoords: [number, number]): void {
+    console.log(this.center, markerCoords);
+    const ddd = this.formatDistance(this.buoy1danger)
     const distance = getDistance(this.center, markerCoords);
-    const newState = distance > this.radius ? 'Buoy 1 missing or out of range' : 'Buoy 1 within range';
-    if (newState !== this.lastBuoyRangeState) {
-      
-      this.lastBuoyRangeState = newState;
+    console.log("distance 1: ",distance , this.bouy1wrange, this.buoy1danger, ddd);
+    if (distance > this.bouy1wrange && distance < this.buoy1danger) {
+      this.buoy1range = `CWPRS01 Crossed Out of Warning Range`;
+    } else if (distance > this.buoy1danger) {
+      this.buoy1range = `CWPRS01 Crossed Danger Range`;
+    } else {
+      this.buoy1range = `Buoy is within range`;
     }
+    const newState = distance > this.radius ? 'Buoy 1 missing or out of range' : 'Buoy 1 within range';
+    // if (newState !== this.lastBuoyRangeState) {
+      
+    //   this.lastBuoyRangeState = newState;
+    // }
   }
 
   checkBuoyRange2(markerCoords: [number, number]): void {
-    const distance = getDistance(this.center, markerCoords);
+    const distance = getDistance(this.buoy2, markerCoords);
+    // console.log("distance 2: ",distance, this.buoy2wrange, this.buoy2danger)
     const newWarningState = distance > this.wrange ? 'Buoy 2 far beyond range' : 'Buoy 2 within warning range';
-    if (newWarningState !== this.lastWarningState) {
-      
-      this.lastWarningState = newWarningState;
+    if(distance>this.buoy2wrange && distance < this.buoy2danger){
+      this.buoy2range = `CWPRS02 Crossed Out of Warning Range`;
+    }else if(distance > this.buoy2danger){
+      this.buoy2range = `CWPRS02 Crossed Danger Range`;
     }
+    // if (newWarningState !== this.lastWarningState) {
+      
+    //   this.lastWarningState = newWarningState;
+    // }
+
+
+
+
   }
+
+
+
+
 }

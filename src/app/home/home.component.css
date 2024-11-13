@@ -69,6 +69,13 @@ footer {
     border: 2px solid black;
     border-radius: 10px;
 }
+::ng-deep .ol-zoom{
+    top: rem !important;
+    z-index: 1000;
+    bottom: 10px;
+    left: 60px;
+    margin-left: 40px !important;
+}
 
 .floating-image2 {
     position: fixed;
@@ -152,8 +159,8 @@ span{
     /* bottom: 0px; */
     top: 10px;
     right: 5px;
-    width: 280px;
-    height: 20px;
+    width: 300px;
+    height: 40px;
     background-color: #ee4c4cd0;
     opacity: 0.6;
     display: flex;
@@ -166,16 +173,16 @@ span{
 
 @keyframes blinker {
   50% {
-    opacity: 0;
+    opacity: 0.4;
   }
 }
 .bouy2{
     position: fixed;
     /* bottom: 0px; */
-    top: 40px;
+    top: 60px;
     right: 5px;
-    width: 280px;
-    height: 20px;
+    width: 300px;
+    height: 40px;
     background-color: #ee4c4cd0;
     opacity: 0.6;
     display: flex;
@@ -183,7 +190,7 @@ span{
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    animation: blinker 3s linear infinite;
+    animation: blinker 2s linear infinite;
 }
 .check{
     position: fixed;

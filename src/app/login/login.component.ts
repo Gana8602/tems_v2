@@ -41,6 +41,7 @@ ngOnInit(): void {
       this.config.CurrentUser = this.currentUser;
       console.log(this.config.CurrentUser);
       localStorage.setItem('loginTime', Date.now().toString());
+      localStorage.setItem('username', this.currentUser.name);
       this.router.navigate(['/base', 'Home']);
       this.toast.success("Logged in Succesfully", 'Access Granted ')
     },
@@ -48,7 +49,7 @@ ngOnInit(): void {
       this.toast.error("Invalid Credentials", 'Access Denied ')
     }
   )
-//     this.http.post('http://192.168.0.115:3000/api/users/login', user).subscribe({
+//     this.http.post('http://192.168.0.109:3000/api/users/login', user).subscribe({
 //       next: (response) => {
 //         console.log(response);
 //         // Navigate to the base route upon successful login

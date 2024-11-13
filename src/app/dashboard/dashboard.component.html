@@ -19,8 +19,10 @@
         </div>
         <h4>Battery Level</h4>
         <div class="dataMain">
-
+            @if(battery!=null){
             <app-battery [batteryLevel]="battery"></app-battery>
+            }
+
             <div class="texts">
 
                 <!-- <p>85 v</p> -->
@@ -140,7 +142,11 @@
         </div>
     </div>
     <div class="section3">
-        <h3>Buoy Location</h3>
+        <div class="tit">
+            <h3>Buoy Location</h3>
+            <h4><span>UTC - </span> {{utc }} || <span> IST - </span> {{time}}</h4>
+        </div>
+
         <div class="mapbox">
             <div id="leaflet-map" style="height: 100%; width: 100%;"></div>
         </div>

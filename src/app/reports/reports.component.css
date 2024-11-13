@@ -1,10 +1,8 @@
 .reports-container{
   margin: 0;
-    padding-left: 6%;
-    width: 100; /* Full width */
-    height: 90vh; /* Full height */
+    padding-left: 98px;
     display: flex; /* Flexbox for layout */
-    flex-direction: row; /* Column direction */
+    flex-direction: row; 
     /* background-color: blue; */
 }
 
@@ -13,17 +11,39 @@
 /* flex: 1.8;  */
 background-color: var(--background-color);
 border-radius: 20px;
-margin: 0px 5px 0px 5px;
+/* margin: 0 2px; */
 padding: 20px;
 position: sticky; 
-width: 20%;
+width: 22%;
 top: 0; 
-height: 100vh;
+min-height: 100vh;
+height: 100%;
 }
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .filterContainer {
+    height: 100%;
+    width: 30%; /* Adjust width for smaller screens */
+  }
+}
+
+@media (max-width: 992px) {
+  .filterContainer {
+    width: 35%;
+    height: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .filterContainer {
+    height: 40%;/* Full width on mobile */
+    height: 100%; /* Adjust height to content */
+  }
+}
+
 .filterContainer h5{
   color: var(--main-text);
-  /* font-size: 28px; */
-  /* font-weight: 600; */
   padding-bottom: 30px;
 }
  .stationsselect{
@@ -34,22 +54,22 @@ height: 100vh;
   justify-content: space-evenly;
   align-items: center;
 }
-.cwprs1, .cwprs2{
-  height: 100px;
-  width: 100px;
+.CWPRS01, .CWPRS02{
+  height: 80px;
+  width: 80px;
   border-radius: 10px;
   background-color: black;
   box-shadow:  0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   cursor: pointer;
   transition: background-color 0.3s color 0.3s;
 }
 svg{
-  height: 50px;
-  width: 50px;  
+  height: 40px;
+  width: 40px;  
 }
 .stationsselect h1{
   color: rgba(255, 255, 255, 0.775);
@@ -63,9 +83,10 @@ svg{
 
 /* filter tide , filter ADCP */
 .stations{
-  padding: 60px 20px 0px 20px; 
-  height: 100px;
-  width: 100%;
+  padding-top: 10%;
+   /* padding: 30px 20px 0px 20px;  */
+  /*height: 100px;
+  width: 100%; */
   color: var(--main-text);
   display: flex;
   flex-direction: column;
@@ -82,35 +103,113 @@ svg{
 .field {
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
-  width: 100%;
-  /* height: 40px; */
+  /* margin-bottom: 10px; */
 }
 
 .field label {
-  margin-bottom: 5px;
+  margin-bottom: 2%;
   /* font-size: 18px; */
   color: var(--main-text);
-  padding-top: 10px;
+  padding-top: 6%;
 }
+
+::ng-deep .dateDrop .p-dropdown {
+  height: 30px;
+  width: 100%;
+  /* margin-left: 10px; */
+  /* margin-top: 5px; */
+  margin-bottom: 5%;
+  /* font-size: 15px; */
+  /* font-weight: bold; */
+  align-items: center;
+  color: var(--drop-text);
+  border-width: 2px;
+  /* border-color: rgba(64, 62, 62, 0.678); */
+  border-radius: 10px;
+  background-color: rgba(103, 100, 100, 0.678);
+}
+
+/* Additional targeting for dropdown icon and inner elements */
+::ng-deep .dateDrop .p-dropdown-label {
+  color: var(--drop-text);
+  padding-left: 10px;
+}
+
+::ng-deep .dateDrop .p-dropdown-panel {
+  border-width: 2px;
+  border-color: rgba(64, 62, 62, 0.678);
+  border-radius: 10px;
+}
+
+::ng-deep .dateDrop .p-dropdown-item {
+  font-size: 15px;
+  color: var(--drop-text);
+  font-weight: bold;
+  padding: 8px 10px;
+  background-color: rgba(103, 100, 100, 0.678); /* Option background */
+}
+
+/* Hover effect for dropdown items */
+::ng-deep .dateDrop .p-dropdown-item:hover {
+  background-color: #fff; /* Highlighted option background */
+  color: black;
+}
+
+::ng-deep .dateDrop .p-dropdown-trigger {
+  color: white;
+}
+
+
+/* ::ng-deep .dateDrop .p-dropdown-trigger .pi {
+  color: white;
+} */
+
 
 .full-width{
   display: flex;
   flex-direction: column;
- 
   width: 100%;
+  margin-bottom: 4%;
 }
 
 .full-width label{
-  margin-bottom: 5px;
+  margin-bottom: 2%;
   /* font-size: 18px; */
   color: var(--main-text);
-  padding-top: 10px;
+  padding-top: 5%;
 }
-.full-width p-calendar{
-  background-color: #727272;
+
+/* ::ng-deep .p-calendar .full-width{
   border-radius: 7px;
+  background-color: rgba(170, 20, 20, 0.678) !important;
+} */
+
+::ng-deep .custom-calendar .p-inputtext  {
+  height: 30px;
+  width: 100%;
+  background-color:  rgba(103, 100, 100, 0.678); /* Adjust the color as needed */
+  border-radius: 10px;
+  color: #fff !important;
+  border: none;
 }
+
+::ng-deep .custom-calendar .p-inputtext:focus {
+  outline: none;
+  border-color: white;
+}
+
+::ng-deep .custom-calendar .p-datepicker-monthpicker .p-monthpicker-month {
+  width: 50px; 
+  height: 40px; 
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+
+
+
+
 
 
 
@@ -124,22 +223,43 @@ svg{
 /* Flex-2 */
 .tableContainer {  
   /* flex: 8.2; */
-  width: 80%;
+  width: 100%;
+  max-width: 98%;
+  /* height: auto;  */
+  overflow-y: auto; 
   background-color:var(--background-color); /* Light grey background */
+  color: var(--main-text);
   border-radius: 20px;
   margin: 0px 10px 0px 10px;
   padding: 20px;
-  height: 100vh;
 } 
+
+@media (max-width: 1200px) {
+  .tableContainer {
+    width: 80%; /* Adjust width for smaller screens */
+  }
+}
+
+@media (max-width: 992px) {
+  .tableContainer {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .tableContainer {
+    width: 500px;
+  }
+}
 
  label {
   margin-bottom: 10px;
   /* font-size: 28px;     */
-  color: white;
+  /* color: white; */
 }
-.p-paginator-current .ng-star-inserted{
+/* .p-paginator-current .ng-star-inserted{
   color: var(--main-text);
-}
+} */
 
 
 /* Table */
@@ -150,18 +270,19 @@ color: #fff !important;
 }
 
 ::ng-deep .p-datatable-header {
-background-color: var(--background-color) !important;
+background-color: var(--table) !important;
 color: #fff !important;
-border-color: #1ee1ff;
-box-shadow: 1px 1px 10px grey;
+/* border-color: #1ee1ff; */
+box-shadow: var(--box-shadow);
 border-radius: 20px;
-padding: 20px;
+padding: 20px 20px 10px 20px;
 margin: 30px 0px 30px 0px ;
 }
 
 /* Caption Styling */
 .caption {
 display: flex;
+/* flex-wrap: wrap; */
 justify-content: space-between;
 color: #fff;
 gap: 10;
@@ -220,34 +341,55 @@ color: transparent;
 color: transparent;
 }
 
+::ng-deep .highlight {
+  background-color: yellow;
+  color: red;
+  font-weight: bold;
+}
 
 /* Button Styling */
-::ng-deep .p-button {
-background-color: #ededed !important; /* Grey button background */
-color: #000 !important; /* White text */
+/* ::ng-deep .p-button {
+background-color: #ededed !important;
+color: #000 !important; 
 }
 
 ::ng-deep .p-button:hover {
-background-color: #fff !important; /* Lighter grey on hover */
-}
+background-color: #fff !important;
+} */
 
 
 /* Apply styles to PrimeNG table components using ::ng-deep */
 ::ng-deep .p-datatable-thead th {
-background-color: var(--background-color) !important; /* Black header background */
+background-color: var(--table) !important; /* Black header background */
 color: var(--main-text) !important; /* White text */
 border-bottom: 2px solid #1ee1ff;
-text-align: left;
-padding: 15px;
+/* border-top: 2px solid black; */
+/* text-align: center; */
+padding: 20px 15px;
+/* width: 17% !important; */
 align-content: center;
 }
 
+/* Apply border-radius to the first column */
+::ng-deep .p-datatable-thead th:first-child {
+  border-top-left-radius: 20px;
+  /* border-left: 2px solid black; */
+}
+
+/* Apply border-radius to the last column */
+::ng-deep .p-datatable-thead th:last-child {
+  border-top-right-radius: 20px;
+  /* border-right: 2px solid black; */
+}
+
 ::ng-deep .p-datatable-tbody td {
-background-color: var(--background-color) !important; /* Black background for rows */
+background-color: var(--table) !important; /* Black background for rows */
+/* box-shadow: var(--box-shadow); */
 color: var(--main-text) !important; /* White text */
 border-bottom: none; /* Light grey border for table rows */
-text-align: left;
-padding: 9px;
+text-align: center;
+padding: 20px 0px;
+min-width: 100px;
 }
 
 /* Styling Specific Data Values */
@@ -283,9 +425,10 @@ background-color: #e90b0b !important;
 
 /* Paginator Styling */
 ::ng-deep .p-paginator {
-background-color: var(--background-color) !important; /* Black background for paginator */
-color: var(--main-text) !important; /* White text for paginator */
+background-color: var(--table) !important; /* Black background for paginator */
+color: var(--main-text) !important; 
 border-color: #1ee1ff;
+box-shadow: var(--box-shadow2);
 border-radius: 0px 0px 20px 20px;
 padding: 30px 20px 40px 20px;
 /* margin: 0px 0px 30px 0px ; */
@@ -298,15 +441,36 @@ padding: 30px 20px 40px 20px;
 ::ng-deep .p-paginator .p-paginator-prev, 
 ::ng-deep .p-paginator .p-paginator-next, 
 ::ng-deep .p-paginator .p-paginator-last {
-background-color: #555 !important; /* Button background */
+background-color: rgba(103, 100, 100, 0.678) !important; /* Button background */
 color: #fff !important; /* White text */
 margin: 2px;
+border-radius: 10px;
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page {
+  color: var(--main-text) !important; /* Grey color for page numbers */
+  transition: color 0.3s, background-color 0.3s;
+  border-radius: 10px;
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page:hover {
+  background-color: var(--main-text) !important; /* Darker background on hover */
+  color: var(--wholebg) !important; /* White text on hover */
+  border-radius: 10px;
 }
 
 ::ng-deep .p-paginator .p-paginator-pages .p-highlight {
-background-color: var(--main-text) !important; /* Highlighted page button */
+background-color: var(--main-text) !important; 
 color: var(--wholebg) !important;
+border-radius: 10px;
 }
+
+::ng-deep .p-paginator .p-paginator-current {
+  color: var(--main-text) !important; /* Grey color for current page report text */
+}
+
+
+
 
 /* Table */
 
@@ -317,19 +481,18 @@ color: var(--wholebg) !important;
 
 .submit{
   height: 40px;
-  width: 130px;
+  width: 100%;
+  max-width: 130px;
   border-radius: 15px;
   background-color: rgb(0, 255, 255);
   color: rgb(0, 0, 0);
-  /* font-size: 20px; */
-  margin-top: 60px;
-  margin-left: 65px;
-  
+  margin: auto;
+  margin-top: 8%;
 }
 
-::ng-deep .fieldd .p-dropdown {
+::ng-deep .export .p-dropdown {
   height: 40px;
-  width: 200px;
+  width: 35%;
   /* margin-left: 10px; */
   margin-top: 5px;
   margin-bottom: 20px;
@@ -344,19 +507,18 @@ color: var(--wholebg) !important;
 }
 
 /* Additional targeting for dropdown icon and inner elements */
-::ng-deep .fieldd .p-dropdown-label {
+::ng-deep .export .p-dropdown-label {
   color: var(--drop-text);
   padding-left: 10px;
 }
 
-::ng-deep .fieldd .p-dropdown-panel {
+::ng-deep .export .p-dropdown-panel {
   border-width: 2px;
   border-color: rgba(64, 62, 62, 0.678);
   border-radius: 10px;
 }
 
-
-::ng-deep .fieldd .p-dropdown-item {
+::ng-deep .export .p-dropdown-item {
   font-size: 15px;
   color: var(--drop-text);
   font-weight: bold;
@@ -365,18 +527,21 @@ color: var(--wholebg) !important;
 }
 
 /* Hover effect for dropdown items */
-::ng-deep .fieldd .p-dropdown-item:hover {
-  background-color: rgba(173, 172, 172, 0.5); /* Highlighted option background */
-  color: #333;
+::ng-deep .export .p-dropdown-item:hover {
+  background-color: #fff; /* Highlighted option background */
+  color: black;
 }
 
+::ng-deep .export .p-dropdown-trigger {
+  color: white;
+}
 
 /*for multi drop */
 /* Main multi-select input field */
 ::ng-deep .multidrop .p-multiselect {
   height: 40px;
   margin-right: 10px;
-  width: 300px;
+  width: 60%;
   align-items: center;
   margin-left: 10px;
   margin-top: 5px;
@@ -385,9 +550,9 @@ color: var(--wholebg) !important;
   font-weight: bold;
   color: var(--drop-text);
   border-width: 2px;
-  border-color: rgba(64, 62, 62, 0.678);
+  border-color: rgba(62, 64, 62, 0.678);
   border-radius: 10px;
-  background-color: rgba(103, 100, 100, 0.678);
+  background-color: rgba(102, 100, 103, 0.678);
 }
 
 /* Chip display for selected items */
@@ -415,8 +580,8 @@ color: var(--wholebg) !important;
 
 /* Hover effect for dropdown items */
 ::ng-deep .multidrop .p-multiselect-item:hover {
-  background-color: rgba(103, 100, 100, 0.678); /* Highlighted option background */
-  color: #333;
+  background-color: #fff; /* Highlighted option background */
+  color: black;
 }
 
 /* Styling for the chip display when items are selected */
@@ -426,16 +591,13 @@ color: var(--wholebg) !important;
   font-weight: bold;
   margin: 3px;
 }
+.contttt{
+  width: 100%;
+  max-width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+}
 
 
- ::ng-deep .p-calendar .full-width{
-  border-radius: 7px;
-  background-color: rgba(103, 100, 100, 0.678) !important;
-}
-.custom-calendar .p-inputtext {
-  background-color: #f0f8ff; /* Adjust the color as needed */
-}
-::ng-deep .custom-calendar .p-inputtext  {
-  background-color:  rgba(103, 100, 100, 0.678); /* Adjust the color as needed */
-  border-radius: 7px;
-}
+
+

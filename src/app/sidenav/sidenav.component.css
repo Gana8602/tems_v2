@@ -199,6 +199,24 @@ img{
   font-size: 18px;
   border-radius: 12px;
 }
+@media(max-height:600px){
+  .sidebar li i{
+    height: 43px;
+    font-size: 12px;
+
+  }
+  .sidebar .nav-list{
+    height: 68%;
+  }
+  .themee{
+    height: 17% !important;
+  }
+  .dark, .light, .blue{
+    height: 20px !important;
+    width: 20px !important;
+  }
+}
+
 .sidebar li.profile{
   position: fixed;
   height: 60px;

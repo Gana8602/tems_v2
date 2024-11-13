@@ -1,21 +1,22 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Config, CurrentUser, SensorData, sensorLiveData, StationConfigs } from '../model/config.model';
+import { Config, CurrentUser, images, SensorData, sensorLiveData, StationConfigs } from '../model/config.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigDataService {
   CurrentUser!:CurrentUser;
+  images!:images;
 
-  private apiUrl = 'http://192.168.0.115:3000/api/';
+  private apiUrl = 'http://192.168.0.109:3000/api/';
   constructor(private http: HttpClient) { }
   getStationNames(): Observable<StationConfigs[]> {
     return this.http.get<StationConfigs[]>(`${this.apiUrl}getstationconfig`); // Adjust the endpoint
   }
 
-  // http://192.168.0.115:3000/api/getconfigs
+  // http://192.168.0.109:3000/api/getconfigs
   getsensorConfigs():Observable<Config[]>{
     return this.http.get<Config[]>(`${this.apiUrl}getconfigs`);
   }

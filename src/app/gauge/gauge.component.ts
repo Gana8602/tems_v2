@@ -13,10 +13,32 @@ export class GaugeComponent implements AfterViewInit, OnChanges {
   @Input() gaugeId!: string;  // Dynamically assigned ID
   @Input() value!: number;
   speedType: string = '';
+  isBig:boolean = true;
+  issBig:boolean = true;
+  fontSize!:number;
+  length!:number;
+  width!:number;
+  distance!:number;
+  margin!:string;
   
-
+ 
+  getScreenSize(){
+  const wid =  window.innerWidth;
+   const hei= window.innerHeight ;
+if(hei <= 700){
+  this.issBig = false;
+}else{
+  this.issBig = true;
+}
+   if(wid <=1300){
+    this.isBig = false;
+   }else{
+    this.isBig = true;
+   }
+  }
   constructor(private lay:LayoutComponent){}
   ngAfterViewInit(): void {
+this.getScreenSize();
     this.data();
     this.initChart();
   }
@@ -31,9 +53,9 @@ console.log(this.speedType);
   }
 
   getColorForValue(value: number): string {
-    if (value >= 0 && value < 12) {
+    if (value >= 0 && value < 1.2) {
       return '#008000';  // Light blue for 0-12
-    } else if (value >= 12 && value < 28) {
+    } else if (value >= 1.2 && value < 2.8) {
       return '#37a2da';  // Blue for 12-28
     } else {
       return '#fd666d';  // Red for above 28
@@ -52,7 +74,7 @@ console.log(this.speedType);
           max: 4,
           axisLine: {
             lineStyle: {
-              width: 10,
+              width: this.isBig? 10 :5,
               color: [
                 [0.3, '#008000'],
                 [0.7, '#37a2da'],
@@ -66,16 +88,16 @@ console.log(this.speedType);
             }
           },
           axisTick: {
-            distance: -9,
-            length: 9,
+            distance:this.isBig?-9: -5,
+            length:this.isBig ?  9:5,
             lineStyle: {
               color: '#fff',
               width: 1
             }
           },
           splitLine: {
-            distance: -10,
-            length: 11,
+            distance:this.isBig ?-10:-4,
+            length: this.isBig ?11: 4,
             lineStyle: {
               color: '#fff',
               width: 4
@@ -84,7 +106,7 @@ console.log(this.speedType);
           axisLabel: {
             color: 'inherit',
             distance: 15,
-            fontSize: 10
+            fontSize:this.isBig? 10:8
           },
           detail: {
             valueAnimation: true,
@@ -92,7 +114,8 @@ console.log(this.speedType);
               return `${value.toFixed(2)} ${this.speedType}`;  // Use value for the gauge
             },
             color: valueColor,
-            fontSize: 18
+            fontSize: 19,
+            offsetCenter: [0, this.issBig?'100%' : '110%'],
           },
           data: [
             {

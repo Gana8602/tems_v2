@@ -4,119 +4,167 @@
         <div class="title">
             <h3>Station Settings</h3>
         </div>
-        <div class="fields">
-            <h3>Station</h3>
-            <select [(ngModel)]="selectedStationType" (change)="stationTypeSelect()">
-                <option value="">--Please choose an option--</option>
-                @for (item of stationTypes; track $index) {
-                <option value="{{item}}">{{item}}</option>
-                }
+        <div class="fielddd">
+            <div class="fields">
 
-            </select>
-            <!-- <p>Tide</p>
-            <input type="text" [(ngModel)]="tide" placeholder="Tide "> -->
-            <!-- <p>Battery Voltage</p> -->
-            <!-- <input type="text" [(ngModel)]="battery" placeholder="Battery Voltage ">-->
-            <h3>Geo Location</h3>
-            <div class="location">
-                <div class="locc">
-                    <div class="radioo">
-                        <!-- <p>Current Unit</p> -->
-                        <div class="unit">
-                            <div [ngClass]="{'selected': selectedcoordinate === 'DD'}" class="meter"
-                                (click)="selectcoordinate('DD')">
-                                <h4>DD</h4>
+
+                <div class="stationtype-name">
+                    <div class="stationName">
+                        <p>Station ID</p>
+
+                        <select [(ngModel)]="selectedStationType" (change)="stationTypeSelect()">
+                            <option value="">--Please choose an option--</option>
+                            @for (item of stationTypes; track $index) {
+                            <option value="{{item}}">{{item}}</option>
+                            }
+
+                        </select>
+                    </div>
+                    <div class="stationName">
+                        <p>Station Name</p>
+                        <input type="text" [(ngModel)]="stationName" placeholder="Station Name">
+                    </div>
+
+                </div>
+
+                <!-- <p>Tide</p>
+                <input type="text" [(ngModel)]="tide" placeholder="Tide "> -->
+                <!-- <p>Battery Voltage</p> -->
+                <!-- <input type="text" [(ngModel)]="battery" placeholder="Battery Voltage ">-->
+                <h3>Geo Location</h3>
+                <div class="location">
+                    <div class="locc">
+                        <div class="radioo">
+                            <!-- <p>Current Unit</p> -->
+                            <div class="unit">
+                                <div [ngClass]="{'selected': selectedcoordinate === 'DD'}" class="meter"
+                                    (click)="selectcoordinate('DD')">
+                                    <h4>DD</h4>
+                                </div>
+                                <div [ngClass]="{'selected': selectedcoordinate === 'DMS'}" class="knot"
+                                    (click)="selectcoordinate('DMS')">
+                                    <h4>DMS</h4>
+                                </div>
                             </div>
-                            <div [ngClass]="{'selected': selectedcoordinate === 'DMS'}" class="knot"
-                                (click)="selectcoordinate('DMS')">
-                                <h4>DMS</h4>
-                            </div>
+
                         </div>
+                        <div class="dd">
+                            @if(selectedcoordinate == 'DMS'){
+                            <div class="lat">
+
+                                <h3>Latitude</h3>
+                                <div class="inlat">
+                                    <div class="ddfff">
+                                        <p>Deg</p>
+                                        <input type="number" [(ngModel)]="latdeg" placeholder="Degree"
+                                            class="ddfff-input">
+                                    </div>
+                                    <div class="ddfff">
+                                        <p>Min </p>
+                                        <input type="number" [(ngModel)]="latmin" placeholder="Minutes"
+                                            class="ddfff-input">
+                                    </div>
+                                    <div class="ddfff">
+                                        <p>Sec</p>
+                                        <input type="number" [(ngModel)]="latsec" placeholder="Seconds"
+                                            class="ddfff-input">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="lat">
+
+                                <h3>Longitude</h3>
+                                <div class="inlat">
+                                    <div class="ddfff">
+                                        <p>Deg</p>
+                                        <input type="number" [(ngModel)]="langdeg" placeholder="Degree"
+                                            class="ddfff-input">
+                                    </div>
+                                    <div class="ddfff">
+                                        <p>Min</p>
+                                        <input type="number" [(ngModel)]="langmin" placeholder="Minutes"
+                                            class="ddfff-input">
+                                    </div>
+                                    <div class="ddfff">
+                                        <p>Sec</p>
+                                        <input type="number" [(ngModel)]="langsec" placeholder="Seconds"
+                                            class="ddfff-input">
+                                    </div>
+                                </div>
+
+                            </div>
+                            }@else {
+                            <div class="field">
+                                <div class="fff">
+                                    <p>Latitude</p>
+                                    <input type="number" [(ngModel)]="Lat" placeholder="Latitude">
+                                </div>
+                                <div class="fff">
+                                    <p>Longitude</p>
+
+                                    <input type="number" [(ngModel)]="Lang" placeholder="Longitude">
+
+                                </div>
+                            </div>
+                            }
+
+
+                        </div>
+                        <!--  -->
 
                     </div>
-                    <div class="dd">
-                        @if(selectedcoordinate == 'DMS'){
-                        <div class="lat">
 
-                            <h3>Latitude</h3>
-                            <div class="inlat">
-                                <div class="ddfff">
-                                    <p>Deg</p>
-                                    <input type="text" [(ngModel)]="latdeg" placeholder="Degree" class="ddfff-input">
-                                </div>
-                                <div class="ddfff">
-                                    <p>Min </p>
-                                    <input type="text" [(ngModel)]="latmin" placeholder="Minutes" class="ddfff-input">
-                                </div>
-                                <div class="ddfff">
-                                    <p>Sec</p>
-                                    <input type="text" [(ngModel)]="latsec" placeholder="Seconds" class="ddfff-input">
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="lat">
-
-                            <h3>Longitude</h3>
-                            <div class="inlat">
-                                <div class="ddfff">
-                                    <p>Deg</p>
-                                    <input type="text" [(ngModel)]="langdeg" placeholder="Degree" class="ddfff-input">
-                                </div>
-                                <div class="ddfff">
-                                    <p>Min</p>
-                                    <input type="text" [(ngModel)]="langmin" placeholder="Minutes" class="ddfff-input">
-                                </div>
-                                <div class="ddfff">
-                                    <p>Sec</p>
-                                    <input type="text" [(ngModel)]="langsec" placeholder="Seconds" class="ddfff-input">
-                                </div>
-                            </div>
-
-                        </div>
-                        }@else {
-                        <div class="field">
-                            <div class="fff">
-                                <p>Latitude</p>
-                                <input type="text" [(ngModel)]="Lat" placeholder="Latitude">
-                            </div>
-                            <div class="fff">
-                                <p>Longitude</p>
-
-                                <input type="text" [(ngModel)]="Lang" placeholder="Longitude">
-
-                            </div>
-                        </div>
-                        }
-
+                </div>
+                <!-- <p>Location</p>
+                <input type="text" [(ngModel)]="Lat" placeholder="Latitude"> -->
+                <h3>Geo Fencing</h3>
+                <div class="fencing">
+                    <div class="fff">
+                        <p>Warning Circle (m)</p>
+                        <input type="number" [(ngModel)]="Warning" placeholder="Warning Circle">
 
                     </div>
-                    <!--  -->
+                    <div class="fff">
+                        <p>Danger Circle (m)</p>
+                        <input type="number" [(ngModel)]="Danger" placeholder="Danger Circle">
+                    </div>
 
                 </div>
+
+
+
 
             </div>
-            <!-- <p>Location</p>
-            <input type="text" [(ngModel)]="Lat" placeholder="Latitude"> -->
-            <h3>Geo Fencing</h3>
-            <div class="fencing">
-                <div class="fff">
-                    <p>Warning Circle (m)</p>
-                    <input type="text" [(ngModel)]="Warning" placeholder="Warning Circle">
-
-                </div>
-                <div class="fff">
-                    <p>Danger Circle (m)</p>
-                    <input type="text" [(ngModel)]="Danger" placeholder="Danger Circle">
-                </div>
-            </div>
-            <button (click)="onstationSubmit()" class="submit">Submit</button>
-
         </div>
+        <div class="cc">
+            <input type="checkbox" name="Show Trackpaths" id="check" [ngModel]="checked" (change)="checking()">
+            <p>Show Trackpaths for last 24hrs</p>
+        </div>
+        <button style="margin-bottom: 5px;" (click)="onstationSubmit()" class="submit">Submit</button>
+
         <div class="mapbox">
 
             <div id="ol-map" class="map-container"></div>
 
+            <h6 *ngIf="show">Buoy Drifted :{{driftValue}}m - {{driftDirection}}</h6>
+            <div class="legend-box" *ngIf="show">
+
+                <div class="namee">
+                    <div class="warn-box"></div>
+                    <p style="color: black; font-weight: 500;">Warning Zone</p>
+                </div>
+                <div class="namee">
+                    <div class="dang-box"></div>
+                    <p style="color: black; font-weight: 500;">Danger Zone</p>
+                </div>
+                <div class="namee">
+                    <div class="badgee"></div>
+                    <p style="color: black; font-weight: 500;">Buoy's current location</p>
+                </div>
+
+
+            </div>
 
 
         </div>
@@ -179,71 +227,76 @@
                 <h1>Battery</h1>
             </div>
         </div>
-        <div class="rep">
-            <div class="fields">
+        <div class="reppp">
+            <div class="rep">
+                <div class="fields">
 
-                <!-- <p>Tide</p>
-                <input type="text" [(ngModel)]="tide" placeholder="Tide "> -->
-                <!-- <p>Battery Voltage</p> -->
-                <!-- <input type="text" [(ngModel)]="battery" placeholder="Battery Voltage ">-->
+                    <!-- <p>Tide</p>
+                    <input type="text" [(ngModel)]="tide" placeholder="Tide "> -->
+                    <!-- <p>Battery Voltage</p> -->
+                    <!-- <input type="text" [(ngModel)]="battery" placeholder="Battery Voltage ">-->
 
 
-                <div class="fff">
-                    @if(slectedOption == 'tide'){
-                    <p>Tide Offset</p>
-                    <input type="text" [(ngModel)]="tideOffset" placeholder="Tide Offset">
-                    <div class="radioo">
-                        <p>Unit</p>
-                        <div class="unit">
-                            <div [ngClass]="{'selected': selectedUnit === 'cm'}" class="cm" (click)="selectUnit('cm')">
-                                <h4>cm</h4>
-                            </div>
-                            <div [ngClass]="{'selected': selectedUnit === 'mtr'}" class="meter"
-                                (click)="selectUnit('mtr')">
-                                <h4>mtr</h4>
-                            </div>
-                            <div [ngClass]="{'selected': selectedUnit === 'feet'}" class="knot"
-                                (click)="selectUnit('feet')">
-                                <h4>feet</h4>
+                    <div class="fff">
+                        @if(slectedOption == 'tide'){
+                        <p>Tide Offset</p>
+                        <input type="number" [(ngModel)]="tideOffset" placeholder="Tide Offset">
+                        <div class="radioo">
+                            <p>Unit</p>
+                            <div class="unit">
+                                <div [ngClass]="{'selected': selectedUnit === 'cm'}" class="cm"
+                                    (click)="selectUnit('cm')">
+                                    <h4>cm</h4>
+                                </div>
+                                <div [ngClass]="{'selected': selectedUnit === 'm'}" class="meter"
+                                    (click)="selectUnit('m')">
+                                    <h4>m</h4>
+                                </div>
+                                <div [ngClass]="{'selected': selectedUnit === 'ft'}" class="knot"
+                                    (click)="selectUnit('ft')">
+                                    <h4>ft</h4>
+                                </div>
+
                             </div>
 
                         </div>
+                        }@else if(slectedOption == 'adcp'){
+                        <div class="radioo">
+                            <p>Current Unit</p>
+                            <div class="unit">
+                                <div [ngClass]="{'selected': selectedcurrentUnit === 'm/s'}" class="meter"
+                                    (click)="selectcurrentUnit('m/s')">
+                                    <h4>m/s</h4>
+                                </div>
+                                <div [ngClass]="{'selected': selectedcurrentUnit === 'knots'}" class="knot"
+                                    (click)="selectcurrentUnit('knots')">
+                                    <h4>Knots</h4>
+                                </div>
+                            </div>
 
-                    </div>
-                    }@else if(slectedOption == 'adcp'){
-                    <div class="radioo">
-                        <p>Current Unit</p>
-                        <div class="unit">
-                            <div [ngClass]="{'selected': selectedcurrentUnit === 'm/s'}" class="meter"
-                                (click)="selectcurrentUnit('m/s')">
-                                <h4>m/s</h4>
-                            </div>
-                            <div [ngClass]="{'selected': selectedcurrentUnit === 'knots'}" class="knot"
-                                (click)="selectcurrentUnit('knots')">
-                                <h4>Knots</h4>
-                            </div>
                         </div>
+                        }@else if(slectedOption == 'battery'){
+                        <p>Above Warning (v)</p>
+                        <input type="number" [(ngModel)]="belowwarning" placeholder="Below Warning">
+                        <p>Below Warning (v)</p>
+                        <input type="number" [(ngModel)]="abovewarning" placeholder="Above Warning">
+                        <p>Above Danger (v)</p>
+                        <input type="number" [(ngModel)]="belowdanger" placeholder="Below Danger">
+                        <p>Below Danger (v)</p>
+                        <input type="number" [(ngModel)]="abovedanger" placeholder="Above Danger">
+                        }
+
+
 
                     </div>
-                    }@else if(slectedOption == 'battery'){
-                    <p>Above Warning</p>
-                    <input type="text" [(ngModel)]="belowwarning" placeholder="Below Warning">
-                    <p>below warning</p>
-                    <input type="text" [(ngModel)]="abovewarning" placeholder="Above Warning">
-                    <p>Above Danger</p>
-                    <input type="text" [(ngModel)]="belowdanger" placeholder="Below Danger">
-                    <p>Below Danger</p>
-                    <input type="text" [(ngModel)]="abovedanger" placeholder="Above Danger">
-                    }
 
 
 
                 </div>
-
-
-                <button class="submit" (click)="onsensorSubmit()">Submit</button>
-
             </div>
         </div>
+        <button class="submit" (click)="onsensorSubmit()">Submit</button>
+
+
     </div>
 </div>

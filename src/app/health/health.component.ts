@@ -1,18 +1,20 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { LayoutComponent } from '../layout/layout.component';
 import { ConfigDataService } from '../config-data.service';
 import { SensorData } from '../../model/config.model';
+import { min } from '@amcharts/amcharts4/.internal/core/utils/Math';
 
 @Component({
   selector: 'app-health',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './health.component.html',
-  styleUrl: './health.component.css'
+  styleUrl: './health.component.css',
+  providers:[DatePipe]
 })
 export class HealthComponent {
-
+  is48format: boolean = true;
   sensorStatus = [
     { name: 'Tide', status: 'Progress', time: "14:13", date: "21/10/2024", file:'tide'},
     { name: 'Current', status: 'Recieved' , time: "14:23", date: "21/10/2024", file:'Current-Low'},
@@ -20,13 +22,17 @@ export class HealthComponent {
     { name: 'Battery', status: 'Recieved' , time:"14:23", date: "21/10/2024", file:'Battery'},
   ];
   sensorDatelist: SensorData[] = []; // Holds fetched sensor data
-
+tapped(){
+  this.is48format = !this.is48format;
+  console.log(this.is48format);
+  this.fetchSensorData();
+}
   ngOnInit(): void {
     this.fetchSensorData();
   }
-constructor(private layout:LayoutComponent, private data:ConfigDataService){}
+constructor(private layout:LayoutComponent, private data:ConfigDataService, private datePipe: DatePipe){}
   fetchSensorData(): void {
-    this.data.getSensorLiveData('2024-01-01', '2024-10-25').subscribe(datat => {
+    this.data.getSensorLiveData('2024-01-01', '2024-11-09').subscribe(datat => {
       if (this.layout.selectedBuoy === 'CWPRS01') {
         this.sensorDatelist = datat.buoy1;
       } else if (this.layout.selectedBuoy === 'CWPRS02') {
@@ -107,12 +113,34 @@ constructor(private layout:LayoutComponent, private data:ConfigDataService){}
     return datee;
   }
 
-  formatTime(time:string):string{
-    const t = time;
-    const tt = new Date(t);
-    const timee  = tt.toISOString().substr(11,8);
-    return timee;
+  formatTime(time: string): string {
+    // Split the time string into hours and minutes
+    const [hoursString, minutesString] = time.split(':');
+    const hours = parseInt(hoursString, 10);
+    const minutes = parseInt(minutesString, 10).toString().padStart(2, '0');
+    const mm = parseFloat(minutes);
+  
+    if (isNaN(hours) || isNaN(mm)) {
+      return 'Invalid Time';
+    }
+  
+    if (this.is48format) {
+      const tt = new Date(time);
+      const timee = tt.toISOString().substr(11,8);
+      console.log(timee);
+      // 24-hour format: Return as HH:MM
+      return timee;
+    } else {
+      const ttt = new Date(time);
+      const timeee = ttt.toISOString().substr(11, 8);
+      const [hours, minutes, seconds] = timeee.split(':').map(Number);
+    const date = new Date(Date.UTC(1970, 0, 1, hours, minutes, seconds));
+    const dtt =this.datePipe.transform(date, 'hh:mm a', 'UTC');
+
+      return dtt!.toString();
+    }
   }
+  
 
 }
 // const hours = tt.getHours().toString().padStart(2, '0'); // Ensure two digits
