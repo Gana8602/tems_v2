@@ -20,7 +20,10 @@
   import { HttpClient } from '@angular/common/http';
   import { FLOAT } from 'ol/webgl';
   import { ConfigDataService } from '../config-data.service';
-  import { Config, StationConfigs } from '../../model/config.model';
+  import { Config, SensorData, SensorData2, sensorLiveData, StationConfigs } from '../../model/config.model';
+import { Toast, ToastrService } from 'ngx-toastr';
+import { MapService } from '../../map/map.service';
+import { subscribe } from 'diagnostics_channel';
 
 
 
@@ -36,6 +39,7 @@
     Lat!: number  ;
     Warning!: number;
     Danger!:number;
+    id!:string;
     // tide:number = 0;
     // battery:number = 12.3;
     stations:StationConfigs[]=[];
@@ -51,7 +55,7 @@
   selectedcoordinate:string = 'DD';
     slectedOption: String = 'tide';
     selectedcurrentUnit: string = 'm/s'; // Default selected unit
-    
+    show:boolean = false;
     latdeg!:number;
     latmin!:number;
     latsec!:number;
@@ -59,10 +63,106 @@
     langmin!:number;
     langsec!:number;
     sensor:Config[]=[];
+    stationName!:string;
+    finallat!:number;
+    finallang!:number;
+    driftValue!:string;
+    driftDirection!:string;
+    liveloclat1!:number;
+    liveloclang1!:number;
+    liveloclat2!:number;
+    liveloclang2!:number;
+    liveData!:sensorLiveData;
+    buoy1!:SensorData[];
+    buoy2!:SensorData2[];
+    checked:boolean= false;
+     dmsToDd(degrees: number, minutes: number, seconds: number): number {
+      return degrees + minutes / 60 + seconds / 3600;
+    }
 
+    haversineDistanceAndDirection(loc1: [number, number], loc2: [number, number]): { distance: number, direction: string } {
+      const toRadians = (degree: number) => degree * (Math.PI / 180);
+      const toDegrees = (radian: number) => radian * (180 / Math.PI);
+    
+      const R = 6371e3; // Radius of Earth in meters
+      const φ1 = toRadians(loc1[1]);
+      const φ2 = toRadians(loc2[1]);
+      const Δφ = toRadians(loc2[1] - loc1[1]);
+      const Δλ = toRadians(loc2[0] - loc1[0]);
+    
+      // Haversine formula to calculate distance
+      const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                Math.cos(φ1) * Math.cos(φ2) *
+                Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distance = R * c; // Distance in meters
+    
+      // Calculate the initial bearing (direction) in radians
+      const x = Math.sin(Δλ) * Math.cos(φ2);
+      const y = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+      let bearing = Math.atan2(x, y);
+    
+      // Convert bearing from radians to degrees
+      bearing = toDegrees(bearing);
+    
+      // Normalize the bearing to be between 0 and 360 degrees
+      bearing = (bearing + 360) % 360;
+    
+      // Map bearing to cardinal direction
+      const directions = [
+        { min: 0, max: 22.5, direction: 'N' },
+        { min: 22.5, max: 67.5, direction: 'NE' },
+        { min: 67.5, max: 112.5, direction: 'E' },
+        { min: 112.5, max: 157.5, direction: 'SE' },
+        { min: 157.5, max: 202.5, direction: 'S' },
+        { min: 202.5, max: 247.5, direction: 'SW' },
+        { min: 247.5, max: 292.5, direction: 'W' },
+        { min: 292.5, max: 337.5, direction: 'NW' },
+        { min: 337.5, max: 360, direction: 'N' }
+      ];
+    
+      let direction = 'N'; // Default value
+      for (const dir of directions) {
+        if (bearing >= dir.min && bearing < dir.max) {
+          direction = dir.direction;
+          break;
+        }
+      }
+    
+      return { distance, direction };
+    }
+    
+    
 
+    travelPathAssign(){
+      this.mapService.traveledPath = [];
+      if(this.selectedStationType == "CWPRS01"){
+        this.mapService.traveledPath.push(fromLonLat([this.buoy1[0].LONG, this.buoy1[0].LAT]) as [number,number]);
+        for(let i=0; i<this.buoy1.length; i++){
+          this.mapService.traveledPath.push(
+            fromLonLat([this.buoy1[i].LONG, this.buoy1[i].LAT])as [number, number]
+          );
+        }
+      }else if(this.selectedStationType == "CWPRS02"){
+        this.mapService.traveledPath.push(fromLonLat([this.buoy2[0].LONG, this.buoy2[0].LAT]) as [number,number]);
+        for(let i=0; i<this.buoy2.length; i++){
+          this.mapService.traveledPath.push(
+            fromLonLat([this.buoy2[i].LONG, this.buoy2[i].LAT])as [number, number]
+          );
+        }
+      }
+      
+      // console.log(this.mapService.traveledPath);
+    }
+
+checking(){
+  // this.mapService.destroyMap();
+  this.checked = !this.checked;
+  this.stationTypeSelect()
+}
     stationTypeSelect() {
-      console.log("Station selected:", this.selectedStationType);
+this.travelPathAssign();
+      // console.log("Station selected:", this.selectedStationType);
     
       const selectedStation = this.stations.find(
         (station) => station.station_name === this.selectedStationType
@@ -81,6 +181,8 @@
           this.langsec = selectedStation.longitude_sec;
           this.Lat = 0;
           this.Lang = 0;
+          this.finallang= this.dmsToDd(this.langdeg, this.langmin, this.langsec);
+          this.finallat = this.dmsToDd(this.latdeg, this.latmin,this.langsec);
         } else if (this.selectedcoordinate === "DD") {
           // Set DD values
           this.Lat = selectedStation.latitude_dd;
@@ -92,20 +194,62 @@
           this.langmin = 0;
           this.langsec = 0;
         }
-    
+        this.stationName = selectedStation.station;
         this.Warning = selectedStation.warning_circle;
         this.Danger = selectedStation.danger_circle;
     
         // Update center and render the map with new station coordinates
         this.center = fromLonLat([this.Lang, this.Lat]);
+        // console.log(this.center)
         if(this.selectedStationType == "CWPRS01"){
-          this.RenderMap();
-        }else{
-          this.RenderMap2();
+          const point1 = fromLonLat([this.finallang, this.finallat]) as [number, number];
+          const point2 = fromLonLat([this.liveloclang1, this.liveloclat1]) as [number, number];
+          // console.log("point1:== ", point1, this.center);
+          // console.log("point2: ==", point2);
+          const distance =   this.haversineDistanceAndDirection(point1, point2);
+          // console.log(distance,'m');
+          this.driftValue = distance.distance.toFixed(2);
+          this.driftDirection = distance.direction;
+        }else if(this.selectedStationType == "CWPRS02"){
+          const point1 = fromLonLat([this.Lang, this.Lat]) as [number, number];
+          const point2 = fromLonLat([this.liveloclang2, this.liveloclat2]) as [number, number];
+          // console.log("point1:== ", point1);
+          // console.log("point2: ==", point2);
+          const distance =   this.haversineDistanceAndDirection(point1, point2);
+          // console.log(distance,'m');
+          this.driftValue = distance.distance.toFixed(2);
+          this.driftDirection = distance.direction;
         }
+
+
+        if(this.selectedcoordinate == "DD"){
+          this.loadMapBasedOnStation(this.Lat, this.Lang, this.checked);
+        }else if(this.selectedcoordinate == "DMS"){
+          this.loadMapBasedOnStation(this.finallat, this.finallang, this.checked);
+        }
+        
+      }else{
+        this.show = false;
+        this.mapService.destroyMap()
+;      }
+    }
+    loadMapBasedOnStation(lat:number, lang:number, sho:boolean): void {
+      this.mapService.destroyMap();
+      const mapContainer = document.getElementById('ol-map');  // Target HTML element for map
+      if (this.selectedStationType === 'CWPRS01') {
+        // console.log("map:", mapContainer);
+        this.mapService.createMap(mapContainer!, lat, lang, this.Warning, this.Danger, sho);
+        this.show = true;
+      } else if(this.selectedStationType == "CWPRS02"){
+        // console.log("map:", mapContainer);
+        this.mapService.createMap(mapContainer!, lat, lang, this.Warning, this.Danger, sho);
+        this.show = true;
+      }
+      
+      else {
+        this.mapService.destroyMap();
       }
     }
-    
     assign(){
     this.tideOffset =  parseFloat(this.sensor[0].value);
     this.selectedUnit = this.sensor[0].unit;  
@@ -114,9 +258,9 @@
     this.abovewarning = parseFloat(this.sensor[2].above_warning);
     this.belowdanger=parseFloat(this.sensor[2].below_danger);
     this.abovedanger=parseFloat(this.staion.configs[2].above_danger);
-    console.log(this.tideOffset, this.selectedUnit, this.selectedcurrentUnit, 
-      this.belowdanger,this.abovedanger, this.belowwarning, this.abovewarning
-    );
+    // console.log(this.tideOffset, this.selectedUnit, this.selectedcurrentUnit, 
+    //   this.belowdanger,this.abovedanger, this.belowwarning, this.abovewarning
+    // );
     
     }
     // Inside your ConfigurationsComponent class
@@ -143,22 +287,33 @@
 
     selecteoption(typee: String) {
     this.slectedOption = typee;
-    console.log(`selectedType : ${this.slectedOption}`);
+    // console.log(`selectedType : ${this.slectedOption}`);
     }
 
     selectUnit(unit: string) {
       this.selectedUnit = unit;
-      console.log(`Selected unit: ${this.selectedUnit}`);
+      // console.log(`Selected unit: ${this.selectedUnit}`);
     }
     selectcurrentUnit(unit: string) {
       this.selectedcurrentUnit = unit;
-      console.log(`Selected unit: ${this.selectedcurrentUnit}`);
+      // console.log(`Selected unit: ${this.selectedcurrentUnit}`);
     }
     selectcoordinate(unit: string) {
       this.selectedcoordinate = unit;
-      console.log(`Selected unit: ${this.selectedcoordinate}`);
+      // console.log(`Selected unit: ${this.selectedcoordinate}`);
     }
   ngOnInit(): void {
+    this.data.getSensorLiveData('2024-01-01', '2024-11-8').subscribe(response=>{
+      // console.log(response);
+      this.liveData = response;
+      this.buoy1 = this.liveData.buoy1;
+      this.buoy2 = this.liveData.buoy2;
+
+      this.liveloclat1 = this.buoy1[0].LAT
+      this.liveloclat2 = this.buoy2[0].LAT
+      this.liveloclang1 = this.buoy1[0].LONG
+      this.liveloclang2 = this.buoy2[0].LONG
+    })
   this.data.getStationNames().subscribe(stations=>{
     this.stations = stations;
     
@@ -168,7 +323,7 @@
 
     this.data.getsensorConfigs().subscribe(sensor=>{
       this.sensor = sensor;
-      console.log("Sensors==", this.sensor);
+      // console.log("Sensors==", this.sensor);
       if(this.sensor != null){
         this.assign();
 
@@ -195,7 +350,7 @@
       });
   }
 
-  constructor (private staion:LayoutComponent, private http:HttpClient, private data:ConfigDataService){}
+  constructor (private staion:LayoutComponent, private http:HttpClient, private data:ConfigDataService, private taost:ToastrService, private mapService:MapService){}
   map!: Map;
   vectorLayer!: VectorLayer;
   map2!:Map;
@@ -308,14 +463,14 @@
   
   
     clickon(typr:String){
-      console.log(typr);
+      // console.log(typr);
     }
 
 
 
     //updates
     onsensorSubmit() {
-      console.log("tapped", this.slectedOption);
+      // console.log("tapped", this.slectedOption);
       let data: any = {}; 
 
       if (this.slectedOption === 'tide') {
@@ -324,14 +479,14 @@
               value: this.tideOffset.toString(),
               unit: this.selectedUnit
           };
-          console.log(data);  
+          // console.log(data);  
 
       } else if (this.slectedOption === 'adcp') {
           data = {
               sensor_type: this.slectedOption,  
               unit: this.selectedcurrentUnit
           };
-          console.log(data);
+          // console.log(data);
 
       } else if (this.slectedOption === 'battery') {
           data = {
@@ -341,12 +496,16 @@
               above_danger: this.abovedanger.toString(),
               below_danger: this.belowdanger.toString()
           };
-          console.log(data);
+          // console.log(data);
       }
 
-      this.http.put('http://192.168.0.115:3000/api/config', data).subscribe({
+      this.http.put('http://192.168.0.109:3000/api/config', data).subscribe({
         next: (res) => {
-          console.log(res);
+          // console.log(res);
+          this.taost.success("Sensor settings Updated", "Success");
+        },
+        error: (err) => {
+          this.taost.error("Sensor settings not updated", "Please try again");
         }
       })
   }
@@ -358,6 +517,7 @@
     };
     if(this.selectedcoordinate == 'DD'){
       stationConfigData = {
+        station:this.stationName,
         station_name: this.selectedStationType,
         warning_circle: this.Warning,
         danger_circle: this.Danger,
@@ -373,6 +533,7 @@
       }
     }else if(this.selectedcoordinate == 'DMS'){
       stationConfigData = {
+        station:this.stationName,
         station_name: this.selectedStationType,
         warning_circle: this.Warning,
         danger_circle: this.Danger,
@@ -387,13 +548,15 @@
         longitude_sec: this.langsec,
       }
     }
-    this.http.put('http://192.168.0.115:3000/api/updatestationconfig',stationConfigData).subscribe(
+    this.http.put('http://192.168.0.109:3000/api/updatestationconfig',stationConfigData).subscribe(
       {
         next: (res) => {
-          console.log('response station config ==', res);
+          // console.log('response station config ==', res);
+          this.taost.success("Station Configuration updated", "Success");
         },
         error: (err) => {
-          console.error('Error occurred:', err);
+          // console.error('Error occurred:', err);
+          this.taost.error("Error Updating Station Configuration", "Please try again");
         } 
         
       }

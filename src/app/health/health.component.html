@@ -2,7 +2,19 @@
     <div class="card-body">
         <!-- <h4 class="card-title mb-4">Latest Transaction</h4> -->
         <div class="table-responsive">
-            <h3>Sensor Health</h3>
+            <div class="divider">
+                <h3>Sensor Health</h3>
+                <div class="formats">
+                    <p style="margin-top: 8px; font-weight: 400; font-size: 12px;">12 hrs</p>
+                    <label class="switch" (change)="tapped()">
+                        <input type="checkbox" [checked]="is48format">
+                        <span class="slider round"></span>
+                    </label>
+                    <p style="margin-top: 8px; font-weight: 400; font-size: 12px;">24 hrs</p>
+                </div>
+
+            </div>
+
             <table class="table table-hover align-middle mb-0">
 
                 <thead>
@@ -25,8 +37,7 @@
                         <td>{{data.time}}</td>
                         <td>
                             <div class="status"
-                                [ngClass]="{'status-green': data.status.trim() === 'Recieved', 'status-red': data.status.trim() === 'Progress'}"
-                                [ngStyle]="{'width': data.status.trim() === 'Progress' ? '110px' : '110px'}">
+                                [ngClass]="{'status-green': data.status.trim() === 'Recieved', 'status-red': data.status.trim() === 'Progress'}">
                                 <!-- Conditional signal color -->
                                 <div *ngIf="data.status.trim() === 'Progress'" class="signal-loading">
                                     <div class="signal blink-signal"></div>
@@ -39,7 +50,7 @@
                                     <div class="signal signal-green"></div>
                                     <div class="signal signal-green"></div>
                                 </div>
-                                <span class="badge">{{data.status}}</span>
+                                <!-- <span class="badge">{{data.status}}</span> -->
                             </div>
                         </td>
                     </tr>

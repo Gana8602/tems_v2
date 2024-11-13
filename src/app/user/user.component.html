@@ -29,9 +29,9 @@
                 }
                 <div class="user-edit">
                     <p>Name</p>
-                    <input type="text" placeholder="Name" [(ngModel)]="name">
+                    <input type="text" required placeholder="Name" [(ngModel)]="name">
                     <p>Username</p>
-                    <input type="text" placeholder="Username" [(ngModel)]="username">
+                    <input type="text" required placeholder="Username" [(ngModel)]="username">
                     <p>Role</p>
                     <select [(ngModel)]="selectedRole">
                         <option value="">--Please choose an option--</option>
@@ -50,18 +50,19 @@
 
                     </select>
                     <p>E-mail</p>
-                    <input type="text" placeholder="E-mail id" [(ngModel)]="email">
+                    <input type="email" required placeholder="E-mail id" [(ngModel)]="email">
                     <p>Password</p>
-                    <input type="text" placeholder="Password" [(ngModel)]="password">
-                    <div class="but">
-                        @if (state === "Add") {
-                        <button (click)="naaavigate()"> Add</button>
-                        }@else if(state === "Edit"){
+                    <input type="password" required placeholder="Password" [(ngModel)]="password">
 
-                        <button (click)="naaavigate()"> Edit</button>
-                        }
 
-                    </div>
+                </div>
+                <div class="but">
+                    @if (state === "Add") {
+                    <button (click)="naaavigate()"> Add</button>
+                    }@else if(state === "Edit"){
+
+                    <button (click)="naaavigate()"> Edit</button>
+                    }
 
                 </div>
 

@@ -9,7 +9,7 @@ const config = {
     encrypt: true, // For Azure, use true; otherwise, false
     trustServerCertificate: true, // Change to false in production
   },
-};
+}; 
 
 const connectDB = async () => {
   try {

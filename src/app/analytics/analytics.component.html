@@ -53,7 +53,7 @@
         <label for="buoys">
           <h3>Stations</h3>
         </label>
-        <p-dropdown class="fieldd" [options]="stationOptions" [(ngModel)]="selectedStation"
+        <p-dropdown class="dateDrop" [options]="stationOptions" [(ngModel)]="selectedStation"
           (onChange)="onPeriodChange($event)" placeholder="Select Buoy"></p-dropdown>
       </div>
 
@@ -61,44 +61,44 @@
         <label for="period">
           <h3>Period select</h3>
         </label>
-        <p-dropdown class="fieldd" [options]="periodOptions" [(ngModel)]="selectedPeriod"
+        <p-dropdown class="dateDrop" [options]="periodOptions" [(ngModel)]="selectedPeriod"
           (onChange)="onPeriodChange($event)" placeholder="Select a period">
         </p-dropdown>
       </div>
 
 
       <div class="full-width" *ngIf="selectedPeriod === 'dateRange'">
-        <label for="fromDate">From Date:</label>
-        <p-calendar [(ngModel)]="fromDate" id="fromDate" dateFormat="yy-mm-dd"
-          class="full-width custom-calendar"></p-calendar>
+        <label for="fromDate">From Date</label>
+        <p-calendar [(ngModel)]="fromDate" id="fromDate" dateFormat="dd/mm/yy -" class="full-width custom-calendar"
+          [showTime]="true" hourFormat="24"></p-calendar>
 
-        <label for="toDate">To Date:</label>
-        <p-calendar [(ngModel)]="toDate" id="toDate" dateFormat="yy-mm-dd"
-          class="full-width custom-calendar"></p-calendar>
+        <label for="toDate">To Date</label>
+        <p-calendar [(ngModel)]="toDate" id="toDate" dateFormat="dd/mm/yy -" class="full-width custom-calendar"
+          [showTime]="true" hourFormat="24"></p-calendar>
       </div>
 
       <div class="full-width" *ngIf="selectedPeriod === 'weekRange'">
-        <label for="week">Select Week Start Date:</label>
-        <p-calendar [(ngModel)]="selectedWeek" id="week" dateFormat="yy-mm-dd"
+        <label for="week">Week Start Date</label>
+        <p-calendar [(ngModel)]="selectedWeek" id="week" dateFormat="dd/mm/yy"
           class="full-width custom-calendar"></p-calendar>
       </div>
 
       <div class="full-width" *ngIf="selectedPeriod === 'monthRange'">
-        <label for="month">Select Month:</label>
-        <p-calendar [(ngModel)]="selectedMonth" id="month" view="month" dateFormat="yy-mm"
+        <label for="month">Select Month</label>
+        <p-calendar [(ngModel)]="selectedMonth" id="month" view="month" dateFormat="mm/yy"
           class="full-width custom-calendar"></p-calendar>
       </div>
 
 
       <div class="full-width" *ngIf="selectedPeriod === 'yearRange'">
-        <label for="year">Select Year:</label>
+        <label for="year">Select Year</label>
         <p-calendar [(ngModel)]="selectedYear" id="year" view="year" dateFormat="yy"
           class="full-width custom-calendar"></p-calendar>
       </div>
 
 
 
-      <div class="field checkbox" *ngIf="selectedSensor === 'adcp'">
+      <div class="field check" *ngIf="selectedSensor === 'adcp'">
         <h3>Station Parameter</h3>
         <div class="checkbox-group">
           <label>
@@ -114,10 +114,10 @@
         <label for="dataType">
           <h3>Plot select</h3>
         </label>
-        <p-dropdown class="fieldd" [options]="chartOptions" [(ngModel)]="selectedChart"
+        <p-dropdown class="dateDrop" [options]="chartOptions" [(ngModel)]="selectedChart"
           placeholder="Select a chart"></p-dropdown>
 
-        <button class="submit" (click)="onSubmitAndFetch()">submit</button>
+        <button class="submit" (click)="onSubmitAndFetch()">Submit</button>
       </div>
 
     </div>
@@ -126,58 +126,37 @@
 
 
 
+  <div class="conttt">
+    <div class="chartsContainer">
 
-  <div class="chartsContainer">
+      <div class="chartContainer"
+        *ngIf="SubmitedslectedOption === '' || SubmitedslectedOption === 'tide' && selectedChart">
+        <div id="tide" class="chart-diagram" style="width: 100%; height: 400px;"></div>
+      </div>
 
-    <div class="chartContainer"
-      *ngIf="SubmitedslectedOption === '' || SubmitedslectedOption === 'tide' && selectedChart">
-      <div id="tide" class="chart-diagram" style="width: 100%; height: 450px;"></div>
+      <div class="chartContainer"
+        *ngIf="SubmitedslectedOption === '' || SubmitedslectedOption === 'adcp' && selectedChart !== 'currentSpeed'">
+        <div id="surfaceSpeedDirection" class="chart-diagram" style="width: 100%; height: 400px;"></div>
+      </div>
+
+      <div class="chartContainer"
+        *ngIf="SubmitedslectedOption === '' || SubmitedslectedOption === 'adcp' && selectedChart !== 'currentSpeed'">
+        <div id="midSpeedDirection" class="chart-diagram" style="width: 100%; height: 400px;"></div>
+      </div>
+
+      <div class="chartContainer"
+        *ngIf="SubmitedslectedOption === '' || SubmitedslectedOption === 'adcp' && selectedChart !== 'currentSpeed'">
+        <div id="bottomSpeedDirection" class="chart-diagram" style="width: 100%; height: 400px;"></div>
+      </div>
+
+
+      <div class="chartContainer" *ngIf="SubmitedslectedOption === 'adcp' && selectedChart === 'currentSpeed'">
+        <div id="surfacepolar" class="chart-diagram" style="width: 100%; height: 400px;"></div>
+        <div id="midpolar" class="chart-diagram" style="width: 100%; height: 400px;"></div>
+        <div id="bottompolar" class="chart-diagram" style="width: 100%; height: 90vh;"></div>
+      </div>
+
     </div>
-
-    <div class="chartContainer"
-      *ngIf="SubmitedslectedOption === '' || SubmitedslectedOption === 'adcp' && selectedChart !== 'currentSpeed'">
-      <div id="surfaceSpeedDirection" class="chart-diagram" style="width: 100%; height: 400px;"></div>
-    </div>
-
-    <div class="chartContainer" *ngIf="SubmitedslectedOption === 'adcp' && selectedChart !== 'currentSpeed'">
-      <div id="midSpeedDirection" class="chart-diagram" style="width: 100%; height: 400px;"></div>
-    </div>
-
-    <div class="chartContainer" *ngIf="SubmitedslectedOption === 'adcp' && selectedChart !== 'currentSpeed'">
-      <div id="bottomSpeedDirection" class="chart-diagram" style="width: 100%; height: 400px;"></div>
-    </div>
-
-
-
-
-    <!-- <div class="chartContainer" *ngIf="SubmitedslectedOption === 'adcp'">
-      <div id="polar1" class="chart-diagram" style="width: 100%;height: 400px;"></div>
-    </div>
-
-
-    <div class="chartContainer" *ngIf="SubmitedslectedOption === 'adcp'">
-      <div id="polar2" class="chart-diagram" style="width: 100%;height: 400px;"></div>
-    </div>
-
-    <div class="chartContainer" *ngIf="SubmitedslectedOption === 'adcp'">
-      <div id="windRosePlot1" class="chart-diagram" style="width: 100%;height: 400px;"></div>
-    </div> -->
-
-    <!-- <div class="chartContainer" *ngIf="slectedOption === 'tide'">
-      <div #polar2 class="chart-diagram" style="width: 100%; height: 400px;"></div>
-    </div> -->
-
-    <!-- <div class="chartContainer" *ngIf="slectedOption === ''">
-        <div id="polar3" class="chart-diagram" style="width: 100%; height: 400px;"></div>
-      </div> -->
-
-    <!-- <div class="chartContainer" >
-      <div id="rose-plot" class="chart-diagram" style="width: 100%; height: 400px;"></div>
-    </div> -->
-
-    <div class="chartContainer" *ngIf="selectedChart === 'currentSpeed'">
-      <div id="sample" class="chart-diagram" style="width: 100%; height: 400px;"></div>
-    </div>
-
   </div>
+
 </div>

@@ -6,8 +6,8 @@
         </label>
 
         <div class="stationsselect">
-            <div class="cwprs1" [ngClass]="{'selectOption' :selectedStation === 'cwprs1' }"
-                (click)="selectStationoption('cwprs1')">
+            <div class="CWPRS01" [ngClass]="{'selectOption' :selectedStation === 'CWPRS01' }"
+                (click)="selectStationoption('CWPRS01')">
                 <svg id="Buoy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 101.22">
                     <defs>
                         <style>
@@ -44,11 +44,11 @@
                     <circle class="cls-2" cx="61.44" cy="25" r="5" />
 
                 </svg>
-                <h1>Cwprs 1</h1>
+                <h1>CWPRS01</h1>
             </div>
 
-            <div class="cwprs2" [ngClass]="{'selectOption' :selectedStation === 'cwprs2' }"
-                (click)="selectStationoption('cwprs2')">
+            <div class="CWPRS02" [ngClass]="{'selectOption' :selectedStation === 'CWPRS02' }"
+                (click)="selectStationoption('CWPRS02')">
                 <svg id="Buoy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 101.22">
                     <defs>
                         <style>
@@ -85,7 +85,7 @@
                     <circle class="cls-2" cx="61.44" cy="25" r="5" />
 
                 </svg>
-                <h1>Cwprs 2</h1>
+                <h1>CWPRS02</h1>
             </div>
         </div>
 
@@ -93,40 +93,40 @@
         <div class="stations">
             <div class="field">
                 <label for="period">
-                    <h3>Period select</h3>
+                    <h3>Period Select</h3>
                 </label>
 
-                <p-dropdown class="fieldd" [options]="periodOptions" [(ngModel)]="selectedPeriod"
+                <p-dropdown class="dateDrop" [options]="periodOptions" [(ngModel)]="selectedPeriod"
                     (onChange)="onPeriodChange($event)" placeholder="Select a period">
                 </p-dropdown>
             </div>
 
 
             <div class="full-width" *ngIf="selectedPeriod === 'dateRange'">
-                <label for="fromDate">From Date:</label>
-                <p-calendar [(ngModel)]="fromDate" id="fromDate" dateFormat="yy-mm-dd"
-                    class="full-width custom-calendar"></p-calendar>
+                <label for="fromDate">From Date</label>
+                <p-calendar [(ngModel)]="fromDate" id="fromDate" dateFormat="dd/mm/yy -"
+                    class="full-width custom-calendar" [showTime]="true" hourFormat="24"></p-calendar>
 
-                <label for="toDate">To Date:</label>
-                <p-calendar [(ngModel)]="toDate" id="toDate" dateFormat="yy-mm-dd"
-                    class="full-width custom-calendar"></p-calendar>
+                <label for="toDate">To Date</label>
+                <p-calendar [(ngModel)]="toDate" id="toDate" dateFormat="dd/mm/yy -" class="full-width custom-calendar"
+                    [showTime]="true" hourFormat="24"></p-calendar>
             </div>
 
             <div class="full-width" *ngIf="selectedPeriod === 'weekRange'">
-                <label for="week">Select Week Start Date:</label>
-                <p-calendar [(ngModel)]="selectedWeek" id="week" dateFormat="yy-mm-dd"
+                <label for="week">Select Week Start Date</label>
+                <p-calendar [(ngModel)]="selectedWeek" id="week" dateFormat="dd/mm/yy"
                     class="full-width custom-calendar"></p-calendar>
             </div>
 
             <div class="full-width" *ngIf="selectedPeriod === 'monthRange'">
-                <label for="month">Select Month:</label>
-                <p-calendar [(ngModel)]="selectedMonth" id="month" view="month" dateFormat="yy-mm"
+                <label for="month">Select Month</label>
+                <p-calendar [(ngModel)]="selectedMonth" id="month" view="month" dateFormat="mm/yy"
                     class="full-width custom-calendar"></p-calendar>
             </div>
 
 
             <div class="full-width" *ngIf="selectedPeriod === 'yearRange'">
-                <label for="year">Select Year:</label>
+                <label for="year">Select Year</label>
                 <p-calendar [(ngModel)]="selectedYear" id="year" view="year" dateFormat="yy"
                     class="full-width custom-calendar"></p-calendar>
             </div>
@@ -142,68 +142,71 @@
 
 
 
+    <div class="contttt">
+        <div class="tableContainer" *ngIf="selectedStation">
+            <label>
+                <h5>{{selectedStation | uppercase}}</h5>
+            </label>
+            <p-table rowHover="true" #dt2 [columns]="selectedColumns" [loading]="loading"
+                [globalFilterFields]="['StationID', 'Date', 'Time', 'S1_RelativeWaterLevel', 'S2_SurfaceCurrentSpeedDirection', 'Lower_CurrentSpeedDirection', 'Middle_CurrentSpeedDirection']"
+                [value]="selectedStation === 'CWPRS01' ? CWPRS01 : selectedStation === 'CWPRS02' ? CWPRS02 : CWPRS01"
+                paginator="true" [rows]="10" [rowsPerPageOptions]="[10, 15, 20]" showCurrentPageReport="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [filterDelay]="0"
+                [tableStyle]="{ 'min-width': '80rem' }" responsiveLayout="stack" [breakpoint]="'960px'"
+                styleClass="p-datatable-striped">
 
-    <div class="tableContainer" *ngIf="selectedStation">
-        <label>
-            <h5>{{selectedStation | uppercase}}</h5>
-        </label>
-        <p-table rowHover="true" #dt2 [columns]="selectedColumns" [loading]="loading"
-            [globalFilterFields]="['StationID', 'Date', 'Time', 'S1_RelativeWaterLevel', 'S2_SurfaceCurrentSpeedDirection', 'Lower_CurrentSpeedDirection', 'Middle_CurrentSpeedDirection']"
-            [value]="selectedStation === 'cwprs1' ? cwprs1 : selectedStation === 'cwprs2' ? cwprs2 : cwprs1"
-            paginator="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" showCurrentPageReport="true"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [filterDelay]="0"
-            [tableStyle]="{ 'min-width': '80rem' }" responsiveLayout="stack" [breakpoint]="'960px'"
-            styleClass="p-datatable-striped">
+                <ng-template pTemplate="caption">
+                    <div class="caption">
+                        <div id="search">
+                            <input type="search" placeholder="Search"
+                                (input)="onSearch($any($event).target.value, dt2)">
+                        </div>
 
-            <ng-template pTemplate="caption">
-                <div class="caption">
-                    <div id="search">
-                        <input type="search" placeholder="Search"
-                            (input)="dt2.filterGlobal($any($event).target.value, 'contains')">
+                        <div class="headerFilter">
+                            <p-multiSelect class="multidrop" showHeader="false" display="chip" [options]="cols"
+                                [(ngModel)]="selectedColumns" optionLabel="header"
+                                selectedItemsLabel="{0} columns selected" [style]="{'min-width': '200px'}"
+                                placeholder="Choose Columns" />
+
+                            <p-dropdown class="export" [options]="exportOptions" placeholder="Export"
+                                (onChange)="onExportOptionSelect($event, dt2)">
+                                <ng-template let-option pTemplate="selectedItem">
+                                    <span>{{ option.label }}</span>
+                                </ng-template>
+                            </p-dropdown>
+                        </div>
                     </div>
+                </ng-template>
 
-                    <div class="headerFilter">
-                        <p-multiSelect class="multidrop" showHeader="false" display="chip" [options]="cols"
-                            [(ngModel)]="selectedColumns" optionLabel="header" selectedItemsLabel="{0} columns selected"
-                            [style]="{'min-width': '200px'}" placeholder="Choose Columns" />
+                <!-- Table Header -->
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th pSortableColumn="Stationname">Station Name<p-sortIcon field="Stationname" />
+                        </th>
+                        <th pSortableColumn="StationID">Station ID<p-sortIcon field="StationID" />
+                        </th>
+                        <th pSortableColumn="Date">Date <p-sortIcon field="Date" /></th>
+                        <th pSortableColumn="Time">Time <p-sortIcon field="Time" /></th>
+                        <th *ngFor="let col of columns" pSortableColumn="{{col.field}}">
+                            {{col.header}} <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
 
-                        <p-dropdown class="fieldd" [options]="exportOptions" placeholder="Export"
-                            (onChange)="onExportOptionSelect($event, dt2)">
-                            <ng-template let-option pTemplate="selectedItem">
-                                <span>{{ option.label }}</span>
-                            </ng-template>
-                        </p-dropdown>
-                    </div>
-                </div>
-            </ng-template>
+                <!-- Table Body -->
+                <ng-template pTemplate="body" let-buoy let-columns="columns">
+                    <tr>
+                        <td>{{'sd'}}</td>
+                        <td [innerHTML]="highlightSearchText(buoy.StationID)"></td>
+                        <td [innerHTML]="highlightSearchText(buoy.Date?.split('T')[0])"></td>
+                        <td [innerHTML]="highlightSearchText(buoy.Time?.split('T')[1]?.split('.')[0])"></td>
+                        <td *ngFor="let col of columns">
+                            <span [innerHTML]="highlightSearchText(buoy[col.field])"></span>
+                        </td>
+                    </tr>
+                </ng-template>
 
-            <!-- Table Header -->
-            <ng-template pTemplate="header" let-columns>
-                <tr>
-                    <th pSortableColumn="Stationname" style="width: 11.5%">Stationname<p-sortIcon field="Stationname" />
-                    </th>
-                    <th pSortableColumn="StationID" style="width: 11.5%">StationID<p-sortIcon field="StationID" /></th>
-                    <th pSortableColumn="Date" style="width: 11.5%">Date <p-sortIcon field="Date" /></th>
-                    <th pSortableColumn="Time" style="width: 11.5%">Time <p-sortIcon field="Time" /></th>
-                    <th *ngFor="let col of columns" pSortableColumn="{{col.field}}">
-                        {{col.header}} <p-sortIcon field="{{col.field}}"></p-sortIcon>
-                    </th>
-                </tr>
-            </ng-template>
-
-            <!-- Table Body -->
-            <ng-template pTemplate="body" let-buoy let-columns="columns">
-                <tr>
-                    <td>{{i+1}}</td>
-                    <td>{{ buoy.StationID }}</td>
-                    <td>{{ buoy.Date?.split('T')[0] }}</td>
-                    <td>{{ buoy.Time?.split('T')[1]?.split('.')[0] }}</td>
-                    <td *ngFor="let col of columns">
-                        {{ buoy[col.field] }}
-                    </td>
-                </tr>
-            </ng-template>
-
-            <div class="tableFooter"></div>
-        </p-table>
+                <div class="tableFooter"></div>
+            </p-table>
+        </div>
     </div>

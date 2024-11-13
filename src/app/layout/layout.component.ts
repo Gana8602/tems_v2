@@ -44,10 +44,19 @@ export class LayoutComponent implements OnInit {
   StationConfig:StationConfigs[]=[];
   stationName1!:string;
   stationName2!:string;
+  image1!:string;
+  image2!:string;
   // currentUser!:CurrentUser;
   
-constructor(private configss:ConfigDataService, private route: ActivatedRoute, private router: Router){}
+  getScreenSize(){
+    return { width: window.innerWidth, height: window.innerHeight };
+  }
+constructor(private configss:ConfigDataService, private route: ActivatedRoute, private router: Router, private toast:ToastrService){}
   ngOnInit(): void {
+    const scren = this.getScreenSize();
+
+    // console.log(scren.width, scren.height);
+  // this.toast.success(`width: ${scren.width}`, `height: ${scren.height}`);
     // console.log("username",this.configss.CurrentUser.name);
     this.route.paramMap.subscribe(params => {
       this.page = params.get('page') || 'home';
@@ -69,26 +78,26 @@ constructor(private configss:ConfigDataService, private route: ActivatedRoute, p
 
   sensors() {
    
-    this.httpClient.get('http://192.168.0.115:3000/api/users/sensorData?fromDate=2024-01-10&toDate=2024-01-10')
+    this.httpClient.get('http://192.168.0.109:3000/api/users/sensorData?fromDate=2024-01-10&toDate=2024-11-09')
   .subscribe((data: any) => {
-      console.log('sensorData:== ', data);
+      // console.log('sensorData:== ', data);
       // this.sensorDataList = data;
       // Optionally log the sensorDataList to verify
-      console.log('sensorDataList after assignment:', this.sensorDataList);
+      // console.log('sensorDataList after assignment:', this.sensorDataList);
   });
   }
 
   getConfigs(){
-    this.httpClient.get('http://192.168.0.115:3000/api/getconfigs')
+    this.httpClient.get('http://192.168.0.109:3000/api/getconfigs')
     .subscribe((data:any)=>{
     
       this.configs=data;
-      console.log('configs:== ', this.configs);
+      // console.log('configs:== ', this.configs);
     });
   }
 
   // getStationConfig(){
-  //   this.httpClient.get('http://192.168.0.115:3000/api/getstationconfig')
+  //   this.httpClient.get('http://192.168.0.109:3000/api/getstationconfig')
   //   .subscribe((data:any)=>{
   //     this.StationConfig=data;
   //     console.log('Station Configs',this.StationConfig);

@@ -80,14 +80,14 @@ button{
     background-color: var(--background-color);
 }
 .user-edit{
-height: 95%;
+height: 80%;
 width: 100%;
-padding: 20px;
+padding: 20px;overflow-y:auto;
 /* background-color: aqua; */
 }
 select{
     height: 40px;
-    width: 320px;
+    width: 90%;
     margin-left: 10px;
     margin-top: 5px;
     margin-bottom: 20px;
@@ -103,6 +103,7 @@ select{
 .but{
     height: 50px;
     width: 100%;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: end;
@@ -132,7 +133,7 @@ select{
 }
 input{
     height: 40px;
-    width: 310px;
+    width: 90%;
     margin-left: 10px;
     margin-bottom: 20px;
     margin-top: 5px;
@@ -146,6 +147,9 @@ input{
     border-color: rgba(0, 0, 0, 0.678);
     border-radius: 10px;
     background-color: rgba(173, 172, 172, 0.409);
+}
+input.ng-touched.ng-invalid{
+    border: 1px solid red;
 }
 img {
     height: 40px;
@@ -196,6 +200,7 @@ i {
     margin: 5px;
     background-color: var(--background-color);
     border-radius: 10px;
+    overflow: hidden;
 }
 .fii{
     height: 50px;
@@ -223,6 +228,7 @@ i {
     max-height: 300px; /* Set a maximum height for the scrollable area */
     overflow-y: auto; /* Enable vertical scrolling */
     flex: 1; /* Allow body to take available space */
+    overflow: scroll;
 }
 
 table {

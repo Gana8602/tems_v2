@@ -4,14 +4,30 @@
 } */
 
 .guages{
-    height: 230px;
+    height: 250px;
     width: 250px;
+    /* margin-left: 5px !important; */
+}
+
+@media (max-width:1600px){
+    .guages{
+        margin-right: 10px !important;
+    }
+   
 }
 
 @media (max-width:1300px) {
     .guages{
-        height: 220px;
-        width: 220px;
+        height: 175px;
+        width: 175px;
+        margin-left: 10px !important;
+    }   
+}
+
+@media(max-height:700px){
+    .guages{
+        height: 175px;
+        width: 175px;
+        margin-left: 10px !important;
     }
-    
 }
