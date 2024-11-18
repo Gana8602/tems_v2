@@ -3,10 +3,11 @@
     margin: 0;
     padding-left: 6%;
     width: 100; /* Full width */
-    height: 90vh; /* Full height */
+    height: 100vh; /* Full height */
     display: flex; /* Flexbox for layout */
     flex-direction: row; /* Column direction */
     /* background-color: blue; */
+    overflow-y: auto;
 }
 .section1{
     /* flex: 1 0 33.33%; */

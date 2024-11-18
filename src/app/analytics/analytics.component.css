@@ -292,7 +292,27 @@
     justify-content: center; 
     align-items: center;
     flex: 1; /* Allow each chart container to grow equally */
-    /* min-height: 100vh;  */
+    min-height: 400px; 
+  }
+
+  .chartContainer2 {
+    /* background-color: rgb(0, 0, 0); */
+    background-color: var(--secbackground-color);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+    margin: 20px; 
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    min-height: 80vh; 
+  }
+
+  .m-s-text {
+    position: absolute;
+    top: 25px;
+    right: 75px;
+    color: var(--main-text);
   }
 
 

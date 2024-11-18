@@ -34,8 +34,7 @@ export class SidenavComponent implements OnInit{
         this.layout.page = name;
         // this.layout.page = name;
         this.router.navigate(['/base', name]);
-        console.log(this.layout.page);
-        if(this.layout.page === 'logout'){
+         if(this.layout.page === 'logout'){
     this.router.navigate(['/login']);
         }
       }

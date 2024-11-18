@@ -303,7 +303,9 @@ this.travelPathAssign();
       // console.log(`Selected unit: ${this.selectedcoordinate}`);
     }
   ngOnInit(): void {
-    this.data.getSensorLiveData('2024-01-01', '2024-11-8').subscribe(response=>{
+    const date = new Date();
+  const todayDate = date.toISOString().substr(0, 10);
+    this.data.getSensorLiveData(todayDate, todayDate).subscribe(response=>{
       // console.log(response);
       this.liveData = response;
       this.buoy1 = this.liveData.buoy1;
@@ -499,7 +501,7 @@ this.travelPathAssign();
           // console.log(data);
       }
 
-      this.http.put('http://192.168.0.109:3000/api/config', data).subscribe({
+      this.http.put('http://localhost:3000/api/config', data).subscribe({
         next: (res) => {
           // console.log(res);
           this.taost.success("Sensor settings Updated", "Success");
@@ -548,7 +550,7 @@ this.travelPathAssign();
         longitude_sec: this.langsec,
       }
     }
-    this.http.put('http://192.168.0.109:3000/api/updatestationconfig',stationConfigData).subscribe(
+    this.http.put('http://localhost:3000/api/updatestationconfig',stationConfigData).subscribe(
       {
         next: (res) => {
           // console.log('response station config ==', res);

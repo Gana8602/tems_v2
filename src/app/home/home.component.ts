@@ -102,43 +102,44 @@ updateMapLayer() {
 
 
 ngOnInit(): void {
-  console.log("init called");
-  forkJoin([
-    this.data.getSensorLiveData('2024-01-01', '2024-11-09'),
-    this.data.getStationNames()
-  ]).subscribe(([sensors, configs]) => {
-    console.log("Data from home: ",sensors);
-    this.sensorsliveData = sensors.buoy1;
-    this.sensorsliveData2 = sensors.buoy2;
-
-    this.livelocationbuoy1 = fromLonLat([this.sensorsliveData[0].LONG, this.sensorsliveData[0].LAT]) as [number, number];
-    this.livelocationbuoy2 = fromLonLat([this.sensorsliveData2[0].LONG, this.sensorsliveData2[0].LAT]) as [number, number];
-    // this.buoy2 = fromLonLat([configs[1].longitude_dd ,configs[1].latitude_dd]) as [number, number];
-    // console.log(`buoy2:== ${configs[1].longitude_dd}`,`${configs[1].latitude_dd}`, this.buoy2, this.livelocationbuoy1);
-    this.bouy1wrange = configs[0].warning_circle;
-    this.buoy2wrange = configs[1].warning_circle;
-    this.buoy1danger = configs[0].danger_circle;
-    this.buoy2danger = configs[1].danger_circle;
-// console.log(this.sensorsliveData[0].Date, this.sensorsliveData[0].Time);
-    const status = this.coordassign(configs);
-    const StatusCheck1 = this.isWithin20Minutes(this.sensorsliveData[0].Date, this.sensorsliveData[0].Time);
-    const statusCheck2 = this.isWithin20Minutes(this.sensorsliveData2[0].Date, this.sensorsliveData2[0].Time);
-    this.imageMarker1 = StatusCheck1 ? '../../assets/buoy.png' : '../../assets/buoy_offline.png';
-    this.imageMarker2 = statusCheck2 ? '../../assets/buoy.png' : '../../assets/buoy_offline.png';
-    this.layout.image1 = this.imageMarker1;
-    this.layout.image2 = this.imageMarker2;
-    
-    console.log(StatusCheck1 ? "oookkkayy" : "not ok");
-    console.log(statusCheck2 ? "oookkkayy" : "not ok");
-    if(this.imageMarker1 != null && this.imageMarker2 !=null){
-if (status && !this.map) {
+  const date = new Date();
+  const todayDate = date.toISOString().substr(0, 10);
+ 
+  if(todayDate !=null){
+    forkJoin([
+      this.data.getSensorLiveData(todayDate, todayDate),
+      this.data.getStationNames()
+    ]).subscribe(([sensors, configs]) => {
+       this.sensorsliveData = sensors.buoy1;
+      this.sensorsliveData2 = sensors.buoy2;
+  console.log(this.sensorsliveData);
+      this.livelocationbuoy1 = fromLonLat([this.sensorsliveData[0].LONG, this.sensorsliveData[0].LAT]) as [number, number];
+      this.livelocationbuoy2 = fromLonLat([this.sensorsliveData2[0].LONG, this.sensorsliveData2[0].LAT]) as [number, number];
+      // this.buoy2 = fromLonLat([configs[1].longitude_dd ,configs[1].latitude_dd]) as [number, number];
+       this.bouy1wrange = configs[0].warning_circle;
+      this.buoy2wrange = configs[1].warning_circle;
+      this.buoy1danger = configs[0].danger_circle;
+      this.buoy2danger = configs[1].danger_circle;
+       const status = this.coordassign(configs);
+      const StatusCheck1 = this.isWithin20Minutes(this.sensorsliveData[0].Date, this.sensorsliveData[0].Time);
+      const statusCheck2 = this.isWithin20Minutes(this.sensorsliveData2[0].Date, this.sensorsliveData2[0].Time);
+      this.imageMarker1 = StatusCheck1 ? '../../assets/buoy.png' : '../../assets/buoy_offline.png';
+      this.imageMarker2 = statusCheck2 ? '../../assets/buoy.png' : '../../assets/buoy_offline.png';
+      this.layout.image1 = this.imageMarker1;
+      this.layout.image2 = this.imageMarker2;
       
-
-      this.MapInit();
-    }
-    }
-    
-  });
+ 
+      if(this.imageMarker1 != null && this.imageMarker2 !=null){
+  if (status && !this.map) {
+        
+  
+        this.MapInit();
+      }
+      }
+      
+    });
+  }
+  
 }
 
 
@@ -183,8 +184,7 @@ coordassign(configs: StationConfigs[]): boolean {
   this.buoy2 = assignLocation(configs[1]);
 
   // Log buoy locations for debugging
-  // console.log("buoy 1 location:", this.livelocationbuoy1);
-  // console.log("buoy 2 location:", this.buoy2);
+ 
 
   // If all went well, return true
   return true;
@@ -202,13 +202,11 @@ isWithin20Minutes(dateTimeString: string, timeString: string): boolean {
 
   // Get the current date and time
   const currentDateTime = new Date();
-  console.log("current DAte", currentDateTime);
-  console.log("api date", combinedDateTime);
+ 
 
   // Calculate the difference in milliseconds
   const diffInMs = currentDateTime.getTime() - combinedDateTime.getTime();
-  console.log("minutes", diffInMs/(1000 * 60));
-  // Convert the difference to minutes
+   // Convert the difference to minutes
   const diffInMinutes = diffInMs / (1000 * 60);
 
   // Check if the difference is within 20 minutes
@@ -358,11 +356,9 @@ isWithin20Minutes(dateTimeString: string, timeString: string): boolean {
     return distancee.toFixed(14); // Formats to 14 decimal places
 }
   checkBuoyRange(markerCoords: [number, number]): void {
-    console.log(this.center, markerCoords);
-    const ddd = this.formatDistance(this.buoy1danger)
+     const ddd = this.formatDistance(this.buoy1danger)
     const distance = getDistance(this.center, markerCoords);
-    console.log("distance 1: ",distance , this.bouy1wrange, this.buoy1danger, ddd);
-    if (distance > this.bouy1wrange && distance < this.buoy1danger) {
+     if (distance > this.bouy1wrange && distance < this.buoy1danger) {
       this.buoy1range = `CWPRS01 Crossed Out of Warning Range`;
     } else if (distance > this.buoy1danger) {
       this.buoy1range = `CWPRS01 Crossed Danger Range`;
@@ -378,8 +374,7 @@ isWithin20Minutes(dateTimeString: string, timeString: string): boolean {
 
   checkBuoyRange2(markerCoords: [number, number]): void {
     const distance = getDistance(this.buoy2, markerCoords);
-    // console.log("distance 2: ",distance, this.buoy2wrange, this.buoy2danger)
-    const newWarningState = distance > this.wrange ? 'Buoy 2 far beyond range' : 'Buoy 2 within warning range';
+     const newWarningState = distance > this.wrange ? 'Buoy 2 far beyond range' : 'Buoy 2 within warning range';
     if(distance>this.buoy2wrange && distance < this.buoy2danger){
       this.buoy2range = `CWPRS02 Crossed Out of Warning Range`;
     }else if(distance > this.buoy2danger){
