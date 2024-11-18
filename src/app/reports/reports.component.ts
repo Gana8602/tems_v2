@@ -177,12 +177,10 @@ exportOptions = [
       }
     }
   
-    console.log(`Formatted From Date: ${formattedFromDate}, Formatted To Date: ${formattedToDate}`);
-  
+   
     this.stationService.getStations(formattedFromDate!, formattedToDate!).subscribe(
       (data: buoys) => {
-        console.log('API Response:', JSON.stringify(data, null, 2));
-        this.CWPRS01 = data.buoy1.map(buoy => ({
+         this.CWPRS01 = data.buoy1.map(buoy => ({
           ...buoy,
           SurfaceSpeed: buoy.S2_SurfaceCurrentSpeedDirection?.split(';')[0],
           SurfaceDirection: buoy.S2_SurfaceCurrentSpeedDirection?.split(';')[1],
@@ -214,8 +212,7 @@ exportOptions = [
 
   onPeriodChange(event: any) {
     // this.selectedPeriod = event.target.value
-  console.log('Selected Period:', event.value);
-}
+ }
 
 getWeekEndDate(startDate: Date): Date {
   let endDate = new Date(startDate);
@@ -249,12 +246,9 @@ onSearch(query: string, dt2: any): void {
   this.selectedStation = type;
   
   if(this.selectedStation == 'CWPRS01'){
-    console.log(this.CWPRS01); 
-  }else if(this.selectedStation == 'CWPRS02'){
-    console.log(this.CWPRS01);
-  }
-  console.log(`selectedType : ${this.selectedStation}`);
-  }
+   }else if(this.selectedStation == 'CWPRS02'){
+   }
+   }
     
   exportCSV(dt2: any) {
     const filteredData = dt2.filteredValue || dt2.value;

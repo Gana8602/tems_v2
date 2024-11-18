@@ -15,6 +15,5 @@ export class UnitsComponent {
 
   // Handle the unit change (optional)
   onUnitChange() {
-    console.log(`Selected unit: ${this.selectedUnit}`);
-  }
+   }
 }

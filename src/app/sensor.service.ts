@@ -6,11 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class SensorService {
-private baseurl: String = "http://192.168.0.109:3000/api/users/sensorData";
+private baseurl: String = "http://localhost:3000/api/users/sensorData";
   http = Inject(HttpClient);
 
   sensors(): Observable<any>{
-    console.log('Calling API:', `${this.baseurl}`);
     return this.http.get(`${this.baseurl}`);
   }
 }

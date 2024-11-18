@@ -48,32 +48,27 @@ export class HomechartComponent implements OnInit, OnDestroy {
   initializeChart(): void {
     const chartDom = document.getElementById('main')!;
     if (chartDom) {
-      console.log('Chart DOM found and initializing chart.');
-      this.chartInstance = echarts.init(chartDom);
+       this.chartInstance = echarts.init(chartDom);
       this.setupChartOptions(); // Setup initial chart options
     } else {
-      console.log('Chart DOM not found.');
-    }
+     }
   }
 
   // Fetch sensor data from the API
  // Fetch sensor data from the API
 fetchSensorData(): void {
     // Log before fetching data
-    console.log('Fetching new sensor data...');
-
-    this.httpClient.get<SensorData[]>('http://192.168.0.109:3000/api/users/sensorData')
+ 
+    this.httpClient.get<SensorData[]>('http://localhost:3000/api/users/sensorData')
       .subscribe((data) => {
-        console.log('New data fetched:', data);
-        
+         
         // Check if fetched data is different from existing data
         if (JSON.stringify(data) !== JSON.stringify(this.sensorDataList)) {
             this.sensorDataList = data; // Update only if data has changed
             this.processData(); // Process the new data
             this.updateChartOptions(); // Update the chart with new data
         } else {
-            console.log('No new data to update.');
-        }
+         }
         
       }, (error) => {
         console.error('Error fetching data:', error);
@@ -105,10 +100,7 @@ fetchSensorData(): void {
     });
 
     // Log processed data to see if it's correct
-    console.log('Battery Voltage:', this.batteryVoltage);
-    console.log('Water Levels:', this.waterLevels);
-    console.log('Time Categories:', this.timeCategories);
-  }
+   }
 
   // Setup the initial chart options (called once during initialization)
   setupChartOptions(): void {
@@ -180,8 +172,7 @@ fetchSensorData(): void {
   // Update the chart options with new data
   updateChartOptions(): void {
 	if (this.chartInstance) {
-	  console.log('Updating chart with new data...');
-	  this.chartInstance.setOption({
+ 	  this.chartInstance.setOption({
 		xAxis: {
 		  data: this.timeCategories // Update xAxis with new time categories
 		},
@@ -215,8 +206,7 @@ fetchSensorData(): void {
   // Start dynamic updates for fetching new data
   startDynamicUpdates(): void {
 	this.timer = setInterval(() => {
-		console.log('Fetching new sensor data...');
-		this.fetchSensorData();
+ 		this.fetchSensorData();
 		 // Fetch new data periodically
 	  }, 5000); // Fetch every 5 seconds
 	   // Fetch every 5 seconds

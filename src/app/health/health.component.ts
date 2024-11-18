@@ -24,15 +24,16 @@ export class HealthComponent {
   sensorDatelist: SensorData[] = []; // Holds fetched sensor data
 tapped(){
   this.is48format = !this.is48format;
-  console.log(this.is48format);
-  this.fetchSensorData();
+   this.fetchSensorData();
 }
   ngOnInit(): void {
     this.fetchSensorData();
   }
 constructor(private layout:LayoutComponent, private data:ConfigDataService, private datePipe: DatePipe){}
   fetchSensorData(): void {
-    this.data.getSensorLiveData('2024-01-01', '2024-11-09').subscribe(datat => {
+    const date = new Date();
+    const todayDate = date.toISOString().substr(0, 10);
+     this.data.getSensorLiveData(todayDate, todayDate).subscribe(datat => {
       if (this.layout.selectedBuoy === 'CWPRS01') {
         this.sensorDatelist = datat.buoy1;
       } else if (this.layout.selectedBuoy === 'CWPRS02') {
@@ -41,16 +42,14 @@ constructor(private layout:LayoutComponent, private data:ConfigDataService, priv
 
       // Call update function after data is fetched
       this.updateSensorStatus(this.sensorDatelist);
-      console.log("Sensor Data List: ", this.sensorDatelist);
-    });
+     });
   }
 
   updateSensorStatus(data: SensorData[]): void {
     if (data.length === 0) return; // Return if no data
 
     const firstRow = data[0];
-    console.log("row",firstRow.Date);
-    
+     
     
 
     // Check if all required data is available for each sensor in the first row
@@ -127,8 +126,7 @@ constructor(private layout:LayoutComponent, private data:ConfigDataService, priv
     if (this.is48format) {
       const tt = new Date(time);
       const timee = tt.toISOString().substr(11,8);
-      console.log(timee);
-      // 24-hour format: Return as HH:MM
+       // 24-hour format: Return as HH:MM
       return timee;
     } else {
       const ttt = new Date(time);

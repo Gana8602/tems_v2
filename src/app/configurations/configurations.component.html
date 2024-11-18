@@ -242,7 +242,7 @@
                         <p>Tide Offset</p>
                         <input type="number" [(ngModel)]="tideOffset" placeholder="Tide Offset">
                         <div class="radioo">
-                            <p>Unit</p>
+                            <p>Tide Units</p>
                             <div class="unit">
                                 <div [ngClass]="{'selected': selectedUnit === 'cm'}" class="cm"
                                     (click)="selectUnit('cm')">
@@ -262,7 +262,7 @@
                         </div>
                         }@else if(slectedOption == 'adcp'){
                         <div class="radioo">
-                            <p>Current Unit</p>
+                            <p>Current Units</p>
                             <div class="unit">
                                 <div [ngClass]="{'selected': selectedcurrentUnit === 'm/s'}" class="meter"
                                     (click)="selectcurrentUnit('m/s')">
