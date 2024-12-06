@@ -111,8 +111,9 @@ ngOnInit(): void {
       this.data.getStationNames()
     ]).subscribe(([sensors, configs]) => {
        this.sensorsliveData = sensors.buoy1;
+       console.log("bin4:", this.sensorsliveData[0].bin4);
       this.sensorsliveData2 = sensors.buoy2;
-  console.log(this.sensorsliveData);
+  console.log("sensor Data",this.sensorsliveData);
       this.livelocationbuoy1 = fromLonLat([this.sensorsliveData[0].LONG, this.sensorsliveData[0].LAT]) as [number, number];
       this.livelocationbuoy2 = fromLonLat([this.sensorsliveData2[0].LONG, this.sensorsliveData2[0].LAT]) as [number, number];
       // this.buoy2 = fromLonLat([configs[1].longitude_dd ,configs[1].latitude_dd]) as [number, number];
@@ -127,12 +128,13 @@ ngOnInit(): void {
       this.imageMarker2 = statusCheck2 ? '../../assets/buoy.png' : '../../assets/buoy_offline.png';
       this.layout.image1 = this.imageMarker1;
       this.layout.image2 = this.imageMarker2;
+      console.log(this.layout.image1, this.layout.image2);
       
  
       if(this.imageMarker1 != null && this.imageMarker2 !=null){
   if (status && !this.map) {
         
-  
+  console.log("ok");
         this.MapInit();
       }
       }

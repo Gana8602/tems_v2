@@ -21,5 +21,5 @@ app.use('/api', userRouter);
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://192.168.0.109:${PORT}`);
+  console.log(`Server is running on http://192.168.0.101:${PORT}`);
 });
