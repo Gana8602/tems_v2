@@ -11,6 +11,8 @@ import * as echarts from 'echarts';
 
 import { StationService, buoys, BuoyData} from '../station_service/station.service';
 import { ThemeService } from '../theme_service/theme.service';
+import { ConfigDataService } from '../config-data.service';
+import { resolve } from 'node:path';
 
 // interface currentModel{
 //   time:string,
@@ -188,19 +190,25 @@ SubmitedslectedOption: String = '';
 chartOption: any;
 loading: boolean = false;
 
-constructor(private stationService: StationService, private themeService: ThemeService, private http:HttpClient, private cd: ChangeDetectorRef) {}
+tideUnit: string = '';
+adcpUnit: string = '';
 
+constructor(private stationService: StationService, private themeService: ThemeService, private http:HttpClient, private cd: ChangeDetectorRef, private sensor:ConfigDataService) {}
 
 ngOnInit(): void {
-  this.themeService.currentTheme$.subscribe(() => {
-  this.Tide();
-  this.surfaceSpeedDirection();
-  this.midSpeedDirection();
-  this.bottomSpeedDirection();
-  this.surfacepolar();
-  this.midpolar();
-  this.bottompolar();
-  });
+    this.themeService.currentTheme$.subscribe(() => {
+     this.UnitType().then(({ tide, adcp }) => {
+      this.tideUnit = tide;
+      this.adcpUnit = adcp;
+      this.Tide();
+      this.surfaceSpeedDirection();
+      this.midSpeedDirection();
+      this.bottomSpeedDirection();
+      this.surfacepolar();
+      this.midpolar();
+      this.bottompolar();
+     });
+      });
 }
 
 ngAfterViewInit() {
@@ -209,6 +217,28 @@ ngAfterViewInit() {
   this.midSpeedDirection();
   this.bottomSpeedDirection();
 } 
+
+UnitType(): Promise<{tide: string; adcp: string}>{
+  return new Promise((unit) => {
+   this.sensor.getsensorConfigs().subscribe((data) => {
+    const tide = data[0]?.unit || 'm';
+    const adcp = data[1]?.unit || 'm/s';
+    console.log(`tide unit: ${tide}, adcp unit: ${adcp}`);
+    unit({ tide, adcp});
+   });
+  })
+}
+// updateSpeed():string{
+//   let data:string;
+//   this.sensor.getsensorConfigs().subscribe(sens=>{
+//     console.log(sens[1].unit);
+//      data = sens[1].unit;
+//      console.log("Value ==",data)
+//   })
+//   return data!;
+// }
+
+
 
 onPeriodChange(event: any) {
 }
@@ -838,11 +868,11 @@ Tide(): void {
         },
         
         yAxis: {
-          name: 'Water Level (m/s)',  // Y-axis legend (title)
+          name: `Water Level (${this.tideUnit})`,  // Y-axis legend (title)
           nameLocation: 'middle',
           nameTextStyle: {
             color: mainText,
-            padding: 15, 
+            padding: [0,0,30,0], 
             fontSize: 16   
           },
           // type: 'value'
@@ -1047,11 +1077,11 @@ surfaceSpeedDirection(): void {
           ...(this.isSpeedChecked ? [
             {
               type: 'value',
-              name: 'Current speed (m/s)',  // Left Y-axis title
+              name: `Current speed (${this.adcpUnit})`,  // Left Y-axis title
               nameLocation: 'middle',
               nameTextStyle: {
                   color: mainText,
-                  padding: 15,  // Adjust spacing
+                  padding: [0,0,30,0],  // Adjust spacing
                   fontSize: 16,
                   // margin: 20  
               },
@@ -1112,8 +1142,8 @@ surfaceSpeedDirection(): void {
 
         legend: {
           data: [
-            ...(this.isSpeedChecked ? ['Current Speed (m/s)'] : []),
-            ...(this.isCurrentChecked ? ['Current Direction (°)'] : [])
+            ...(this.isSpeedChecked ? ['Current Speed'] : []),
+            ...(this.isCurrentChecked ? ['Current Direction'] : [])
           ],
           // data: ['Current Speed (m/s)', 'Current Direction (°)'], 
           orient: 'vertical',
@@ -1187,7 +1217,7 @@ surfaceSpeedDirection(): void {
         
         series: [
           ...(this.isSpeedChecked ? [{
-            name: 'Current Speed (m/s)',
+            name: 'Current Speed',
             // data:  dates.map((date, index) => ({ value: [date, surfaceCurrent[index]?.split(';')[0]] })), 
             // data: this.sampleData.map(item => [item.time, item.speed]),
             data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
@@ -1199,7 +1229,7 @@ surfaceSpeedDirection(): void {
           }] : []),
   
           ...(this.isCurrentChecked ? [{
-            name: 'Current Direction (°)',
+            name: 'Current Direction',
             // data: this.sampleData.map(item => [item.time, item.direction]),
             // data: dates.map((date, index) => ({ value: [date, surfaceCurrent[index]?.split(';')[1]] })),
             data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
@@ -1320,11 +1350,11 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
                 ...(this.isSpeedChecked ? [
                   {
                     type: 'value',
-                    name: 'Current speed (m/s)',  // Left Y-axis title
+                    name: `Current speed (${this.adcpUnit})`,  // Left Y-axis title
                     nameLocation: 'middle',
                     nameTextStyle: {
                         color: mainText,
-                        padding: 25,  // Adjust spacing
+                        padding: [0,0,30,0],  // Adjust spacing
                         fontSize: 16,
                         // margin: 20  
                     },
@@ -1383,8 +1413,8 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
       
               legend: {
                 data: [
-                  ...(this.isSpeedChecked ? ['Current Speed (m/s)'] : []),
-                  ...(this.isCurrentChecked ? [ 'Current Direction (°)'] : [])
+                  ...(this.isSpeedChecked ? ['Current Speed'] : []),
+                  ...(this.isCurrentChecked ? [ 'Current Direction'] : [])
                   ], // Make sure this matches series names
                 orient: 'vertical',
                 right: '15%',
@@ -1457,7 +1487,7 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
               series: [
                 ...(this.isSpeedChecked ? [
                   {
-                    name: 'Current Speed (m/s)',
+                    name: 'Current Speed',
                     // data: this.sampleData2.map(item => [item.time, item.speed]), 
                       data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
                       // data:  dates.map((date, index) => ({ value: [date, midCurrent[index]?.split(';')[0]] })),
@@ -1481,7 +1511,7 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
 
                   ...(this.isCurrentChecked ? [
                     {
-                      name: 'Current Direction (°)',
+                      name: 'Current Direction',
                       // data: this.sampleData.map(item => [item.time, item.direction]),
                          data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
                         // data: dates.map((date, index) => ({ value: [date, midCurrent[index]?.split(';')[1]] })),
@@ -1611,11 +1641,11 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
             yAxis: [
               ...(this.isSpeedChecked ? [{
                 type: 'value',
-                name: 'Current speed (m/s)',  // Left Y-axis title
+                name: `Current speed (${this.adcpUnit})`,  // Left Y-axis title
                 nameLocation: 'middle',
                 nameTextStyle: {
                   color: mainText,
-                  padding: 15,
+                  padding: [0,0,20,0],
                   fontSize: 16,
                 },
                 axisLabel: {
@@ -1669,8 +1699,8 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
             ],
             legend: {
               data: [
-                ...(this.isSpeedChecked ? ['Current Speed (m/s)'] : []),
-                ...(this.isCurrentChecked ? [ 'Current Direction (°)'] : []),
+                ...(this.isSpeedChecked ? ['Current Speed'] : []),
+                ...(this.isCurrentChecked ? [ 'Current Direction'] : []),
                 ],
               orient: 'vertical',
               right: '15%',
@@ -1730,7 +1760,7 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
 
             series: [
               ...(this.isSpeedChecked ? [{
-                name: 'Current Speed (m/s)',
+                name: 'Current Speed',
                 // data: this.sampleData3.map(item => [item.time, item.speed]),
                  data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
                 // data:  dates.map((date, index) => ({ value: [date, bottomCurrent[index]?.split(';')[0]] })),                   
@@ -1744,7 +1774,7 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
 
               ...(this.isCurrentChecked ? [
                 {
-                  name: 'Current Direction (°)',
+                  name: 'Current Direction',
                   // data: this.sampleData3.map(item => [item.time, item.direction]),
                      data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
                     // data: dates.map((date, index) => ({ value: [date, bottomCurrent[index]?.split(';')[1]] })),

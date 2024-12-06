@@ -21,21 +21,21 @@
 
   @media (max-width: 1200px) {
     .filterContainer {
-      width: 25%; /* Adjust width for smaller screens */
+      min-width: 25%; /* Adjust width for smaller screens */
       height: auto;
     }
   }
   
   @media (max-width: 992px) {
     .filterContainer {
-      width: 30%;
+      min-width: 30%;
       height: auto;
     }
   }
   
   @media (max-width: 768px) {
     .filterContainer {
-      width: 40%; /* Full width on mobile */
+      min-width: 40%; /* Full width on mobile */
       height: auto; /* Adjust height to content */
     }
   }
@@ -262,21 +262,21 @@
 
   @media (max-width: 1200px) {
     .chartContainer {
-      width: 90%; /* Adjust width for smaller screens */
+      min-width: 800px; /* Adjust width for smaller screens */
       height: 100%;
     }
   }
   
   @media (max-width: 992px) {
     .chartContainer {
-      width: 80%;
+      min-width: 800px;
       height: 100%;
     }
   }
   
   @media (max-width: 768px) {
     .chartContainer {
-      width: 500px; /* Full width on mobile */
+      min-width: 800px; /* Full width on mobile */
       height: 100%; /* Adjust height to content */
     }
   }
@@ -305,13 +305,14 @@
     display: flex;
     justify-content: center; 
     align-items: center;
+    position: relative;
     min-height: 80vh; 
   }
 
   .m-s-text {
     position: absolute;
-    top: 25px;
-    right: 75px;
+    top: 7px;
+    right: 40px;
     color: var(--main-text);
   }
 

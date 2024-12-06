@@ -8,6 +8,9 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component'; // Add this to bootstrap the app
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {NgMultiSelectDropDownModule} from 'ng-multiselect-dropdown';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 
 @NgModule({
   declarations: [
@@ -18,7 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    
+    DragDropModule,
     RouterModule.forRoot(routes), // Ensure RouterModule is imported correctly
     NgCircleProgressModule.forRoot({
       radius: 100,
@@ -30,6 +33,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       animation: true,
     }),
     BrowserAnimationsModule,
+    NgMultiSelectDropDownModule.forRoot(),
     ToastrModule.forRoot({
       positionClass :'toast-bottom-right'
     })

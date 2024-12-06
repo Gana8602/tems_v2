@@ -20,7 +20,7 @@
 
                         </select>
                     </div>
-                    <div class="stationName">
+                    <div class="stationName2">
                         <p>Station Name</p>
                         <input type="text" [(ngModel)]="stationName" placeholder="Station Name">
                     </div>
@@ -273,6 +273,185 @@
                                     <h4>Knots</h4>
                                 </div>
                             </div>
+
+                            <div class="mmmain">
+
+
+                                <div class="lefte">
+                                    <h2 style="margin-bottom:  20px; margin-top: 15px;">Select Bin For Dashboard</h2>
+                                    <div class="stationName">
+                                        <p>Surface Current</p>
+                                        <select [(ngModel)]="selectedSurface" (change)="CurrentSelect()">
+                                            <option value="">--Please choose an option--</option>
+                                            <option
+                                                *ngFor="let item of getFilteredBins(selectedSurface, selectedMiddle, selectedLower, e_bin1,e_bin2, e_bin3,e_bin4, e_bin5, e_bin6, e_bin7)"
+                                                [value]="item">
+                                                {{ item }}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="stationName">
+                                        <p>Middle Current</p>
+
+                                        <select [(ngModel)]="selectedMiddle" (change)="CurrentSelect()">
+                                            <option value="">--Please choose an option--</option>
+                                            <option
+                                                *ngFor="let item of getFilteredBins(selectedMiddle, selectedSurface, selectedLower, e_bin1,e_bin2, e_bin3,e_bin4, e_bin5, e_bin6, e_bin7)"
+                                                [value]="item">
+                                                {{ item }}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="stationName">
+                                        <p>Lower Current</p>
+                                        <select [(ngModel)]="selectedLower" (change)="CurrentSelect()">
+                                            <option value="">--Please choose an option--</option>
+                                            <option
+                                                *ngFor="let item of getFilteredBins(selectedLower, selectedSurface, selectedMiddle, e_bin1,e_bin2, e_bin3,e_bin4, e_bin5, e_bin6, e_bin7)"
+                                                [value]="item">
+                                                {{ item }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="righte">
+
+                                    <h2 style="margin-bottom:  20px; margin-top: 15px;">Select Bin For sjbfj</h2>
+                                    <div class="stationName">
+                                        <div class="edit_title">
+                                            <p *ngIf="!isEdit1">{{editone}}</p>
+                                            <input type="text" [(ngModel)]="editone" *ngIf="isEdit1">
+                                            <i class="fa-solid fa-pencil" (click)="onEditTap('one')"
+                                                *ngIf="!isEdit1"></i>
+
+
+                                            <i style="color: green;" class="fa-solid fa-circle-check"
+                                                (click)="onOkTap('one')" *ngIf="isEdit1"></i>
+
+
+                                        </div>
+
+                                        <div class="inpu">
+                                            <select [(ngModel)]="e_bin1" (change)="CurrentSelect()">
+                                                <option value="">--Please choose an option--</option>
+                                                <option
+                                                    *ngFor="let item of getFilteredBins(e_bin1,selectedLower, selectedSurface, selectedMiddle, e_bin2, e_bin3,e_bin4, e_bin5, e_bin6, e_bin7)"
+                                                    [value]="item">
+                                                    {{ item }}
+                                                </option>
+                                            </select>
+                                            <i class="fa-solid fa-eye" (click)="onViewTap('one')" *ngIf="isView1"></i>
+                                            <i class="fa-solid fa-eye-slash" (click)="onViewTap('one')"
+                                                *ngIf="!isView1"></i>
+                                        </div>
+
+                                    </div>
+                                    <div class="stationName">
+                                        <p>Lower Current</p>
+                                        <select [(ngModel)]="e_bin2" (change)="CurrentSelect()">
+                                            <option value="">--Please choose an option--</option>
+                                            <option
+                                                *ngFor="let item of getFilteredBins(e_bin2,selectedLower, selectedSurface, selectedMiddle, e_bin1, e_bin3,e_bin4, e_bin5, e_bin6, e_bin7)"
+                                                [value]="item">
+                                                {{ item }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="stationName">
+                                        <p>Lower Current</p>
+                                        <select [(ngModel)]="e_bin3" (change)="CurrentSelect()">
+                                            <option value="">--Please choose an option--</option>
+                                            <option
+                                                *ngFor="let item of getFilteredBins(e_bin3,selectedLower, selectedSurface, selectedMiddle, e_bin2, e_bin1,e_bin4, e_bin5, e_bin6, e_bin7)"
+                                                [value]="item">
+                                                {{ item }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="stationName">
+                                        <p>Lower Current</p>
+                                        <select [(ngModel)]="e_bin4" (change)="CurrentSelect()">
+                                            <option value="">--Please choose an option--</option>
+                                            <option
+                                                *ngFor="let item of getFilteredBins(e_bin4,selectedLower, selectedSurface, selectedMiddle, e_bin2, e_bin3,e_bin1, e_bin5, e_bin6, e_bin7)"
+                                                [value]="item">
+                                                {{ item }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="stationName">
+                                        <p>Lower Current</p>
+                                        <select [(ngModel)]="e_bin5" (change)="CurrentSelect()">
+                                            <option value="">--Please choose an option--</option>
+                                            <option
+                                                *ngFor="let item of getFilteredBins(e_bin5,selectedLower, selectedSurface, selectedMiddle, e_bin2, e_bin3,e_bin4, e_bin1, e_bin6, e_bin7)"
+                                                [value]="item">
+                                                {{ item }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="stationName">
+                                        <p>Lower Current</p>
+                                        <select [(ngModel)]="e_bin6" (change)="CurrentSelect()">
+                                            <option value="">--Please choose an option--</option>
+                                            <option
+                                                *ngFor="let item of getFilteredBins(e_bin6,selectedLower, selectedSurface, selectedMiddle, e_bin2, e_bin3,e_bin4, e_bin5, e_bin1, e_bin7)"
+                                                [value]="item">
+                                                {{ item }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="stationName">
+                                        <p>Lower Current</p>
+                                        <select [(ngModel)]="e_bin7" (change)="CurrentSelect()">
+                                            <option value="">--Please choose an option--</option>
+                                            <option
+                                                *ngFor="let item of getFilteredBins(e_bin7,selectedLower, selectedSurface, selectedMiddle, e_bin2, e_bin3,e_bin4, e_bin5, e_bin6, e_bin1)"
+                                                [value]="item">
+                                                {{ item }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <!-- <ng-multiselect-dropdown [placeholder]="'Select Options'"
+                                        [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems"
+                                        (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect($event)">
+                                    </ng-multiselect-dropdown> -->
+                                    <!-- <div class="checkbox" *ngFor="let data of filterdList; let i = index">
+                                        <input class="check" type="checkbox" id="che{{i}}"
+                                            [checked]="selected_e_bins.includes(data)"
+                                            (change)="onCheckboxChange($event, data, i)" />
+                                        <p>{{ data }}</p>
+                                    </div> -->
+
+                                </div>
+                            </div>
+
+                            <!-- 
+                            <div class="container">
+                       
+                                <div class="box" cdkDropList [cdkDropListData]="leftBox"
+                                    (cdkDropListDropped)="drop($event, rightBox)">
+                                    <div class="item" *ngFor="let item of leftBox" cdkDrag>{{ item }}</div>
+                                </div>
+
+                                
+                                <div class="box" cdkDropList [cdkDropListData]="rightBox"
+                                    (cdkDropListDropped)="drop($event, leftBox)">
+                                    <div class="item" *ngFor="let item of rightBox" cdkDrag>
+                                        {{ item }}
+                                        <button class="remove-btn" (click)="removeItem(item)">X</button>
+                                    </div>
+                                </div>
+                            </div> -->
+
+                            <!-- <div class="box">
+                                <div class="left"></div>
+                                <div class="right"></div>
+                            </div> -->
+
+
 
                         </div>
                         }@else if(slectedOption == 'battery'){

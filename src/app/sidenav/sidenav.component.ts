@@ -36,6 +36,10 @@ export class SidenavComponent implements OnInit{
         this.router.navigate(['/base', name]);
          if(this.layout.page === 'logout'){
     this.router.navigate(['/login']);
+        } else if(this.layout.page == 'Home'){
+          
+            window.location.reload(); // Forces a full-page reload
+          
         }
       }
       
@@ -44,6 +48,31 @@ export class SidenavComponent implements OnInit{
   ngOnInit(): void {
     this.username = localStorage.getItem('username') ?? "";
     this.renderer.setAttribute(document.body, 'data-theme', this.currentTheme);
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const updateTheme = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        this.currentTheme = 'dark';
+        this.renderer.setAttribute(document.body, 'data-theme', this.currentTheme);
+
+      } else {
+        this.currentTheme = 'light';
+        this.renderer.setAttribute(document.body, 'data-theme', this.currentTheme);
+      }
+    };
+  
+    // Log initial mode
+    if (darkModeMediaQuery.matches) {
+      this.currentTheme = 'dark';
+        this.renderer.setAttribute(document.body, 'data-theme', this.currentTheme);
+    } else {
+      this.currentTheme = 'light';
+      this.renderer.setAttribute(document.body, 'data-theme', this.currentTheme);
+    }
+  
+    // Add listener for changes
+    darkModeMediaQuery.addEventListener('change', updateTheme);
+  
   }
 
   toggleTheme(theme:string): void {

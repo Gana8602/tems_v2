@@ -1,5 +1,5 @@
 const express = require('express');
-const { getUsers,addRole, registerUser, loginUser, saveSensorData,saveSensorData2, getSensors, getRoles, adddesignation, getdesignation, deleteRole, DeleteDesignation, test, updateConfigs, getconfigs, updateStationConfig, getStationconfigs, editUser, addLog } = require('../controllers/controller');
+const { getUsers,addRole, registerUser, loginUser, saveSensorData,saveSensorData2, getSensors, getRoles, adddesignation, getdesignation, deleteRole, DeleteDesignation, test, updateConfigs, getconfigs, updateStationConfig, getStationconfigs, editUser, addLog, getSensorsrr } = require('../controllers/controller');
 
 const router = express.Router();
 
@@ -23,5 +23,6 @@ router.get('/getconfigs', getconfigs);
 router.put('/updatestationconfig', updateStationConfig);
 router.get('/getstationconfig', getStationconfigs);
 router.post('/addlog', addLog);
+router.post('/users/getsensorsrr', getSensorsrr);
 
 module.exports = router;

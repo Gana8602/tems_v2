@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { LayoutComponent } from '../layout/layout.component';
 import { BatteryComponent } from '../battery/battery.component';
 import { HealthComponent } from '../health/health.component';
@@ -12,6 +12,7 @@ import { ConfigDataService } from '../config-data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { cos } from '@amcharts/amcharts4/.internal/core/utils/Math';
 import { ActivatedRoute, Router } from '@angular/router';
+import { parse } from 'path';
 
 
 
@@ -19,7 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [BatteryComponent, HealthComponent, GaugeComponent, HttpClientModule],
+  imports: [BatteryComponent, HealthComponent, GaugeComponent, HttpClientModule, CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
   providers:[ConfigDataService]
@@ -58,6 +59,30 @@ export class DashboardComponent {
   time!:string;
   utc!:string;
   buoyImage!:string;
+  showExpand:boolean = false;
+
+  innerCurrent1!:number;
+  innerCurrent2!:number;
+  innerCurrent3!:number;
+  innerCurrent4!:number;
+  innerCurrent5!:number;
+  innerCurrent6!:number;
+  innerCurrent7!:number;
+
+  innerdirection1!:number;
+  innerdirection2!:number;
+  innerdirection3!:number;
+  innerdirection4!:number;
+  innerdirection5!:number;
+  innerdirection6!:number;
+  innerdirection7!:number;
+  inCompval1!:string;
+  inCompval2!:string;
+  inCompval3!:string;
+  inCompval4!:string;
+  inCompval5!:string;
+  inCompval6!:string;
+  inCompval7!:string;
   constructor(
     @Inject(PLATFORM_ID) private platformId: any,
     private layout: LayoutComponent,
@@ -67,13 +92,23 @@ export class DashboardComponent {
   ) {
     // Check if the code is running in the browser
     this.isBrowser = isPlatformBrowser(this.platformId);
+    console.log("browser", this.isBrowser)
   }
+
+  sensor:Config[]=[];
 ngOnInit(): void {
 
   // this.route.paramMap.subscribe(params => {
   //   this.layout.page = params.get('page') || 'home';
   // });
-  this.assign()
+  // this.assign();
+  this.data.getsensorConfigs().subscribe((sensor) => {
+    this.sensor = sensor;
+    // console.log("Sensors==", this.sensor);
+    if (this.sensor != null) {
+      this.assign();
+    }
+  });
 }
   // Initialize map only after view has been fully rendered
   ngAfterViewInit(): void {
@@ -84,13 +119,72 @@ ngOnInit(): void {
     
   }
   sensorDatelist:SensorData[]=[];
+  
+updates(value:string, data:string):number{
+  let val!:number;
+  console.log("value", value);
+  if(data == "speed"){
+    switch (value.trim()) {
+      case "Bin1":
+        return val = parseFloat(this.sensorDatelist[0].S2_SurfaceCurrentSpeedDirection.split(';')[0]);
+      case "Bin2":
+        return val = parseFloat(this.sensorDatelist[0].Middle_CurrentSpeedDirection.split(';')[0]);
+      case "Bin3":
+        return val = parseFloat(this.sensorDatelist[0].Lower_CurrentSpeedDirection.split(';')[0]);
+      case "Bin4":
+        return val = parseFloat(this.sensorDatelist[0].bin4.split(';')[0]);
+      case "Bin5":
+        return val = parseFloat(this.sensorDatelist[0].bin5.split(';')[0]);
+      case "Bin6":
+          return val = parseFloat(this.sensorDatelist[0].bin6.split(';')[0]);
+      case "Bin7":
+          return val = parseFloat(this.sensorDatelist[0].bin7.split(';')[0]);
+      case "Bin8":
+          return val = parseFloat(this.sensorDatelist[0].bin8.split(';')[0]);
+      case "Bin9":
+          return val = parseFloat(this.sensorDatelist[0].bin9.split(';')[0]);
+      case "Bin10":
+          return val = parseFloat(this.sensorDatelist[0].bin10.split(';')[0]);
+          
+      default:
+        return NaN
+  }
+    
+  }else if(data == 'direction'){
+    switch (value.trim()) {
+      case "Bin1":
+        return val = parseFloat(this.sensorDatelist[0].S2_SurfaceCurrentSpeedDirection.split(';')[1]);
+      case "Bin2":
+        return val = parseFloat(this.sensorDatelist[0].Middle_CurrentSpeedDirection.split(';')[1]);
+      case "Bin3":
+        return val = parseFloat(this.sensorDatelist[0].Lower_CurrentSpeedDirection.split(';')[1]);
+      case "Bin4":
+        return val = parseFloat(this.sensorDatelist[0].bin4.split(';')[1]);
+      case "Bin5":
+        return val = parseFloat(this.sensorDatelist[0].bin5.split(';')[1]);
+      case "Bin6":
+          return val = parseFloat(this.sensorDatelist[0].bin6.split(';')[1]);
+      case "Bin7":
+          return val = parseFloat(this.sensorDatelist[0].bin7.split(';')[1]);
+      case "Bin8":
+          return val = parseFloat(this.sensorDatelist[0].bin8.split(';')[1]);
+      case "Bin9":
+          return val = parseFloat(this.sensorDatelist[0].bin9.split(';')[1]);
+      case "Bin10":
+          return val = parseFloat(this.sensorDatelist[0].bin10.split(';')[1]);
+          
+      default:
+        return NaN
+  }
+  }
+  return val;
 
+}
    calculateResult(existingData: number, newData: string | number): number {
     // Check if newData is a number without any signs
     if (typeof newData === 'number') {
       return existingData + newData;
     }
-  
     // If newData is a string, check for "+" or "-" sign
     if (typeof newData === 'string') {
       if (newData.startsWith('-')) {
@@ -106,12 +200,14 @@ ngOnInit(): void {
     return existingData;
   }
   assign(){
+    // console.log()
     const date = new Date();
     const todayDate = date.toISOString().substr(0, 10);
      this.tide_unit = this.layout.configs[0].unit;
     this.data.getSensorLiveData(todayDate, todayDate).subscribe(datat=>{
        if(this.layout.selectedBuoy == 'CWPRS01'){
         this.sensorDatelist = datat.buoy1;
+        console.log(this.sensorDatelist[0]);
         this.buoyImage = this.layout.image1;
          if(this.buoyImage !=null){
           this.fetch();
@@ -120,8 +216,11 @@ ngOnInit(): void {
         
       }else if(this.layout.selectedBuoy == 'CWPRS02'){
         this.sensorDatelist = datat.buoy2;
+        console.log(this.sensorDatelist[0])
         this.buoyImage = this.layout.image2;
+        console.log(this.buoyImage);
         if(this.buoyImage !=null){
+          console.log("oookkk")
           this.fetch();
         }
         
@@ -145,6 +244,9 @@ ngOnInit(): void {
     return `${formattedDate} ${formattedtime}`;
 
   }
+  list:string[]= ['Bin1', 'Bin2', 'Bin3', 'Bin4', 'Bin5', 'Bin6', 'Bin7', 'Bin8', 'Bin9', 'Bin10'];
+filteredBinsNames:string[] =[]; 
+binss:string[]=[];
   fetch(){
 
     const num = this.calculateResult(this.sensorDatelist[1].S1_RelativeWaterLevel, this.layout.configs[0].value);
@@ -163,19 +265,37 @@ ngOnInit(): void {
     this.lat = this.sensorDatelist[0].LAT;
     this.lang = this.sensorDatelist[0].LONG;
   this.center = [this.lat, this.lang];
-    this.s_current =parseFloat(this.sensorDatelist[0].S2_SurfaceCurrentSpeedDirection.split(';')[0]); 
-    this.m_current =parseFloat(this.sensorDatelist[0].Middle_CurrentSpeedDirection.split(';')[0]); 
-    this.l_current =parseFloat(this.sensorDatelist[0].Lower_CurrentSpeedDirection.split(';')[0]); 
-     this.cdr.detectChanges();
-    this.compassvalue1 = parseFloat(this.sensorDatelist[0].S2_SurfaceCurrentSpeedDirection.split(';')[1]);
+    // console.log("lat",this.center)
+    const bin = this.sensor[1].bins;
+    const bins = bin.split(',');
+
+    console.log(bins, this.sensorDatelist[0].bin4)
+    this.binss = bins
+    const filteredList = this.list.filter(item => !bins[0].includes(item.trim()) && !bins[1].includes(item.trim()) && !bins[2].includes(item.trim()));
+    // const filteredList2 = this.list.filter(item => !bins[1].includes(item.trim()));
+    const ff = filteredList[0];
+    console.log("finterled", filteredList, ff);
+    this.filteredBinsNames = filteredList;
+    console.log("filteredBinsNames", this.filteredBinsNames);
+    this.s_current = this.updates(bins[0], 'speed');
+    this.m_current = this.updates(bins[1], 'speed');
+    this.l_current =this.updates(bins[2], 'speed');
+    
+    console.log("currents_inner ",this.innerCurrent1,this.innerCurrent2, this.innerCurrent3, this.innerCurrent4, this.innerCurrent5, this.innerCurrent6, this.innerCurrent7, )
+    console.log(this.innerCurrent1, this.innerdirection1);
+    this.cdr.detectChanges();
+    this.compassvalue1 = this.updates(this.binss[0], 'direction');
     this.compval1= this.direction(this.compassvalue1);
-    this.compassvalue2 = parseFloat(this.sensorDatelist[0].Middle_CurrentSpeedDirection.split(';')[1]);
+    this.compassvalue2 = this.updates(bins[1], 'direction');
     this.compval2= this.direction(this.compassvalue2);
-    // this.compassvalue3 = parseFloat(this.sensorDatelist[0].Lower_CurrentSpeedDirection.split(';')[1]);
+    this.compassvalue3 = this.updates(bins[2], 'direction');
     this.compval3= this.direction(this.compassvalue3);
-    if (this.isBrowser) {
+    // if (this.isBrowser) {
+      console.log("is browser true")
       this.loadLeafletAndInitializeMap();
-    }
+    // }else{
+      console.log("is browser false")
+    // }
   }
   direction(degrees: number): string {
     // Normalize degrees to be between 0 and 360
@@ -218,6 +338,7 @@ ngOnInit(): void {
     }
   }
   async loadLeafletAndInitializeMap(): Promise<void> {
+    console.log("map location",this.center);
     const L = await import('leaflet');  // Lazy-load Leaflet
     this.initializeLeafletMap(L);
   }
@@ -290,5 +411,61 @@ ngOnInit(): void {
     }else{
       this.message = 'range';
      }
+  }
+
+ expandTap(action: string): void {
+  if (action === 'expand') {
+    if (this.extraBinAssign()) {
+      this.showExpand = true;
+      this.map?.setTarget(undefined); // Detach map
+      this.map = undefined;
+    }
+  } else if (action === 'close') {
+    this.showExpand = false;
+
+    this.loadLeafletAndInitializeMap(); // Reinitialize map
+    this.innerCurrent1 = 0;
+    this.innerdirection1 =0;
+  }
+}
+
+
+  extraBinAssign():boolean{
+
+    this.innerCurrent1 = this.updates(this.filteredBinsNames[0], 'speed');
+    this.innerCurrent2 = this.updates(this.filteredBinsNames[1], 'speed');
+    this.innerCurrent3 = this.updates(this.filteredBinsNames[2], 'speed');
+    this.innerCurrent4 = this.updates(this.filteredBinsNames[3], 'speed');
+    this.innerCurrent5 = this.updates(this.filteredBinsNames[4], 'speed');
+    this.innerCurrent6 = this.updates(this.filteredBinsNames[5], 'speed');
+    this.innerCurrent7 = this.updates(this.filteredBinsNames[6], 'speed');
+    this.innerdirection1 = this.updates(this.filteredBinsNames[0], 'direction');
+    this.innerdirection2 = this.updates(this.filteredBinsNames[1], 'direction');
+    this.innerdirection3 = this.updates(this.filteredBinsNames[2], 'direction');
+    this.innerdirection4 = this.updates(this.filteredBinsNames[3], 'direction');
+    this.innerdirection5 = this.updates(this.filteredBinsNames[4], 'direction');
+    this.innerdirection6 = this.updates(this.filteredBinsNames[5], 'direction');
+    this.innerdirection7 = this.updates(this.filteredBinsNames[6], 'direction');
+    this.inCompval1 = this.direction(this.innerdirection1);
+    this.inCompval2 = this.direction(this.innerdirection2);
+    this.inCompval3 = this.direction(this.innerdirection3);
+    this.inCompval4 = this.direction(this.innerdirection4);
+    this.inCompval5 = this.direction(this.innerdirection5);
+    this.inCompval6 = this.direction(this.innerdirection6);
+    this.inCompval7 = this.direction(this.innerdirection7);
+    
+    return !this.innerCurrent1 && !this.innerCurrent2 && !this.innerCurrent3 && !this.innerCurrent4
+    && !this.innerCurrent5 && !this.innerCurrent6 && !this.innerCurrent7
+    && !this.inCompval1 && !this.inCompval2 && !this.inCompval3
+    && !this.inCompval4 && !this.inCompval5 && !this.inCompval6
+    && !this.inCompval7
+    && !this.innerdirection1
+    && !this.innerdirection2
+    && !this.innerdirection3
+    && !this.innerdirection4
+    && !this.innerdirection5
+    && !this.innerdirection6
+    && !this.innerdirection7 ? false : true;
+    
   }
 }

@@ -3,7 +3,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import {  ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { ToastrModule } from 'ngx-toastr';
 import { CurrentUser } from '../../model/config.model';
 import { ConfigDataService } from '../config-data.service';
@@ -16,16 +16,21 @@ import { error } from 'console';
   imports: [FormsModule, HttpClientModule, RouterModule, ToastrModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  providers:[ConfigDataService, ToastrModule]
+  providers: [ConfigDataService, ToastrModule],
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
   userName: string = '';
   password: string = '';
-  currentUser!:CurrentUser;
-  constructor(private http: HttpClient, private router: Router, private toast:ToastrService, private config:ConfigDataService) {}
-ngOnInit(): void {
-  localStorage.removeItem('loginTime');
-}
+  currentUser!: CurrentUser;
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private toast: ToastrService,
+    private config: ConfigDataService
+  ) {}
+  ngOnInit(): void {
+    localStorage.removeItem('loginTime');
+  }
   login(event: Event) {
     event.preventDefault(); // Prevent the default form submission
 
@@ -34,30 +39,31 @@ ngOnInit(): void {
       password: this.password,
     };
 
-     this.config.login(user).subscribe(response=>{
-      this.currentUser = response;
-       this.config.CurrentUser = this.currentUser;
-       localStorage.setItem('loginTime', Date.now().toString());
-      localStorage.setItem('username', this.currentUser.name);
-      this.router.navigate(['/base', 'Home']);
-      this.toast.success("Logged in Succesfully", 'Access Granted ')
-    },
-    error=>{
-      this.toast.error("Invalid Credentials", 'Access Denied ')
-    }
-  )
-//     this.http.post('http://localhost:3000/api/users/login', user).subscribe({
-//       next: (response) => {
- //         // Navigate to the base route upon successful login
-//         // this.currentUser = response;
-//         this.router.navigate(['/base']);
-//         this.toast.success("Logged in Succesfully", 'Access Granted ')
-//       },
-//       error: (err) => {
-//         console.error('Login failed:', err);
-// this.toast.error('Enter Correct Username and password', "Login Failed")
-//         // Handle error (e.g., show an error message)
-//       },
-//     });
+    this.config.login(user).subscribe(
+      (response) => {
+        this.currentUser = response;
+        this.config.CurrentUser = this.currentUser;
+        localStorage.setItem('loginTime', Date.now().toString());
+        localStorage.setItem('username', this.currentUser.name);
+        this.router.navigate(['/base', 'Home']);
+        this.toast.success('Logged in Succesfully', 'Access Granted ');
+      },
+      (error) => {
+        this.toast.error('Invalid Credentials', 'Access Denied ');
+      }
+    );
+    //     this.http.post('http://192.168.0.101:3000/api/users/login', user).subscribe({
+    //       next: (response) => {
+    //         // Navigate to the base route upon successful login
+    //         // this.currentUser = response;
+    //         this.router.navigate(['/base']);
+    //         this.toast.success("Logged in Succesfully", 'Access Granted ')
+    //       },
+    //       error: (err) => {
+    //         console.error('Login failed:', err);
+    // this.toast.error('Enter Correct Username and password', "Login Failed")
+    //         // Handle error (e.g., show an error message)
+    //       },
+    //     });
   }
 }

@@ -3,13 +3,13 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SensorService {
-private baseurl: String = "http://localhost:3000/api/users/sensorData";
+  private baseurl: String = 'http://192.168.0.101:3000/api/users/sensorData';
   http = Inject(HttpClient);
 
-  sensors(): Observable<any>{
+  sensors(): Observable<any> {
     return this.http.get(`${this.baseurl}`);
   }
 }
