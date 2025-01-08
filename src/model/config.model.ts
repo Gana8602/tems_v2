@@ -9,7 +9,7 @@ export interface Config {
     below_warning: string;
     above_warning: string;
     bins:String;
-    e_bin:string;
+    e_bins:string;
   }
 
   export interface StationConfigs{
@@ -45,13 +45,13 @@ export interface Config {
     Middle_CurrentSpeedDirection:string;
     S1_RelativeWaterLevel:number;
     S2_SurfaceCurrentSpeedDirection:string;
-    bin4:string;
-    bin5:string;
-    bin6:string;
-    bin7:string;
-    bin8:string;
-    bin9:string;
-    bin10:string;
+    profile4:string;
+    profile5:string;
+    profile6:string;
+    profile7:string;
+    profile8:string;
+    profile9:string;
+    profile10:string;
   
   }
   export interface SensorData2 {
@@ -68,13 +68,13 @@ export interface Config {
     Middle_CurrentSpeedDirection:string;
     S1_RelativeWaterLevel:number;
     S2_SurfaceCurrentSpeedDirection:string;
-    bin4:string;
-    bin5:string;
-    bin6:string;
-    bin7:string;
-    bin8:string;
-    bin9:string;
-    bin10:string;
+    profile4:string;
+    profile5:string;
+    profile6:string;
+    profile7:string;
+    profile8:string;
+    profile9:string;
+    profile10:string;
   }
 
   export interface sensorLiveData{

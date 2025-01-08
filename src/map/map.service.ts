@@ -9,6 +9,8 @@ import { Circle, LineString, Point } from 'ol/geom';
 import { Circle as CircleStyle, Fill, Icon, Stroke, Style } from 'ol/style';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
+import { XYZ } from 'ol/source';
+
 
 @Injectable({
   providedIn: 'root'
@@ -70,7 +72,9 @@ export class MapService {
       target: target,
       layers: [
         new TileLayer({
-          source: new OSM(),
+          source: new XYZ({
+            url: "http://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+          }),
         })
       ],
       view: new View({

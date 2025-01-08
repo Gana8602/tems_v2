@@ -19,11 +19,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { config } from 'process';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [SidenavComponent, HttpClientModule],
+  imports: [SidenavComponent, HttpClientModule, CommonModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
   providers:[ConfigDataService]
@@ -60,32 +61,32 @@ export class HomeComponent implements OnInit {
 
 
  
-  mapUrl = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
+  mapUrl = 'http://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}';
 mapChange(name:String){
   
   switch (name) {
     case 'OpenCycleMap':
-      this.mapUrl = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
+      this.mapUrl = 'http://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}';
      
       break;
       case 'Transport':
-        this.mapUrl = 'https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
+        this.mapUrl = 'http://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}';
         break;
         case 'Landscape':
-          this.mapUrl = 'https://tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
+          this.mapUrl = 'http://mt0.google.com/vt/lyrs=r&hl=en&x={x}&y={y}&z={z}';
           break;
           case 'Outdoors':
-            this.mapUrl = 'https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
+            this.mapUrl = 'http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}';
             break;
             case 'TransportDark':
-              this.mapUrl = 'https://tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
+              this.mapUrl = 'http://mt0.google.com/vt/lyrs=t&hl=en&x={x}&y={y}&z={z}';
               break;
               case 'Spinal Map':
-                this.mapUrl = 'https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
+                this.mapUrl = 'http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}';
                 break;
       
     default:
-      this.mapUrl = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4';
+      this.mapUrl = 'http://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}';
       break;
   }
 this.updateMapLayer();
@@ -99,9 +100,15 @@ updateMapLayer() {
     tileLayer.setSource(newSource);
   }
 }
-
+online:boolean = false;
 
 ngOnInit(): void {
+  const status = navigator.onLine;
+  this.online = status;
+  if(!this.online){
+    this.mapUrl = '../../../../assets/tiles/western/{z}/{x}/{y}.png';
+  }
+  console.log("online status",status);
   const date = new Date();
   const todayDate = date.toISOString().substr(0, 10);
  
@@ -111,7 +118,7 @@ ngOnInit(): void {
       this.data.getStationNames()
     ]).subscribe(([sensors, configs]) => {
        this.sensorsliveData = sensors.buoy1;
-       console.log("bin4:", this.sensorsliveData[0].bin4);
+       console.log("bin4:", this.sensorsliveData[0].profile4);
       this.sensorsliveData2 = sensors.buoy2;
   console.log("sensor Data",this.sensorsliveData);
       this.livelocationbuoy1 = fromLonLat([this.sensorsliveData[0].LONG, this.sensorsliveData[0].LAT]) as [number, number];
@@ -245,7 +252,9 @@ isWithin20Minutes(dateTimeString: string, timeString: string): boolean {
         this.map = new Map({
           view: new View({
             center: this.buoy2,
-            zoom: 17,
+            zoom: this.online? 16 :11,
+            
+
           }),
           layers: [
             new TileLayer({

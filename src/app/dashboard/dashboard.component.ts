@@ -15,7 +15,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { parse } from 'path';
 
 
-
+export interface e_bins{
+  name:string,
+  bin:string,
+  show:boolean
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -125,26 +129,26 @@ updates(value:string, data:string):number{
   console.log("value", value);
   if(data == "speed"){
     switch (value.trim()) {
-      case "Bin1":
+      case "Profile1":
         return val = parseFloat(this.sensorDatelist[0].S2_SurfaceCurrentSpeedDirection.split(';')[0]);
-      case "Bin2":
+      case "Profile2":
         return val = parseFloat(this.sensorDatelist[0].Middle_CurrentSpeedDirection.split(';')[0]);
-      case "Bin3":
+      case "Profile3":
         return val = parseFloat(this.sensorDatelist[0].Lower_CurrentSpeedDirection.split(';')[0]);
-      case "Bin4":
-        return val = parseFloat(this.sensorDatelist[0].bin4.split(';')[0]);
-      case "Bin5":
-        return val = parseFloat(this.sensorDatelist[0].bin5.split(';')[0]);
-      case "Bin6":
-          return val = parseFloat(this.sensorDatelist[0].bin6.split(';')[0]);
-      case "Bin7":
-          return val = parseFloat(this.sensorDatelist[0].bin7.split(';')[0]);
-      case "Bin8":
-          return val = parseFloat(this.sensorDatelist[0].bin8.split(';')[0]);
-      case "Bin9":
-          return val = parseFloat(this.sensorDatelist[0].bin9.split(';')[0]);
-      case "Bin10":
-          return val = parseFloat(this.sensorDatelist[0].bin10.split(';')[0]);
+      case "Profile4":
+        return val = parseFloat(this.sensorDatelist[0].profile4.split(';')[0]);
+      case "Profile5":
+        return val = parseFloat(this.sensorDatelist[0].profile5.split(';')[0]);
+      case "Profile6":
+          return val = parseFloat(this.sensorDatelist[0].profile6.split(';')[0]);
+      case "Profile7":
+          return val = parseFloat(this.sensorDatelist[0].profile7.split(';')[0]);
+      case "Profile8":
+          return val = parseFloat(this.sensorDatelist[0].profile8.split(';')[0]);
+      case "Profile9":
+          return val = parseFloat(this.sensorDatelist[0].profile9.split(';')[0]);
+      case "Profile10":
+          return val = parseFloat(this.sensorDatelist[0].profile10.split(';')[0]);
           
       default:
         return NaN
@@ -152,26 +156,26 @@ updates(value:string, data:string):number{
     
   }else if(data == 'direction'){
     switch (value.trim()) {
-      case "Bin1":
+      case "Profile1":
         return val = parseFloat(this.sensorDatelist[0].S2_SurfaceCurrentSpeedDirection.split(';')[1]);
-      case "Bin2":
+      case "Profile2":
         return val = parseFloat(this.sensorDatelist[0].Middle_CurrentSpeedDirection.split(';')[1]);
-      case "Bin3":
+      case "Profile3":
         return val = parseFloat(this.sensorDatelist[0].Lower_CurrentSpeedDirection.split(';')[1]);
-      case "Bin4":
-        return val = parseFloat(this.sensorDatelist[0].bin4.split(';')[1]);
-      case "Bin5":
-        return val = parseFloat(this.sensorDatelist[0].bin5.split(';')[1]);
-      case "Bin6":
-          return val = parseFloat(this.sensorDatelist[0].bin6.split(';')[1]);
-      case "Bin7":
-          return val = parseFloat(this.sensorDatelist[0].bin7.split(';')[1]);
-      case "Bin8":
-          return val = parseFloat(this.sensorDatelist[0].bin8.split(';')[1]);
-      case "Bin9":
-          return val = parseFloat(this.sensorDatelist[0].bin9.split(';')[1]);
-      case "Bin10":
-          return val = parseFloat(this.sensorDatelist[0].bin10.split(';')[1]);
+      case "Profile4":
+        return val = parseFloat(this.sensorDatelist[0].profile4.split(';')[1]);
+      case "Profile5":
+        return val = parseFloat(this.sensorDatelist[0].profile5.split(';')[1]);
+      case "Profile6":
+          return val = parseFloat(this.sensorDatelist[0].profile6.split(';')[1]);
+      case "Profile7":
+          return val = parseFloat(this.sensorDatelist[0].profile7.split(';')[1]);
+      case "Profile8":
+          return val = parseFloat(this.sensorDatelist[0].profile8.split(';')[1]);
+      case "Profile9":
+          return val = parseFloat(this.sensorDatelist[0].profile9.split(';')[1]);
+      case "Profile10":
+          return val = parseFloat(this.sensorDatelist[0].profile10.split(';')[1]);
           
       default:
         return NaN
@@ -244,7 +248,7 @@ updates(value:string, data:string):number{
     return `${formattedDate} ${formattedtime}`;
 
   }
-  list:string[]= ['Bin1', 'Bin2', 'Bin3', 'Bin4', 'Bin5', 'Bin6', 'Bin7', 'Bin8', 'Bin9', 'Bin10'];
+  list:string[]= ['Profile1', 'Profile2', 'Profile3', 'Profile4', 'Profile5', 'Profile6', 'Profile7', 'Profile8', 'Profile9', 'Profile10'];
 filteredBinsNames:string[] =[]; 
 binss:string[]=[];
   fetch(){
@@ -264,19 +268,19 @@ binss:string[]=[];
     // this.tide= this.sensorDatelist[0].S1_RelativeWaterLevel;
     this.lat = this.sensorDatelist[0].LAT;
     this.lang = this.sensorDatelist[0].LONG;
-  this.center = [this.lat, this.lang];
+    this.center = [this.lat, this.lang];
     // console.log("lat",this.center)
     const bin = this.sensor[1].bins;
     const bins = bin.split(',');
 
-    console.log(bins, this.sensorDatelist[0].bin4)
+    console.log(bins, this.sensorDatelist[0].profile4)
     this.binss = bins
     const filteredList = this.list.filter(item => !bins[0].includes(item.trim()) && !bins[1].includes(item.trim()) && !bins[2].includes(item.trim()));
     // const filteredList2 = this.list.filter(item => !bins[1].includes(item.trim()));
     const ff = filteredList[0];
     console.log("finterled", filteredList, ff);
-    this.filteredBinsNames = filteredList;
-    console.log("filteredBinsNames", this.filteredBinsNames);
+    // this.filteredBinsNames = filteredList;
+    
     this.s_current = this.updates(bins[0], 'speed');
     this.m_current = this.updates(bins[1], 'speed');
     this.l_current =this.updates(bins[2], 'speed');
@@ -429,8 +433,35 @@ binss:string[]=[];
   }
 }
 
+  e_bin1_name!:string;
+  e_bin2_name!:string;
+  e_bin3_name!:string;
+  e_bin4_name!:string;
+  e_bin5_name!:string;
+  e_bin6_name!:string;
+  e_bin7_name!:string;
 
+  e_bin1_status:boolean = false;
+  e_bin2_status:boolean = false;
+  e_bin3_status:boolean = false;
+  e_bin4_status:boolean = false;
+  e_bin5_status:boolean = false;
+  e_bin6_status:boolean = false;
+  e_bin7_status:boolean = false;
+
+
+  e_bins:e_bins[]=[];
   extraBinAssign():boolean{
+    
+   const bstring = this.sensor[1].e_bins;
+   const bjson = JSON.parse(bstring);
+    this.e_bins = bjson;
+    for(let bin of this.e_bins){
+      this.filteredBinsNames.push(bin.bin);
+    }
+
+    console.log("filteredBinsNames", this.e_bins);
+
 
     this.innerCurrent1 = this.updates(this.filteredBinsNames[0], 'speed');
     this.innerCurrent2 = this.updates(this.filteredBinsNames[1], 'speed');
@@ -453,6 +484,22 @@ binss:string[]=[];
     this.inCompval5 = this.direction(this.innerdirection5);
     this.inCompval6 = this.direction(this.innerdirection6);
     this.inCompval7 = this.direction(this.innerdirection7);
+
+    this.e_bin1_name = this.e_bins[0].name;
+    this.e_bin2_name = this.e_bins[1].name;
+    this.e_bin3_name = this.e_bins[2].name;
+    this.e_bin4_name = this.e_bins[3].name;
+    this.e_bin5_name = this.e_bins[4].name;
+    this.e_bin6_name = this.e_bins[5].name;
+    this.e_bin7_name = this.e_bins[6].name;
+
+    this.e_bin1_status = this.e_bins[0].show;
+    this.e_bin2_status = this.e_bins[1].show;
+    this.e_bin3_status = this.e_bins[2].show;
+    this.e_bin4_status = this.e_bins[3].show;
+    this.e_bin5_status = this.e_bins[4].show;
+    this.e_bin6_status = this.e_bins[5].show;
+    this.e_bin7_status = this.e_bins[6].show;
     
     return !this.innerCurrent1 && !this.innerCurrent2 && !this.innerCurrent3 && !this.innerCurrent4
     && !this.innerCurrent5 && !this.innerCurrent6 && !this.innerCurrent7

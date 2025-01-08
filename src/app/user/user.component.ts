@@ -30,7 +30,7 @@ export class UserComponent implements OnInit {
   state: string = 'Add';
   users = [];
   id!: string;
-  baseUrl: String = 'http://192.168.0.101:3000/api/users/';
+  baseUrl: String = 'http://localhost:3000/api/users/';
   constructor(
     private http: HttpClient,
     private config: ConfigDataService,
@@ -53,7 +53,7 @@ export class UserComponent implements OnInit {
       password: this.password,
     };
     this.http
-      .post('http://192.168.0.101:3000/api/users/edit', editUser)
+      .post('http://localhost:3000/api/users/edit', editUser)
       .subscribe({
         next: (response: any) => {
           this.getUsers();
@@ -78,7 +78,7 @@ export class UserComponent implements OnInit {
     this.state = 'Edit';
     this.name = users['name'];
     this.username = users['username'];
-    this.password = users['password'];
+    this.password = '';
     this.selectedRole = users['role'];
     this.selectedDesignation = users['designation'];
     this.email = users['email'];
@@ -97,7 +97,7 @@ export class UserComponent implements OnInit {
 
     // Send the new user data to your backend API
     this.http
-      .post('http://192.168.0.101:3000/api/users/register', newUser)
+      .post('http://localhost:3000/api/users/register', newUser)
       .subscribe({
         next: (response: any) => {
           // Optional: You can show a success message to the user
@@ -117,7 +117,7 @@ export class UserComponent implements OnInit {
   }
 
   getUsers() {
-    this.http.get('http://192.168.0.101:3000/api/users').subscribe(
+    this.http.get('http://localhost:3000/api/users').subscribe(
       (response: any) => {
         this.users = response;
       },
@@ -125,7 +125,7 @@ export class UserComponent implements OnInit {
     );
   }
   getRoles() {
-    this.http.get('http://192.168.0.101:3000/api/users/getroles').subscribe(
+    this.http.get('http://localhost:3000/api/users/getroles').subscribe(
       (response: any) => {
         this.Roles = response;
       },
@@ -137,7 +137,7 @@ export class UserComponent implements OnInit {
       role: this.roleentered,
     };
     this.http
-      .post('http://192.168.0.101:3000/api/users/addrole', newrole)
+      .post('http://localhost:3000/api/users/addrole', newrole)
       .subscribe({
         next: (response: any) => {
           this.getRoles();
@@ -168,7 +168,7 @@ export class UserComponent implements OnInit {
     };
     this.http
       .post(
-        'http://192.168.0.101:3000/api/users/adddesignation',
+        'http://localhost:3000/api/users/adddesignation',
         newdesignation
       )
       .subscribe({
@@ -191,7 +191,7 @@ export class UserComponent implements OnInit {
   }
   getDesignation() {
     this.http
-      .get('http://192.168.0.101:3000/api/users/getdesignation')
+      .get('http://localhost:3000/api/users/getdesignation')
       .subscribe(
         (response: any) => {
           this.Designation = response;
@@ -202,7 +202,7 @@ export class UserComponent implements OnInit {
 
   DeleteRole(id: number) {
     this.http
-      .delete(`http://192.168.0.101:3000/api/users/deleteRole/${id}`)
+      .delete(`http://localhost:3000/api/users/deleteRole/${id}`)
       .subscribe({
         next: (response) => {
           this.getRoles();
@@ -218,7 +218,7 @@ export class UserComponent implements OnInit {
   //delete desig
   DeleteDesignation(id: number) {
     this.http
-      .delete(`http://192.168.0.101:3000/api/users/deleteDesignation/${id}`)
+      .delete(`http://localhost:3000/api/users/deleteDesignation/${id}`)
       .subscribe({
         next: (response) => {
           this.getDesignation();

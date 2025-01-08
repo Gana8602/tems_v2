@@ -80,7 +80,7 @@ export class LayoutComponent implements OnInit {
   sensors() {
     this.httpClient
       .get(
-        'http://192.168.0.101:3000/api/users/sensorData?fromDate=2024-01-10&toDate=2024-11-09'
+        'http://localhost:3000/api/users/sensorData?fromDate=2024-01-10&toDate=2024-11-09'
       )
       .subscribe((data: any) => {
         // this.sensorDataList = data;
@@ -90,14 +90,14 @@ export class LayoutComponent implements OnInit {
 
   getConfigs() {
     this.httpClient
-      .get('http://192.168.0.101:3000/api/getconfigs')
+      .get('http://localhost:3000/api/getconfigs')
       .subscribe((data: any) => {
         this.configs = data;
       });
   }
 
   // getStationConfig(){
-  //   this.httpClient.get('http://192.168.0.101:3000/api/getstationconfig')
+  //   this.httpClient.get('http://localhost:3000/api/getstationconfig')
   //   .subscribe((data:any)=>{
   //     this.StationConfig=data;
 

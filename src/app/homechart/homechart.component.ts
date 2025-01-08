@@ -60,7 +60,7 @@ export class HomechartComponent implements OnInit, OnDestroy {
     // Log before fetching data
 
     this.httpClient
-      .get<SensorData[]>('http://192.168.0.101:3000/api/users/sensorData')
+      .get<SensorData[]>('http://localhost:3000/api/users/sensorData')
       .subscribe(
         (data) => {
           // Check if fetched data is different from existing data

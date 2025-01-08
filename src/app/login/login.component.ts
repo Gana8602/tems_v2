@@ -45,25 +45,13 @@ export class LoginComponent implements OnInit {
         this.config.CurrentUser = this.currentUser;
         localStorage.setItem('loginTime', Date.now().toString());
         localStorage.setItem('username', this.currentUser.name);
-        this.router.navigate(['/base', 'Home']);
+        this.router.navigate(['/base']);
         this.toast.success('Logged in Succesfully', 'Access Granted ');
       },
       (error) => {
         this.toast.error('Invalid Credentials', 'Access Denied ');
       }
     );
-    //     this.http.post('http://192.168.0.101:3000/api/users/login', user).subscribe({
-    //       next: (response) => {
-    //         // Navigate to the base route upon successful login
-    //         // this.currentUser = response;
-    //         this.router.navigate(['/base']);
-    //         this.toast.success("Logged in Succesfully", 'Access Granted ')
-    //       },
-    //       error: (err) => {
-    //         console.error('Login failed:', err);
-    // this.toast.error('Enter Correct Username and password', "Login Failed")
-    //         // Handle error (e.g., show an error message)
-    //       },
-    //     });
+
   }
 }
