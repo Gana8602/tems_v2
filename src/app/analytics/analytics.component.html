@@ -110,12 +110,22 @@
         </div>
       </div>
 
+      <div class="field"  *ngIf="selectedSensor === 'adcp'">
+        <label for="bin">
+          <h3>Bin</h3>
+        </label>
+        <p-dropdown class="dateDrop" [options]="dropdownOptions" [(ngModel)]="surfacebin"
+         placeholder="Select a bin" (onChange)="onBinChange(surfacebin)">
+        </p-dropdown>
+      </div>
+
       <div class="field plot">
         <label for="dataType">
           <h3>Plot select</h3>
         </label>
         <p-dropdown class="dateDrop" [options]="chartOptions" [(ngModel)]="selectedChart"
           placeholder="Select a chart"></p-dropdown>
+
 
         <button class="submit" (click)="onSubmitAndFetch()">Submit</button>
       </div>
@@ -140,12 +150,12 @@
       </div>
 
       <div class="chartContainer"
-        *ngIf="SubmitedslectedOption === '' || SubmitedslectedOption === 'adcp' && selectedChart !== 'currentSpeed'">
+        *ngIf="SubmitedslectedOption === '' || SubmitedslectedOption === 'adcp' && selectedChart !== 'currentSpeed' && !noInitial">
         <div id="midSpeedDirection" class="chart-diagram" style="width: 100%; height: 400px;"></div>
       </div>
 
       <div class="chartContainer"
-        *ngIf="SubmitedslectedOption === '' || SubmitedslectedOption === 'adcp' && selectedChart !== 'currentSpeed'">
+        *ngIf="SubmitedslectedOption === '' || SubmitedslectedOption === 'adcp' && selectedChart !== 'currentSpeed' && !noInitial">
         <div id="bottomSpeedDirection" class="chart-diagram" style="width: 100%; height: 400px;"></div>
       </div>
 

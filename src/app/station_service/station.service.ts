@@ -5,19 +5,26 @@ import { catchError } from 'rxjs/operators';
 import { error } from 'console';
 
 export interface BuoyData {
-  id: string;
+  id:number;
   StationID: string;
   Date: string;
   Time: string;
-  UTC_Time: string;
-  LAT: string;
-  LONG: string;
-  BatteryVoltage: string;
+  UTC_Time:string;
+  LAT: number;
+  LONG: number;
+  Battery_Voltage: string;
   GPS_Date: string;
-  S1_RelativeWaterLevel: string;
-  S2_SurfaceCurrentSpeedDirection: string;
-  Middle_CurrentSpeedDirection: string;
-  Lower_CurrentSpeedDirection: string;
+  Lower_CurrentSpeedDirection:string;
+  Middle_CurrentSpeedDirection:string;
+  S1_RelativeWaterLevel:number;
+  S2_SurfaceCurrentSpeedDirection:string;
+  profile4:string;
+  profile5:string;
+  profile6:string;
+  profile7:string;
+  profile8:string;
+  profile9:string;
+  profile10:string;
 }
 
 export interface buoys {
@@ -28,8 +35,8 @@ export interface buoys {
   providedIn: 'root',
 })
 export class StationService {
-  private apiUrl = 'http://192.168.0.101:3000/api/users/sensorData';
-private apiUrlrr = 'http://192.168.0.101:3000/api/users/getsensorsrr';
+  private apiUrl = 'http://localhost:3000/api/users/sensorData';
+private apiUrlrr = 'http://localhost:3000/api/users/getSensorsTime';
 
 
   constructor(private http: HttpClient) {}
@@ -46,7 +53,7 @@ private apiUrlrr = 'http://192.168.0.101:3000/api/users/getsensorsrr';
       })
     );
   }
-  getStationsrr(fromDate: string, toDate: string): Observable<buoys> {
+  getSensorssTime(fromDate: string, toDate: string): Observable<buoys> {
     const params = new HttpParams()
       .set('fromDate', fromDate)
       .set('toDate', toDate);

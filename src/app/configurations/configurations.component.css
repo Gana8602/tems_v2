@@ -249,7 +249,10 @@ button{
     background-color: rgba(173, 172, 172, 0.409);
 }
 .mmmain{
+    overflow-y: auto;
     display: flex;
+    width: 201%;
+    height: 30%;
     flex-direction: row;
 }
 .righte{

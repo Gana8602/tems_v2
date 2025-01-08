@@ -199,8 +199,15 @@ img{
   font-size: 18px;
   border-radius: 12px;
 }
+.sidebar li svg{
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  border-radius: 12px;
+}
+
 @media(max-height:600px){
-  .sidebar li i{
+  .sidebar li i svg{
     height: 43px;
     font-size: 12px;
 

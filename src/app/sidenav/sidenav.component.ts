@@ -33,11 +33,12 @@ export class SidenavComponent implements OnInit{
       }else{
         this.layout.page = name;
         // this.layout.page = name;
-        this.router.navigate(['/base', name]);
+        // this.router.navigate(['/base', name]);
          if(this.layout.page === 'logout'){
     this.router.navigate(['/login']);
         } else if(this.layout.page == 'Home'){
-          
+          this.layout.page = name;
+          // this.router.navigate(['/base', name]);
             window.location.reload(); // Forces a full-page reload
           
         }

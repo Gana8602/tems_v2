@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://192.168.0.101:3000/api/users/login'; // Node API URL
+  private apiUrl = 'http://localhost:3000/api/users/login'; // Node API URL
 
   constructor(private http: HttpClient) {}
 

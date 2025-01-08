@@ -174,9 +174,9 @@
     </div>
     <div class="secion4" *ngIf="showExpand">
         <i class="fa-solid fa-minimize" (click)="expandTap('close')"></i>
-        <div class="list_current">
+        <div class="list_current" *ngIf="e_bin1_status">
             <div class="one">
-                <h4>{{filteredBinsNames[0]}} Current Speed</h4>
+                <h4>{{e_bin1_name}} Current Speed</h4>
                 <div class="dataMaind">
 
                     <app-gauge gaugeId="gauge-4" [value]="innerCurrent1"></app-gauge>
@@ -184,7 +184,7 @@
                 </div>
             </div>
             <div class="two">
-                <h4>{{filteredBinsNames[0]}} Current Direction</h4>
+                <h4>{{e_bin1_name}} Current Direction</h4>
                 <div class="dataMaind">
                     <div class="compp">
                         <div class="compass">
@@ -208,9 +208,9 @@
                 </div>
             </div>
         </div>
-        <div class="list_current">
+        <div class="list_current" *ngIf="e_bin2_status">
             <div class="one">
-                <h4>{{filteredBinsNames[1]}} Current Speed</h4>
+                <h4>{{e_bin2_name}} Current Speed</h4>
                 <div class="dataMaind">
 
                     <app-gauge gaugeId="gauge-5" [value]="innerCurrent2"></app-gauge>
@@ -218,7 +218,7 @@
                 </div>
             </div>
             <div class="two">
-                <h4>{{filteredBinsNames[1]}} Current Direction</h4>
+                <h4>{{e_bin2_name}} Current Direction</h4>
                 <div class="dataMaind">
                     <div class="compp">
                         <div class="compass">
@@ -242,9 +242,9 @@
                 </div>
             </div>
         </div>
-        <div class="list_current">
+        <div class="list_current" *ngIf="e_bin3_status">
             <div class="one">
-                <h4>{{filteredBinsNames[2]}} Current Speed</h4>
+                <h4>{{e_bin3_name}} Current Speed</h4>
                 <div class="dataMaind">
 
                     <app-gauge gaugeId="gauge-6" [value]="innerCurrent3"></app-gauge>
@@ -253,7 +253,7 @@
             </div>
 
             <div class="two">
-                <h4>{{filteredBinsNames[2]}} Current Direction</h4>
+                <h4>{{e_bin3_name}} Current Direction</h4>
                 <div class="dataMaind">
                     <div class="compp">
                         <div class="compass">
@@ -277,9 +277,9 @@
                 </div>
             </div>
         </div>
-        <div class="list_current">
+        <div class="list_current" *ngIf="e_bin4_status">
             <div class="one">
-                <h4>{{filteredBinsNames[3]}} Current Speed</h4>
+                <h4>{{e_bin4_name}} Current Speed</h4>
                 <div class="dataMaind">
 
                     <app-gauge gaugeId="gauge-7" [value]="innerCurrent4"></app-gauge>
@@ -288,7 +288,7 @@
             </div>
 
             <div class="two">
-                <h4>{{filteredBinsNames[3]}} Current Direction</h4>
+                <h4>{{e_bin4_name}} Current Direction</h4>
                 <div class="dataMaind">
                     <div class="compp">
                         <div class="compass">
@@ -312,9 +312,9 @@
                 </div>
             </div>
         </div>
-        <div class="list_current">
+        <div class="list_current" *ngIf="e_bin5_status">
             <div class="one">
-                <h4>{{filteredBinsNames[4]}} Current Speed</h4>
+                <h4>{{e_bin5_name}} Current Speed</h4>
                 <div class="dataMaind">
 
                     <app-gauge gaugeId="gauge-8" [value]="innerCurrent5"></app-gauge>
@@ -322,7 +322,7 @@
                 </div>
             </div>
             <div class="two">
-                <h4>{{filteredBinsNames[4]}} Current Direction</h4>
+                <h4>{{e_bin5_name}} Current Direction</h4>
                 <div class="dataMaind">
                     <div class="compp">
                         <div class="compass">
@@ -346,9 +346,9 @@
                 </div>
             </div>
         </div>
-        <div class="list_current">
+        <div class="list_current" *ngIf="e_bin6_status">
             <div class="one">
-                <h4>{{filteredBinsNames[5]}} Current Speed</h4>
+                <h4>{{e_bin6_name}} Current Speed</h4>
                 <div class="dataMaind">
 
                     <app-gauge gaugeId="gauge-9" [value]="innerCurrent6"></app-gauge>
@@ -357,7 +357,7 @@
             </div>
 
             <div class="two">
-                <h4>{{filteredBinsNames[5]}} Current Direction</h4>
+                <h4>{{e_bin6_name}} Current Direction</h4>
                 <div class="dataMaind">
                     <div class="compp">
                         <div class="compass">
@@ -381,9 +381,9 @@
                 </div>
             </div>
         </div>
-        <div class="list_current">
+        <div class="list_current" *ngIf="e_bin7_status">
             <div class="one">
-                <h4>{{filteredBinsNames[6]}} Current Speed</h4>
+                <h4>{{e_bin7_name}} Current Speed</h4>
                 <div class="dataMaind">
 
                     <app-gauge gaugeId="gauge-10" [value]="innerCurrent7"></app-gauge>
@@ -391,7 +391,7 @@
                 </div>
             </div>
             <div class="two">
-                <h4>{{filteredBinsNames[7]}} Current Direction</h4>
+                <h4>{{e_bin7_name}} Current Direction</h4>
                 <div class="dataMaind">
                     <div class="compp">
                         <div class="compass">

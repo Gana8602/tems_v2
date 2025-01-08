@@ -33,6 +33,13 @@ import { subscribe } from 'diagnostics_channel';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
+
+export interface e_bins{
+  name:string,
+  bin:string,
+  show:boolean
+}
+
 @Component({
   selector: 'app-configurations',
   standalone: true,
@@ -87,7 +94,7 @@ export class ConfigurationsComponent implements OnInit {
   selectedItems:any = [];
   dropdownSettings:IDropdownSettings = {};
 
-  listBins: string[] = ['Bin1', 'Bin2', 'Bin3', 'Bin4', 'Bin5', 'Bin6', 'Bin7', 'Bin8', 'Bin9', 'Bin10'];
+  listBins: string[] = ['Profile1', 'Profile2', 'Profile3', 'Profile4', 'Profile5', 'Profile6', 'Profile7', 'Profile8', 'Profile9', 'Profile10'];
 selectedSurface: string = '';
 selectedMiddle: string = '';
 selectedLower: string = '';
@@ -125,24 +132,64 @@ isView5!:boolean;
 isView6!:boolean;
 isView7!:boolean;
 
+recieved_e_bins:e_bins[]=[
 
+];
 
 onEditTap(val:string){
   console.log(val);
   if(val == 'one'){
     this.isEdit1 = !this.isEdit1;
+  }else if(val == 'two'){
+    this.isEdit2=!this.isEdit2;
+  }else if(val == 'three'){
+    this.isEdit3=!this.isEdit3;
+  }else if(val == 'four'){
+    this.isEdit4=!this.isEdit4;
+  }else if(val == 'five'){
+    this.isEdit5=!this.isEdit5;
+  }
+  else if(val == 'six'){
+    this.isEdit6=!this.isEdit6;
+  }else if(val == 'seven'){
+    this.isEdit7=!this.isEdit7;
   }
 
 }
 onOkTap(val:string){
   if(val == 'one'){
     this.isEdit1 = false;
+
+  }else if(val == 'two'){
+    this.isEdit2 = false;
+  }else if(val == 'three'){
+    this.isEdit3 = false;
+  }else if(val == 'four'){
+    this.isEdit4 = false;
+  }else if(val == 'five'){
+    this.isEdit5 = false;
+  }else if(val == 'six'){
+    this.isEdit6 = false;
+  }else if(val == 'seven'){
+    this.isEdit7 = false;
   }
 }
 
 onViewTap(val:string){
   if(val == 'one'){
     this.isView1 = !this.isView1;
+  }else if(val == 'two'){
+    this.isView2 = !this.isView2;
+  }else if(val == 'three'){
+    this.isView3 = !this.isView3;
+  }else if(val == 'four'){
+    this.isView4 = !this.isView4;
+  }else if(val == 'five'){
+    this.isView5 = !this.isView5;
+  }else if(val == 'six'){
+    this.isView6 = !this.isView6;
+  }else if(val == 'seven'){
+    this.isView7 = !this.isView7;
   }
 
 }
@@ -152,7 +199,7 @@ getFilteredBins(current: string, exclude1: string, exclude2: string, exclude3: s
   // Include the current selection and exclude the others
   return this.listBins.filter(bin => bin === current || (bin !== exclude1 && bin !== exclude2 && bin !== exclude3 && bin !== exclude4 && bin !== exclude5 && bin !== exclude6 && bin !== exclude7 && bin !== exclude8 && bin !== exclude9 ));
 }
-list:string[]= ['Bin1', 'Bin2', 'Bin3', 'Bin4', 'Bin5', 'Bin6', 'Bin7', 'Bin8', 'Bin9', 'Bin10'];
+list:string[]= ['Profile1', 'Profile2', 'Profile3', 'Profile4', 'Profile5', 'Profile6', 'Profile7', 'Profile8', 'Profile9', 'Profile10'];
 filterdList:string[]=[];
 selected_e_bins:string[] = [];
 onCheckboxChange(event: Event, item: string, i:number): void {
@@ -344,6 +391,7 @@ CurrentSelect() {
           number,
           number
         ];
+        console.log("nano loc",point1);
         const point2 = fromLonLat([this.liveloclang1, this.liveloclat1]) as [
           number,
           number
@@ -429,7 +477,39 @@ CurrentSelect() {
     // console.log(this.tideOffset, this.selectedUnit, this.selectedcurrentUnit,
     //   this.belowdanger,this.abovedanger, this.belowwarning, this.abovewarning
     // );
+    const ee = this.sensor[1].e_bins;
+    // console.log("e_bin:",ee);
+    const ejson = JSON.parse(ee);
+    
+    this.recieved_e_bins = ejson;
+    console.log(this.recieved_e_bins);
+    this.editone = this.recieved_e_bins[0].name;
+    this.edittwo = this.recieved_e_bins[1].name;
+    this.editthree = this.recieved_e_bins[2].name;
+    this.editfour = this.recieved_e_bins[3].name;
+    this.editfive = this.recieved_e_bins[4].name;
+    this.editsix = this.recieved_e_bins[5].name;
+    this.editseven = this.recieved_e_bins[6].name;
+
+    this.isView1 = this.recieved_e_bins[0].show;
+    this.isView2 = this.recieved_e_bins[1].show;
+    this.isView3 = this.recieved_e_bins[2].show;
+    this.isView4 = this.recieved_e_bins[3].show;
+    this.isView5 = this.recieved_e_bins[4].show;
+    this.isView6 = this.recieved_e_bins[5].show;
+    this.isView7 = this.recieved_e_bins[6].show;
+
+    this.e_bin1 = this.recieved_e_bins[0].bin;
+    this.e_bin2 = this.recieved_e_bins[1].bin;
+    this.e_bin3 = this.recieved_e_bins[2].bin;
+    this.e_bin4 = this.recieved_e_bins[3].bin;
+    this.e_bin5 = this.recieved_e_bins[4].bin;
+    this.e_bin6 = this.recieved_e_bins[5].bin;
+    this.e_bin7 = this.recieved_e_bins[6].bin;
+
   }
+
+
    // Inside your ConfigurationsComponent class
    warningCircleStyle = new Style({
     stroke: new Stroke({
@@ -511,7 +591,7 @@ CurrentSelect() {
       layers: [
         new TileLayer({
           source: new XYZ({
-            url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4',
+            url: 'http://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
           }),
         }),
       ],
@@ -540,7 +620,7 @@ CurrentSelect() {
         layers: [
           new TileLayer({
             source: new XYZ({
-              url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4',
+              url: 'http://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
             }),
           }),
         ],
@@ -601,7 +681,7 @@ CurrentSelect() {
         layers: [
           new TileLayer({
             source: new XYZ({
-              url: 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=c30d4b0044414082b818c93c793707a4',
+              url: 'http://mt{0-3}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
             }),
           }),
         ],
@@ -653,6 +733,45 @@ CurrentSelect() {
 
   //updates
   onsensorSubmit() {
+    const e_bins_json = [
+      {
+        name:this.editone ?? "",
+        bin:this.e_bin1 ?? "",
+        show:this.isView1 ?? false
+      },
+      {
+        name:this.edittwo ?? "",
+        bin:this.e_bin2 ?? "",
+        show:this.isView2 ?? false
+      },
+      {
+        name:this.editthree ?? "",
+        bin:this.e_bin3 ?? "",
+        show:this.isView3 ?? false
+      },
+      {
+        name:this.editfour ?? "",
+        bin:this.e_bin4 ?? "",
+        show:this.isView4 ?? false
+      },
+      {
+        name:this.editfive ?? "",
+        bin:this.e_bin5 ?? "",
+        show:this.isView5 ?? false
+      },
+      {
+        name:this.editsix ?? "",
+        bin:this.e_bin6 ?? "",
+        show:this.isView6 ?? false
+      },
+      {
+        name:this.editseven ?? "",
+        bin:this.e_bin7 ?? "",
+        show:this.isView7 ?? false
+      }
+    ];
+    const e_bins = JSON.stringify(e_bins_json);
+
     const binnn = `${this.selectedSurface},${this.selectedMiddle},${this.selectedLower}`;
     console.log("binnss: ===",binnn);
     // console.log("tapped", this.slectedOption);
@@ -667,13 +786,15 @@ CurrentSelect() {
         sensor_type: this.slectedOption,
         value: this.tideOffset.toString(),
         unit: this.selectedUnit,
+
       };
       // console.log(data);
     } else if (this.slectedOption === 'adcp') {
       data = {
         sensor_type: this.slectedOption,
         unit: this.selectedcurrentUnit,
-        bins: binnn
+        bins: binnn,
+        e_bins: e_bins
       };
       // console.log(data);
     } else if (this.slectedOption === 'battery') {
@@ -687,7 +808,7 @@ CurrentSelect() {
       // console.log(data);
     }
 
-    this.http.put('http://192.168.0.101:3000/api/config', data).subscribe({
+    this.http.put('http://localhost:3000/api/config', data).subscribe({
       next: (res) => {
         // console.log(res);
         this.taost.success('Sensor settings Updated', 'Success');
@@ -737,7 +858,7 @@ CurrentSelect() {
     }
     this.http
       .put(
-        'http://192.168.0.101:3000/api/updatestationconfig',
+        'http://localhost:3000/api/updatestationconfig',
         stationConfigData
       )
       .subscribe({
@@ -759,16 +880,16 @@ CurrentSelect() {
 
   dropdownassign(){
     this.dropdownList = [
-      { item_id: 1, item_text: 'Bin1' },
-      { item_id: 2, item_text: 'Bin2' },
-      { item_id: 3, item_text: 'Bin3' },
-      { item_id: 4, item_text: 'Bin4' },
-      { item_id: 5, item_text: 'Bin5' },
-      { item_id: 6, item_text: 'Bin6' },
-      { item_id: 7, item_text: 'Bin7' },
-      { item_id: 8, item_text: 'Bin8' },
-      { item_id: 9, item_text: 'Bin9' },
-      { item_id:10,item_text: 'Bin10' },
+      { item_id: 1, item_text: 'Profile1' },
+      { item_id: 2, item_text: 'Profile2' },
+      { item_id: 3, item_text: 'Profile3' },
+      { item_id: 4, item_text: 'Profile4' },
+      { item_id: 5, item_text: 'Profile5' },
+      { item_id: 6, item_text: 'Profile6' },
+      { item_id: 7, item_text: 'Profile7' },
+      { item_id: 8, item_text: 'Profile8' },
+      { item_id: 9, item_text: 'Profile9' },
+      { item_id:10,item_text: 'Profile10' },
     ];
     this.selectedItems = [
     ];

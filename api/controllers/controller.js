@@ -1,4 +1,4 @@
-const { json } = require('stream/consumers');
+
 const { sql } = require('../db');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
@@ -264,11 +264,17 @@ const saveSensorData = async (req, res) => {
         S2_SurfaceCurrentSpeedDirection,
         Middle_CurrentSpeedDirection,
         Lower_CurrentSpeedDirection,
-        bin4
+        Profile4,
+        Profile5,
+        Profile6,
+        Profile7,
+        Profile8,
+        Profile9,
+        Profile10
     } = req.body;
 
     // Validate input
-    if (!StationID || !Date || !Time || !UTC_Time || !LAT || !LONG || !BatteryVoltage || !GPS_Date || !S1_RelativeWaterLevel || !S2_SurfaceCurrentSpeedDirection || !Middle_CurrentSpeedDirection || !Lower_CurrentSpeedDirection ||!bin4) {
+    if (!StationID || !Date || !Time || !UTC_Time || !LAT || !LONG || !BatteryVoltage || !GPS_Date || !S1_RelativeWaterLevel || !S2_SurfaceCurrentSpeedDirection || !Middle_CurrentSpeedDirection || !Lower_CurrentSpeedDirection ||!Profile4 ||!Profile5||!Profile6||!Profile7||!Profile8||!Profile9||!Profile10) {
         return res.status(400).json({ message: 'Invalid input data' });
     }
 
@@ -282,9 +288,9 @@ const saveSensorData = async (req, res) => {
         // Prepare the SQL query
         const query = `
             INSERT INTO temsv2.dbo.sensorsData (
-                StationID, [Date], [Time], UTC_Time, LAT, LONG, Battery_Voltage, GPS_Date, S1_RelativeWaterLevel, S2_SurfaceCurrentSpeedDirection, Middle_CurrentSpeedDirection, Lower_CurrentSpeedDirection, bin4
+                StationID, [Date], [Time], UTC_Time, LAT, LONG, Battery_Voltage, GPS_Date, S1_RelativeWaterLevel, S2_SurfaceCurrentSpeedDirection, Middle_CurrentSpeedDirection, Lower_CurrentSpeedDirection, profile4, profile5, profile6, profile7, profile8, profile9, profile10
             ) VALUES (
-                @StationID, @Date, @Time, @UTC_Time, @LAT, @LONG, @BatteryVoltage, @GPS_Date, @S1_RelativeWaterLevel, @S2_SurfaceCurrentSpeedDirection, @Middle_CurrentSpeedDirection, @Lower_CurrentSpeedDirection, @bin4
+                @StationID, @Date, @Time, @UTC_Time, @LAT, @LONG, @BatteryVoltage, @GPS_Date, @S1_RelativeWaterLevel, @S2_SurfaceCurrentSpeedDirection, @Middle_CurrentSpeedDirection, @Lower_CurrentSpeedDirection, @Profile4, @Profile5, @Profile6, @Profile7, @Profile8, @Profile9, @Profile10
             )
         `;
 
@@ -301,7 +307,14 @@ const saveSensorData = async (req, res) => {
         request.input('S2_SurfaceCurrentSpeedDirection', sql.VarChar, '0.69;221.6'); // Static data, adjust as needed
         request.input('Middle_CurrentSpeedDirection', sql.VarChar, '0.71;249.3'); // Static data, adjust as needed
         request.input('Lower_CurrentSpeedDirection', sql.VarChar, '0.32;254.7'); // Static data, adjust as needed
-        request.input('bin4', sql.VarChar, bin4);
+        request.input('profile4', sql.VarChar, Profile4);
+        request.input('profile5', sql.VarChar, Profile5);
+        request.input('profile6', sql.VarChar, Profile6);
+        request.input('profile7', sql.VarChar, Profile7);
+        request.input('profile8', sql.VarChar, Profile8);
+        request.input('profile9', sql.VarChar, Profile9);
+        request.input('profile10', sql.VarChar, Profile10);
+     
 
         const result = await request.query(query);
 
@@ -314,13 +327,12 @@ const saveSensorData = async (req, res) => {
         res.status(500).json({ message: 'Error saving data', error: err });
     }
 };
-
 const saveSensorData2 = async (req, res) => {
     console.log('Received data:', req.body); // Debugging
 
     const {
         StationID,
-        Date,
+        Datee,
         Time,
         UTC_Time,
         LAT,
@@ -331,10 +343,23 @@ const saveSensorData2 = async (req, res) => {
         S2_SurfaceCurrentSpeedDirection,
         Middle_CurrentSpeedDirection,
         Lower_CurrentSpeedDirection,
+        Profile4,
+        Profile5,
+        Profile6,
+        Profile7,
+        Profile8,
+        Profile9,
+        Profile10,
     } = req.body;
 
     // Validate input
-    if (!StationID || !Date || !Time || !UTC_Time || !LAT || !LONG || !BatteryVoltage || !GPS_Date || !S1_RelativeWaterLevel || !S2_SurfaceCurrentSpeedDirection || !Middle_CurrentSpeedDirection || !Lower_CurrentSpeedDirection) {
+    if (
+        !StationID || !Datee || !Time || !UTC_Time || !LAT || !LONG ||
+        !BatteryVoltage || !GPS_Date || !S1_RelativeWaterLevel ||
+        !S2_SurfaceCurrentSpeedDirection || !Middle_CurrentSpeedDirection ||
+        !Lower_CurrentSpeedDirection || !Profile4 || !Profile5 || !Profile6 ||
+        !Profile7 || !Profile8 || !Profile9 || !Profile10
+    ) {
         return res.status(400).json({ message: 'Invalid input data' });
     }
 
@@ -345,18 +370,28 @@ const saveSensorData2 = async (req, res) => {
         const stringBatteryVoltage = String(BatteryVoltage);
         const stringS1_RelativeWaterLevel = String(S1_RelativeWaterLevel);
 
+        // Create the dateTime object
+        const dateTime = new Date(`${Datee}T${Time}`);
+        if (isNaN(dateTime)) {
+            throw new Error('Invalid dateTime format');
+        }
+
         // Prepare the SQL query
         const query = `
             INSERT INTO temsv2.dbo.cwprs2 (
-                StationID, [Date], [Time], UTC_Time, LAT, LONG, Battery_Voltage, GPS_Date, S1_RelativeWaterLevel, S2_SurfaceCurrentSpeedDirection, Middle_CurrentSpeedDirection, Lower_CurrentSpeedDirection
+                StationID, [Date], [Time], UTC_Time, LAT, LONG, Battery_Voltage, GPS_Date, S1_RelativeWaterLevel, 
+                S2_SurfaceCurrentSpeedDirection, Middle_CurrentSpeedDirection, Lower_CurrentSpeedDirection, 
+                profile4, profile5, profile6, profile7, profile8, profile9, profile10, dateTime
             ) VALUES (
-                @StationID, @Date, @Time, @UTC_Time, @LAT, @LONG, @BatteryVoltage, @GPS_Date, @S1_RelativeWaterLevel, @S2_SurfaceCurrentSpeedDirection, @Middle_CurrentSpeedDirection, @Lower_CurrentSpeedDirection
+                @StationID, @Date, @Time, @UTC_Time, @LAT, @LONG, @BatteryVoltage, @GPS_Date, @S1_RelativeWaterLevel, 
+                @S2_SurfaceCurrentSpeedDirection, @Middle_CurrentSpeedDirection, @Lower_CurrentSpeedDirection, 
+                @Profile4, @Profile5, @Profile6, @Profile7, @Profile8, @Profile9, @Profile10, @dateTime
             )
         `;
 
         const request = new sql.Request();
         request.input('StationID', sql.VarChar, StationID);
-        request.input('Date', sql.VarChar, Date);
+        request.input('Date', sql.VarChar, Datee);
         request.input('Time', sql.VarChar, Time);
         request.input('UTC_Time', sql.VarChar, UTC_Time);
         request.input('LAT', sql.VarChar, stringLAT);
@@ -364,16 +399,24 @@ const saveSensorData2 = async (req, res) => {
         request.input('BatteryVoltage', sql.VarChar, stringBatteryVoltage);
         request.input('GPS_Date', sql.VarChar, GPS_Date);
         request.input('S1_RelativeWaterLevel', sql.VarChar, stringS1_RelativeWaterLevel);
-        request.input('S2_SurfaceCurrentSpeedDirection', sql.VarChar, '0.69;221.6'); // Static data, adjust as needed
-        request.input('Middle_CurrentSpeedDirection', sql.VarChar, '0.71;249.3'); // Static data, adjust as needed
-        request.input('Lower_CurrentSpeedDirection', sql.VarChar, '0.32;254.7'); // Static data, adjust as needed
+        request.input('S2_SurfaceCurrentSpeedDirection', sql.VarChar, S2_SurfaceCurrentSpeedDirection);
+        request.input('Middle_CurrentSpeedDirection', sql.VarChar, Middle_CurrentSpeedDirection);
+        request.input('Lower_CurrentSpeedDirection', sql.VarChar, Lower_CurrentSpeedDirection);
+        request.input('profile4', sql.VarChar, Profile4);
+        request.input('profile5', sql.VarChar, Profile5);
+        request.input('profile6', sql.VarChar, Profile6);
+        request.input('profile7', sql.VarChar, Profile7);
+        request.input('profile8', sql.VarChar, Profile8);
+        request.input('profile9', sql.VarChar, Profile9);
+        request.input('profile10', sql.VarChar, Profile10);
+        request.input('dateTime', sql.DateTime, dateTime);
 
         const result = await request.query(query);
 
         // Send response
         res.status(201).json({ message: 'Sensor data saved successfully', data: req.body });
-       await axios.get('http://192.168.0.100:3000/api/split');
-       console.log('Successfully triggered test API for tide and currents');
+        await axios.get('http://192.168.0.100:3000/api/split');
+        console.log('Successfully triggered test API for tide and currents');
     } catch (err) {
         console.error('Database error:', err);
         res.status(500).json({ message: 'Error saving data', error: err });
@@ -548,58 +591,63 @@ const getSensors = async (req, res) => {
 
 ///getSensor two for report and analisys
 //get all sensor data
-const getSensorsrr = async (req, res) => {
-    const { fromDate, toDate } = req.query;
- 
-    // Validate the presence of both parameters
-    if (!fromDate || !toDate) {
-        return res.status(400).json({ message: 'fromDate and toDate are required.' });
-    }
- 
-    try {
-        console.log('Received report fromDate:', fromDate);
-        console.log('Received report toDate:', toDate);
- 
-        // Adjust to IST if needed
-        const IST_OFFSET = 5.5 * 60 * 60 * 1000; // Offset in milliseconds
-        const parsedFromDate = new Date(new Date(fromDate).getTime() + IST_OFFSET);
-        const parsedToDate = new Date(new Date(toDate).getTime() + IST_OFFSET);
- 
-        console.log('Parsed fromDate in IST:', parsedFromDate);
-        console.log('Parsed toDate in IST:', parsedToDate);
- 
-        // SQL Query with fromDate and toDate as string inputs
-        const querySensorsData = `
-            SELECT *,
-                   CAST(Date AS DATETIME) + CAST(Time AS DATETIME) AS DateTime
-            FROM sensorsData
-            WHERE CAST(Date AS DATETIME) + CAST(Time AS DATETIME) >= '${fromDate}'
-              AND CAST(Date AS DATETIME) + CAST(Time AS DATETIME) <= '${toDate}'
-        `;
- 
-        const queryCWPRSData = `
-        SELECT *,
-               CAST(Date AS DATETIME) + CAST(Time AS DATETIME) AS DateTime
-        FROM cwprs2
-        WHERE CAST(Date AS DATETIME) + CAST(Time AS DATETIME) >= '${fromDate}'
-          AND CAST(Date AS DATETIME) + CAST(Time AS DATETIME) <= '${toDate}'
-    `;
- 
-        // Execute the first query for sensorsData
-        const resultSensorsData = await new sql.Request().query(querySensorsData);
-        const resultCWPRSData = await new sql.Request().query(queryCWPRSData);
- 
-        const response = {
-            buoy1: resultSensorsData.recordset.reverse(),
-            buoy2: resultCWPRSData.recordset.reverse(),
-        };
- 
-        res.json(response);
-    } catch (err) {
-        console.error('Error executing query:', err);
-        res.status(500).send(err);
-    }
-};
+const getSensorsTime = async (req, res) => {
+        const { fromDate, toDate } = req.query;
+    
+        if (!fromDate || !toDate) {
+            return res.status(400).json({ message: 'fromDate and toDate are required.' });
+        }
+    
+        try {
+            console.log('Received fromDate:', fromDate);
+            console.log('Received toDate:', toDate);
+    
+            // Convert to local time if necessary
+            const fromDateObj = toLocalDate(fromDate);
+            const toDateObj = toLocalDate(toDate);
+    
+            console.log('Parsed fromDate (local):', fromDateObj);
+            console.log('Parsed toDate (local):', toDateObj);
+    
+            const querySensorsData = `
+                SELECT *
+                FROM sensorsData
+                WHERE (CAST(Date AS DATETIME) + CAST(Time AS DATETIME)) >= @fromDate
+                  AND (CAST(Date AS DATETIME) + CAST(Time AS DATETIME)) <= @toDate
+            `;
+    
+            const queryCWPRSData = `
+                SELECT *
+                FROM cwprs2
+                WHERE (CAST(Date AS DATETIME) + CAST(Time AS DATETIME)) >= @fromDate
+                  AND (CAST(Date AS DATETIME) + CAST(Time AS DATETIME)) <= @toDate
+            `;
+    
+            const request = new sql.Request();
+            request.input('fromDate', sql.DateTime, fromDateObj);
+            request.input('toDate', sql.DateTime, toDateObj);
+    
+            const resultSensorsData = await request.query(querySensorsData);
+            const data1 = resultSensorsData.recordset.reverse();
+    
+            const resultCWPRSData = await request.query(queryCWPRSData);
+            const data2 = resultCWPRSData.recordset.reverse();
+    
+            res.json({
+                buoy1: data1,
+                buoy2: data2
+            });
+        } catch (err) {
+            console.error('Error executing query:', err);
+            res.status(500).send(err);
+        }
+    };
+    
+    const toLocalDate = (dateString) => {
+        const date = new Date(dateString);
+        return new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    };
+    
 
 
 
@@ -664,7 +712,7 @@ const DeleteDesignation = async (req, res) => {
 //configurations
 
 const updateConfigs = async (req, res) => {
-    const { sensor_type, value, unit, above_warning, below_warning, above_danger, below_danger, bins } = req.body;
+    const { sensor_type, value, unit, above_warning, below_warning, above_danger, below_danger, bins, e_bins } = req.body;
     console.log("recieved data", req.body);
     // Update logic based on sensor type
     let query = '';
@@ -677,11 +725,12 @@ const updateConfigs = async (req, res) => {
             break;
         
         case 'adcp':
-            query = 'UPDATE configs SET unit = @unit, bins = @bins WHERE sensor_type = @sensor_type';
+            query = 'UPDATE configs SET unit = @unit, bins = @bins, e_bins = @e_bins WHERE sensor_type = @sensor_type';
             params = [
                 { name: 'unit', type: sql.VarChar, value: unit }, 
                 { name: 'sensor_type', type: sql.VarChar, value: 'adcp' },
-                { name: 'bins', type: sql.VarChar, value: bins}
+                { name: 'bins', type: sql.VarChar, value: bins},
+                { name: 'e_bins', type: sql.VarChar, value: e_bins}
             ];
             break;
 
@@ -846,7 +895,7 @@ module.exports = {
     loginUser,
     saveSensorData,
     getSensors,
-    getSensorsrr,
+    getSensorsTime,
     getRoles,
     getdesignation,
     adddesignation,

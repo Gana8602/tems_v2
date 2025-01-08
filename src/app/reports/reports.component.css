@@ -185,6 +185,12 @@ svg{
   background-color: rgba(170, 20, 20, 0.678) !important;
 } */
 
+::ng-deep .p-datepicker table td > span {
+  height: 25px;
+  width: 20px;
+  transition: box-shadow 0.2s;
+}
+
 ::ng-deep .custom-calendar .p-inputtext  {
   height: 30px;
   width: 100%;
@@ -480,7 +486,12 @@ border-radius: 10px;
 
 /*Common CSS  */
 /* button */
-
+.headerFilter{
+  display: flex;
+  flex-direction: row;
+  width: 50%;
+  justify-content: space-evenly;
+}
 .submit{
   height: 40px;
   width: 100%;
@@ -494,7 +505,7 @@ border-radius: 10px;
 
 ::ng-deep .export .p-dropdown {
   height: 40px;
-  width: 35%;
+  width: 100%;
   /* margin-left: 10px; */
   margin-top: 5px;
   margin-bottom: 20px;
@@ -543,7 +554,7 @@ border-radius: 10px;
 ::ng-deep .multidrop .p-multiselect {
   height: 40px;
   margin-right: 10px;
-  width: 60%;
+  width: 120%;
   align-items: center;
   margin-left: 10px;
   margin-top: 5px;

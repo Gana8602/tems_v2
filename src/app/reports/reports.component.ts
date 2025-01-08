@@ -17,11 +17,20 @@ import * as FileSaver from 'file-saver';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { is } from '@amcharts/amcharts4/core';
+// import { Config } from 'ol/source/TileJSON';
+import { get } from 'http';
+import { ConfigDataService } from '../config-data.service';
+import { Config } from '../../model/config.model';
  
  
 interface Column {
     field: string;
     header: string;
+}
+interface conf{
+  bin: string;
+  name:string;
+  show:boolean
 }
  
 @Component({
@@ -65,23 +74,115 @@ exportOptions = [
  
     loading: boolean = false;
  
-    constructor(private stationService: StationService, private http:HttpClient, private cd: ChangeDetectorRef) {}
- 
-    ngOnInit(): void {
-      this.cols = [
-        { field: 'S1_RelativeWaterLevel', header: 'Water Level' },
-        { field: 'SurfaceSpeed', header: 'Surface Speed' },
+    constructor(private stationService: StationService, private http:HttpClient, private cd: ChangeDetectorRef , private dataCOnfig:ConfigDataService) {}
+  configsData:Config[]= [];
+  binsDAta:conf[]=[];
+    getconfigs(){
+    this.dataCOnfig.getsensorConfigs().subscribe(sensor=>{
+     console.log("sensor Config: ", sensor);
+     this.configsData = sensor;
+     const data  = JSON.parse(this.configsData[1].e_bins);
+      console.log(data);
+      this.binsDAta = data;
+      const ibin = this.configsData[1].bins.split(',');
+      for(let i=0; i<ibin.length; i++){
+        if(ibin[i].toLowerCase() == 'profile1'){
+          this.cols.push(
+            { field: 'SurfaceSpeed', header: 'Surface Speed' },
         { field: 'SurfaceDirection', header: 'Surface Direction' },
         { field: 'MiddleSpeed', header: 'Mid Speed' },
         { field: 'MiddleDirection', header: 'Mid Direction' },
         { field: 'LowerSpeed', header: 'Bottom Speed' },
-        { field: 'LowerDirection', header: 'Bottom Direction' }
+        { field: 'LowerDirection', header: 'Bottom Direction' },
+          )
+        }else if(ibin[i].toLowerCase() == 'profile2'){
+          this.cols.push(
+          { field: 'MiddleSpeed', header: 'Mid Speed' },
+        { field: 'MiddleDirection', header: 'Mid Direction' },
+          )
+        }else if(ibin[i].toLowerCase() == 'profile3'){
+          this.cols.push(
+            { field: 'LowerSpeed', header: 'Bottom Speed' },
+        { field: 'LowerDirection', header: 'Bottom Direction' },
+          )
+        }else{
+          this.cols.push({
+            field:`${ibin[i].toLowerCase()}speed`,
+            header:`${ibin[i].toLowerCase()}speed`
+          },
+          {
+            field:`${ibin[i].toLowerCase()}direction`,
+            header:`${ibin[i].toLowerCase()}direction`
+          })
+        }
+        
+      }
+      for(let i=0; i<this.binsDAta.length;i++){
+        if(this.binsDAta[i].bin.toLowerCase() == 'profile1'){
+          this.cols.push(
+            { field: 'SurfaceSpeed', header: 'Surface Speed' },
+        { field: 'SurfaceDirection', header: 'Surface Direction' },
+          )
+        }else if(this.binsDAta[i].bin.toLowerCase() == 'profile2'){
+          console.log("bin2 is checked its yes");
+          this.cols.push(
+          { field: 'MiddleSpeed', header: 'Mid Speed' },
+        { field: 'MiddleDirection', header: 'Mid Direction' },
+          )
+        }else if(this.binsDAta[i].bin.toLowerCase() == 'profile3'){
+          this.cols.push(
+            { field: 'LowerSpeed', header: 'Bottom Speed' },
+        { field: 'LowerDirection', header: 'Bottom Direction' },
+          )
+        }else{
+          if(this.binsDAta[i].show){
+            this.cols.push(
+              // {
+              //   field:
+              // },
+              {
+              field: `${this.binsDAta[i].bin.toLowerCase()}speed`,
+              header: `${this.binsDAta[i].name}speed`
+            },
+          {
+            field:`${this.binsDAta[i].bin.toLowerCase()}direction`,
+            header:`${this.binsDAta[i].name}direction`
+          })
+          }
+        }
+        
+        
+      }
+    })
+  }
+
+    ngOnInit(): void {
+      this.getconfigs();
+      this.cols = [
+        { field: 'S1_RelativeWaterLevel', header: 'Water Level' },
+        // { field: 'SurfaceSpeed', header: 'Surface Speed' },
+        // { field: 'SurfaceDirection', header: 'Surface Direction' },
+        // { field: 'MiddleSpeed', header: 'Mid Speed' },
+        // { field: 'MiddleDirection', header: 'Mid Direction' },
+        // { field: 'LowerSpeed', header: 'Bottom Speed' },
+        // { field: 'LowerDirection', header: 'Bottom Direction' },
+        // { field: 'bin4', header: "AVCS"},
+        // { field: 'bin5', header: "bin5"},
+        // { field: 'bin6', header: "bin6"},
+        // { field: 'bin7', header: "bin7"},
+        // { field: 'bin8', header: "bin8"},
+        // { field: 'bin9', header: "bin9"},
+        // { field: 'bin10', header: "bin10"},
+        
+
     ];
+    // for(let i=0; i<this.binsDAta.length; i++){
+    //   this.cols.push({field: this.binsDAta[i].bin.toLowerCase()})
+    // }
  
     this.selectedColumns = this.cols;
     this.fromDate.setHours(0, 0, 0, 0);
- 
-      this.fetchStations();
+    this.fetchStations();
   }
  
   onExportOptionSelect(event: any, dt2: any) {
@@ -179,10 +280,10 @@ exportOptions = [
       }
     }
  
-    console.log(`Formatted From Date: ${formattedFromDate}, Formatted To Date: ${formattedToDate}`);
+    console.log(`Formatted report From Date: ${formattedFromDate}, Formatted report To Date: ${formattedToDate}`);
  
    
-    this.stationService.getStations(formattedFromDate!, formattedToDate!).subscribe(
+    this.stationService.getSensorssTime(formattedFromDate!, formattedToDate!).subscribe(
       (data: buoys) => {
          this.CWPRS01 = data.buoy1.map(buoy => ({
           ...buoy,
@@ -192,6 +293,24 @@ exportOptions = [
           MiddleDirection: buoy.Middle_CurrentSpeedDirection?.split(';')[1],
           LowerSpeed: buoy.Lower_CurrentSpeedDirection?.split(';')[0],
           LowerDirection: buoy.Lower_CurrentSpeedDirection?.split(';')[1],
+          profile4speed:buoy.profile4.split(';')[0],
+          profile4direction:buoy.profile4.split(';')[1],
+          profile5speed:buoy.profile5.split(';')[0],
+          profile5direction:buoy.profile5.split(';')[1],
+          profile6speed:buoy.profile6.split(';')[0],
+          profile6direction:buoy.profile6.split(';')[1],
+          profile7speed:buoy.profile7.split(';')[0],
+          profile7direction:buoy.profile7.split(';')[1],
+          profile8speed:buoy.profile8.split(';')[0],
+          profile8direction:buoy.profile8.split(';')[1],
+          profile9speed:buoy.profile9.split(';')[0],
+          profile9direction:buoy.profile9.split(';')[1],
+          profile10speed:buoy.profile10.split(';')[0],
+          profile10direction:buoy.profile10.split(';')[1],
+
+
+
+          
         }));
         this.CWPRS02 = data.buoy2.map(buoy => ({
           ...buoy,
@@ -201,6 +320,20 @@ exportOptions = [
           MiddleDirection: buoy.Middle_CurrentSpeedDirection?.split(';')[1],
           LowerSpeed: buoy.Lower_CurrentSpeedDirection?.split(';')[0],
           LowerDirection: buoy.Lower_CurrentSpeedDirection?.split(';')[1],
+          profile4speed:buoy.profile4.split(';')[0],
+          profile4direction:buoy.profile4.split(';')[1],
+          profile5speed:buoy.profile5.split(';')[0],
+          profile5direction:buoy.profile5.split(';')[1],
+          profile6speed:buoy.profile6.split(';')[0],
+          profile6direction:buoy.profile6.split(';')[1],
+          profile7speed:buoy.profile7.split(';')[0],
+          profile7direction:buoy.profile7.split(';')[1],
+          profile8speed:buoy.profile8.split(';')[0],
+          profile8direction:buoy.profile8.split(';')[1],
+          profile9speed:buoy.profile9.split(';')[0],
+          profile9direction:buoy.profile9.split(';')[1],
+          profile10speed:buoy.profile10.split(';')[0],
+          profile10direction:buoy.profile10.split(';')[1],
         }));
         this.loading = false;
       },

@@ -23,7 +23,7 @@ export const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: 'base/:page', // Correct path to navigate after login
+    path: 'base', // Correct path to navigate after login
     component: LayoutComponent,
     canActivate:[AuthGuard],
     children: [

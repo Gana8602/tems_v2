@@ -9,21 +9,18 @@ import { CalendarModule } from 'primeng/calendar';
 
 import * as echarts from 'echarts';
 
-import { StationService, buoys, BuoyData} from '../station_service/station.service';
+import { StationService, buoys} from '../station_service/station.service';
 import { ThemeService } from '../theme_service/theme.service';
 import { ConfigDataService } from '../config-data.service';
 import { resolve } from 'node:path';
-
-// interface currentModel{
-//   time:string,
-//   speed:number,
-//   direction:number,
-// }
-// interface Tide{
-//   date:string,
-//   level:number
-// }
-
+import { SensorData, SensorData2 } from '../../model/config.model';
+import { json } from 'stream/consumers';
+import { Label } from '@amcharts/amcharts4/core';
+interface binJson{
+  name:string,
+  bin:string;
+  show:boolean
+}
 @Component({
   selector: 'app-analytics',
   standalone: true,
@@ -32,7 +29,7 @@ import { resolve } from 'node:path';
   styleUrl: './analytics.component.css',
   providers:[StationService]
 })
-export class AnalyticsComponent implements AfterViewInit, OnInit{
+export class AnalyticsComponent implements OnInit{
 
   sampleDataAdcp = [
     { timestamp: '2024-10-01T00:00:00Z', current_speed: 1.2, current_direction: 30 },
@@ -140,17 +137,6 @@ export class AnalyticsComponent implements AfterViewInit, OnInit{
     { "speed": 2.8, "direction": 240 },
     { "speed": 6.1, "direction": 360 }
   ];
-
-  // sampleDataTide:Tide[] = [];
-  // sampleData:currentModel[] = [
-  //   ];
-  //   sampleData2:currentModel[] = [
-  //   ];
-  //   sampleData3:currentModel[] = [
-  //   ];
-
-  //   sampleData4:currentModel[] = [
-  //   ];
    
   selectedStation: string = 'cwprs01';
   selectedPeriod: string = 'dateRange';
@@ -174,8 +160,8 @@ chartOptions = [
   { label: 'Polar plot', value: 'currentSpeed' }
 ];
 
-cwprs01: BuoyData[] = [];
-cwprs02: BuoyData[] = [];
+cwprs01: SensorData[] = [];
+cwprs02: SensorData2[] = [];
 
 fromDate =new Date();
 toDate = new Date();
@@ -192,14 +178,264 @@ loading: boolean = false;
 
 tideUnit: string = '';
 adcpUnit: string = '';
+//'Bin1', 'Bin2', 'Bin3', 'Bin4', 'Bin5', 'Bin6', 'Bin7', 'Bin8', 'Bin9', 'Bin10'
+listallBin: string[]= []; 
+surfacebin: string = '';
+midbin: string ='';
+bottombin: string = '';
+bins2:binJson[]=[];
+dropdownOptions: { label: string; value: string }[] = [];
+binName:string = "0 to 5m";
 
 constructor(private stationService: StationService, private themeService: ThemeService, private http:HttpClient, private cd: ChangeDetectorRef, private sensor:ConfigDataService) {}
 
 ngOnInit(): void {
-    this.themeService.currentTheme$.subscribe(() => {
-     this.UnitType().then(({ tide, adcp }) => {
-      this.tideUnit = tide;
-      this.adcpUnit = adcp;
+  this.initializeDropdown();
+  this.onInitFetch(); // Fetch one-day data on page load
+  this.subscribeToThemeChanges(); // Listen for theme changes
+}
+
+initializeDropdown(): void {
+  this.dropdownOptions = this.listallBin.map(bin => ({ label: bin, value: bin }));
+}
+
+onInitFetch(): void {
+  // Format date range for fetching data
+  let formattedFromDate: string | null = null;
+  let formattedToDate: string | null = null;
+
+   // Defaulting fromDate and toDate to current date at 00:00
+   let fromDate = this.fromDate || new Date();
+   let toDate = this.toDate || new Date();
+
+   this.fromDate.setHours(0,0,0,0);
+
+         // One-day range (same date for from and to with time included)
+         formattedFromDate = this.toISTISOString(fromDate);
+         formattedToDate = this.toISTISOString(toDate);
+
+  this.loading = true;
+  this.stationService.getSensorssTime(formattedFromDate, formattedToDate).subscribe(
+    (data: buoys) => {
+      this.cwprs01 = data.buoy1;
+      this.cwprs02 = data.buoy2;
+      this.loading = false;
+
+      // Render charts for initial load
+      this.sensorConfig().then(({ tide, adcp }) => {
+        this.tideUnit = tide;
+        this.adcpUnit = adcp;
+        
+        this.Tide();
+        this.surfaceSpeedDirection();
+        this.midSpeedDirection();
+        this.bottomSpeedDirection();
+        this.surfacepolar();
+        this.midpolar();
+        this.bottompolar();
+      });
+    },
+    error => {
+      console.error('Error fetching initial buoy data', error);
+      this.loading = false;
+    }
+  );
+}
+
+
+sensorConfig(): Promise<{tide: string; adcp: string}>{
+  return new Promise((unit) => {
+   this.sensor.getsensorConfigs().subscribe((data) => {
+    const tide = data[0]?.unit || 'm';
+    const adcp = data[1]?.unit || 'm/s';
+    const bins = data[1]?.bins.split(',') || '';
+    this.surfacebin = bins[0];
+    this.midbin = bins[1];
+    this.bottombin = bins[2];
+    // 
+    const josn = JSON.parse(data[1].e_bins);
+    this.bins2 = josn;
+    console.log("bins2",this.bins2)
+    this.listallBin.push(
+      this.surfacebin, this.midbin, this.bottombin
+    );
+    for(let i=0; i<this.bins2.length; i++){
+      if(this.bins2[i].show){
+        this.listallBin.push(this.bins2[i].bin);
+      }
+      
+    }
+    console.log("list bins:", this.listallBin)
+    this.dropdownOptions = this.listallBin.map(bin=> ({label:bin, value:bin}));
+    
+    // this.listallBin = data[1]?.e_bins?.split(',') || [];
+    // this.listallBin = ['All Bins', ...(data[1]?.e_bins?.split(',') || [])]; 
+    // this.updateInit(this.midbin);
+    // this.updateInit(this.bottombin);
+    console.log(`all-bin ${this.listallBin}`);
+    console.log(`surface: ${this.surfacebin}, Mid: ${this.midbin}, bottom: ${this.bottombin}`)
+    console.log(`tide unit: ${tide}, adcp unit: ${adcp}`);
+    unit({ tide, adcp});
+   });
+  })
+}
+
+surfaceData:string[]=[];
+// MiddleData:string[]=[];
+// BottomData:string[]=[];
+// innerbinDAta:string[]=[];
+  
+onBinChange(selectedBin: string) {
+  console.log(`Selected Bin: ${selectedBin}`);
+  // this.selectedSurfaceBin = selectedBin; 
+  this.surfacebin = selectedBin;// Update the selectedSurfaceBin
+  this.surfaceData = [...this.updateInit(selectedBin, true)];
+  console.log('Updated newChart Data:', this.surfaceData);
+  if(selectedBin === this.listallBin[0]){
+    this.binName = "Surface Current";
+  }else if(selectedBin === this.listallBin[1]){
+    this.binName = "Mid Current";
+  }else if(selectedBin === this.listallBin[2]){
+    this.binName = "Bottom Current";
+  }else {
+    for(let i=0; i<this.bins2.length; i++){
+      if(this.bins2[i].bin === selectedBin){
+        this.binName = this.bins2[i].name;
+      }
+    }
+  }
+  console.log("bin name :", this.binName);
+}
+
+updateInit(val: string, isSurface: boolean): string[] {
+  console.log("Received value:", `"${val}, ${this.selectedStation}"`);
+  console.log("updateInit called with val:", val, "isSurface:", isSurface);
+
+  let data: string[] = [];
+  const stationData = this.selectedStation.toLowerCase() === 'cwprs01' ? this.cwprs01 : this.cwprs02;
+  console.log("Station Data for", this.selectedStation, stationData);
+
+  switch (val) {
+    case 'Bin1': data = stationData.map(item => item.S2_SurfaceCurrentSpeedDirection); break;
+    case 'Bin2': data = stationData.map(item => item.Middle_CurrentSpeedDirection); break;
+    case 'Bin3': data = stationData.map(item => item.Lower_CurrentSpeedDirection); break;
+    case 'Bin4': data = stationData.map(item => item.profile4); break;
+    case 'Bin5': data = stationData.map(item => item.profile5); break;
+    case 'Bin6': data = stationData.map(item => item.profile6); break;
+    case 'Bin7': data = stationData.map(item => item.profile7); break;
+    case 'Bin8': data = stationData.map(item => item.profile8); break;
+    case 'Bin9': data = stationData.map(item => item.profile9); break;
+    case 'Bin10': data = stationData.map(item => item.profile10); break;
+    default:
+      console.log("Invalid bin selection:", val);
+      return [];
+  }
+  return data;
+}
+
+// selected_e_bin:string= '';
+noInitial:boolean=false;
+
+  onSubmitAndFetch(): void{
+    this.loading = true;
+    this.surfaceData.length = 0;
+    this.noInitial = true;  
+
+  // Check and update surfaceData if noInitial is true
+  if (this.noInitial && this.surfacebin) {
+    this.surfaceData = [...this.updateInit(this.surfacebin, true)];
+    console.log("Surface Data after bin selection:", this.surfaceData);
+  }
+
+  console.log(`Chosen Bin: ${this.surfacebin}`);
+  console.log(`Surface Data: ${this.surfaceData}`);
+
+    this.SubmitedslectedOption = this.selectedSensor;
+
+        // Format date range for fetching data
+        const { formattedFromDate, formattedToDate } = this.getFormattedDates();
+    
+    this.stationService.getSensorssTime(formattedFromDate!, formattedToDate!).subscribe(
+      (data: buoys) => {
+        this.cwprs01 = data.buoy1;
+        this.cwprs02 = data.buoy2;
+        this.loading = false;
+
+        // Trigger additional chart updates
+        setTimeout(() => {
+          if (this.SubmitedslectedOption === 'tide' && this.selectedChart) {
+            this.Tide();
+          } else if (this.SubmitedslectedOption === 'adcp' && this.selectedChart) {
+            this.surfaceSpeedDirection();
+            this.midSpeedDirection();
+            this.bottomSpeedDirection();
+            this.surfacepolar();
+            this.midpolar();
+            this.bottompolar();
+          }
+        }, 0);
+      },
+      error => {
+        console.error('Error fetching buoy data', error);
+        this.loading = false;
+
+      }
+    );
+}
+
+getFormattedDates(): { formattedFromDate: string | null; formattedToDate: string | null } {
+  let formattedFromDate: string | null = null;
+  let formattedToDate: string | null = null;
+
+  let fromDate = this.fromDate || new Date();
+  let toDate = this.toDate || new Date();
+
+  // fromDate.setHours(0, 0, 0, 0); 
+
+  if (!this.selectedPeriod) {
+    // Default to one-day range
+    formattedFromDate = this.toISTISOString(fromDate);
+    formattedToDate = this.toISTISOString(toDate);
+  } else {
+    // Handle selected period formatting
+    switch (this.selectedPeriod) {
+      case 'dateRange':
+        formattedFromDate = this.fromDate ? this.toISTISOString(this.fromDate) : this.toISTISOString(fromDate);
+          formattedToDate = this.toDate ? this.toISTISOString(this.toDate) : this.toISTISOString(toDate);
+        break;
+      case 'weekRange':
+        const startOfWeek = new Date(this.selectedWeek);
+        startOfWeek.setHours(0, 0, 0, 0);
+        formattedFromDate = this.toISTISOString(startOfWeek);
+        const weekEndDate = this.getWeekEndDate(this.selectedWeek);
+        formattedToDate = this.toISTISOString(weekEndDate);
+        break;
+      case 'monthRange':
+        formattedFromDate = this.selectedMonth
+          ? `${this.selectedMonth.getFullYear()}-${(this.selectedMonth.getMonth() + 1)
+              .toString()
+              .padStart(2, '0')}-01T00:00:00`
+          : null;
+        const monthEndDate = new Date(this.selectedMonth.getFullYear(), this.selectedMonth.getMonth() + 1, 0);
+        formattedToDate = monthEndDate
+          ? `${monthEndDate.toISOString().split('T')[0]}T23:59:59`
+          : null;
+        break;
+      case 'yearRange':
+        const year = this.selectedYear.getFullYear();
+        formattedFromDate = `${year}-01-01T00:00:00`;
+        formattedToDate = `${year}-12-31T23:59:59`;
+        break;
+      default:
+        break;
+    }
+  }
+
+  return { formattedFromDate, formattedToDate };
+}
+
+subscribeToThemeChanges(): void {
+  this.themeService.currentTheme$.subscribe(() => {
       this.Tide();
       this.surfaceSpeedDirection();
       this.midSpeedDirection();
@@ -207,38 +443,8 @@ ngOnInit(): void {
       this.surfacepolar();
       this.midpolar();
       this.bottompolar();
-     });
-      });
+  });
 }
-
-ngAfterViewInit() {
-  this.Tide();
-  this.surfaceSpeedDirection();
-  this.midSpeedDirection();
-  this.bottomSpeedDirection();
-} 
-
-UnitType(): Promise<{tide: string; adcp: string}>{
-  return new Promise((unit) => {
-   this.sensor.getsensorConfigs().subscribe((data) => {
-    const tide = data[0]?.unit || 'm';
-    const adcp = data[1]?.unit || 'm/s';
-    console.log(`tide unit: ${tide}, adcp unit: ${adcp}`);
-    unit({ tide, adcp});
-   });
-  })
-}
-// updateSpeed():string{
-//   let data:string;
-//   this.sensor.getsensorConfigs().subscribe(sens=>{
-//     console.log(sens[1].unit);
-//      data = sens[1].unit;
-//      console.log("Value ==",data)
-//   })
-//   return data!;
-// }
-
-
 
 onPeriodChange(event: any) {
 }
@@ -264,125 +470,6 @@ onSensorChange() {
     ];
   }
 }
-
-
-
-  onSubmitAndFetch() {
-    this.loading = true;
-    // this.sampleDataTide = [];
-    // this.sampleData = [];
-    // this.sampleData2 = [];
-    // this.sampleData3 = [];
-    this.SubmitedslectedOption = this.selectedSensor;
-    
-    // Format date range for fetching data
-    let formattedFromDate: string | null = null;
-    let formattedToDate: string | null = null;
-
-     // Defaulting fromDate and toDate to current date at 00:00
-     let fromDate = this.fromDate || new Date();
-     let toDate = this.toDate || new Date();
- 
-     // Set both fromDate and toDate to midnight if not already set
-     fromDate.setHours(0, 0, 0, 0); // Sets fromDate to 00:00:00 of the current date
-  
-     if (!this.selectedPeriod) {
-      // One-day range (same date for from and to with time included)
-      formattedFromDate = this.toISTISOString(fromDate);
-      formattedToDate = this.toISTISOString(toDate);
-
-      // formattedFromDate = this.fromDate.toISOString();
-      // formattedToDate = this.toDate.toISOString();
-    } else {
-      // Format based on selected period
-      switch (this.selectedPeriod) {
-        case 'dateRange':
-          formattedFromDate = this.fromDate ? this.toISTISOString(this.fromDate) : this.toISTISOString(fromDate);
-          formattedToDate = this.toDate ? this.toISTISOString(this.toDate) : this.toISTISOString(toDate);
-          break;
-          // formattedFromDate = this.fromDate ? this.fromDate.toISOString() : null;
-          // formattedToDate = this.toDate ? this.toDate.toISOString() : null;  
-          // break;
-  
-        case 'weekRange':
-          if (this.selectedWeek) {
-            // Create a new Date object based on selectedWeek and set hours to 00:00:00
-            const startOfWeek = new Date(this.selectedWeek);
-            startOfWeek.setHours(0, 0, 0, 0);
-            formattedFromDate = this.toISTISOString(startOfWeek);
-
-            // Get the week end date and set it to 23:59:59
-            const weekEndDate = this.getWeekEndDate(this.selectedWeek);
-            formattedToDate = this.toISTISOString(weekEndDate);
-          } else {
-            formattedFromDate = null;
-            formattedToDate = null;
-          }
-          break;
-  
-        case 'monthRange':
-          formattedFromDate = this.selectedMonth ? 
-            `${this.selectedMonth.getFullYear()}-${(this.selectedMonth.getMonth() + 1).toString().padStart(2, '0')}-01T00:00:00` : 
-            null;
-          const monthEndDate = new Date(this.selectedMonth.getFullYear(), this.selectedMonth.getMonth() + 1, 0);
-          formattedToDate = monthEndDate ? `${monthEndDate.toISOString().split('T')[0]}T23:59:59` : null;
-          break;
-  
-        case 'yearRange':
-          const year = this.selectedYear.getFullYear();
-          formattedFromDate = `${year}-01-01T00:00:00`;
-          formattedToDate = `${year}-12-31T23:59:59`;
-          break;
-  
-        default:
-          // Handle invalid or no period selected
-          break;
-      }
-    }
-  
-   
-    this.stationService.getStations(formattedFromDate!, formattedToDate!).subscribe(
-      (data: buoys) => {
-         this.cwprs01 = data.buoy1.map(buoy => ({
-          ...buoy,
-          SurfaceSpeed: buoy.S2_SurfaceCurrentSpeedDirection?.split(';')[0],
-          SurfaceDirection: buoy.S2_SurfaceCurrentSpeedDirection?.split(';')[1],
-          MiddleSpeed: buoy.Middle_CurrentSpeedDirection?.split(';')[0],
-          MiddleDirection: buoy.Middle_CurrentSpeedDirection?.split(';')[1],
-          LowerSpeed: buoy.Lower_CurrentSpeedDirection?.split(';')[0],
-          LowerDirection: buoy.Lower_CurrentSpeedDirection?.split(';')[1],
-        }));
-        this.cwprs02 = data.buoy2.map(buoy => ({
-          ...buoy,
-          SurfaceSpeed: buoy.S2_SurfaceCurrentSpeedDirection?.split(';')[0],
-          SurfaceDirection: buoy.S2_SurfaceCurrentSpeedDirection?.split(';')[1],
-          MiddleSpeed: buoy.Middle_CurrentSpeedDirection?.split(';')[0],
-          MiddleDirection: buoy.Middle_CurrentSpeedDirection?.split(';')[1],
-          LowerSpeed: buoy.Lower_CurrentSpeedDirection?.split(';')[0],
-          LowerDirection: buoy.Lower_CurrentSpeedDirection?.split(';')[1],
-        }));
-        this.loading = false;
-  
-        // After fetching station data, trigger the appropriate action based on selectedSensor
-        setTimeout(() => {
-          if (this.SubmitedslectedOption === 'tide' && this.selectedChart) {
-            this.Tide();
-          } else if (this.SubmitedslectedOption === 'adcp' && this.selectedChart) {
-            this.surfaceSpeedDirection();
-            this.midSpeedDirection();
-            this.bottomSpeedDirection();
-            this.surfacepolar();
-            this.midpolar();
-            this.bottompolar();
-          }
-        }, 0);
-      },
-      error => {
-        console.error('Error fetching buoy data', error);
-        this.loading = false;
-      }
-    );
-  }
 
   private toISTISOString(date: Date): string {
     const offsetMilliseconds = 5.5 * 60 * 60 * 1000;
@@ -946,9 +1033,9 @@ Tide(): void {
         series: [
           {
             name: 'Water Level',
-            // data:  dates.map((date, index) => ({ value: [date, waterLevels[index]] })),
+            data:  dates.map((date, index) => ({ value: [date, waterLevels[index]] })),
             // data: this.sampleDataTide.map(item => [item.date, item.level]),
-             data: sampleData.map(item => [item[0], item[1]]),
+            //  data: sampleData.map(item => [item[0], item[1]]),
             type: chartType === 'bar' ? 'bar'  : chartType,
             smooth: chartType === 'line',
             lineStyle: chartType === 'line' ? { color: '#1ee1ff' } : { color: 'orange' },
@@ -1018,14 +1105,24 @@ surfaceSpeedDirection(): void {
   //     );
   //   }
   // }  
-
+  let surfaceCurrent: string[] = [];
+  const data = this.updateInit(this.surfacebin, true);
   
-  const surfaceCurrent = this.selectedStation === 'cwprs01' ? this.cwprs01.map(item => item.S2_SurfaceCurrentSpeedDirection) : 
-                         this.selectedStation === 'cwprs02' ? this.cwprs02.map(item => item.S2_SurfaceCurrentSpeedDirection) : []
+  if (data && data.length > 0) {
+    surfaceCurrent = [...data]; // Use the returned data
+    this.surfaceData = [...data]; // Explicitly update this.surfaceData if required
+    console.log("Updated surfaceData:", this.surfaceData);
+  } else {
+    console.log("No data for the selected bin.");
+  }
+  
+    
+  // const surfaceCurrent = this.selectedStation === 'cwprs01' ? this.cwprs01.map(item => item.S2_SurfaceCurrentSpeedDirection) : 
+  //                        this.selectedStation === 'cwprs02' ? this.cwprs02.map(item => item.S2_SurfaceCurrentSpeedDirection) : []
 
   const dates =  this.selectedStation === 'cwprs01' ? this.cwprs01.map(item =>`${item.Date?.split('T')[0]} ${item.Time?.split('T')[1]?.split('.')[0]}`) :
                  this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split('T')[0]} ${item.Time?.split('T')[1]?.split('.')[0]}`) : []
-  // const dates = this.cwprs01.map(item =>`${item.Date?.split('T')[0]}`);
+  // // const dates = this.cwprs01.map(item =>`${item.Date?.split('T')[0]}`);
 
   if(surface){
             const existingInstance = echarts.getInstanceByDom(surface);
@@ -1037,7 +1134,7 @@ surfaceSpeedDirection(): void {
     // Prepare chart options
     const option = {
         title: {
-            text: 'Surface',
+            text: this.noInitial? this.binName: 'Surface',
             left: '1%',
             textStyle: {
                 color: mainText,
@@ -1218,9 +1315,9 @@ surfaceSpeedDirection(): void {
         series: [
           ...(this.isSpeedChecked ? [{
             name: 'Current Speed',
-            // data:  dates.map((date, index) => ({ value: [date, surfaceCurrent[index]?.split(';')[0]] })), 
+            data:  dates.map((date, index) => ({ value: [date, surfaceCurrent[index]?.split(';')[0]] })),
             // data: this.sampleData.map(item => [item.time, item.speed]),
-            data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
+            // data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
             type: chartType === 'bar' ? 'bar' : chartType,
             lineStyle: { normal: { color: 'orange' } },
             itemStyle: { color: 'orange' },
@@ -1231,8 +1328,8 @@ surfaceSpeedDirection(): void {
           ...(this.isCurrentChecked ? [{
             name: 'Current Direction',
             // data: this.sampleData.map(item => [item.time, item.direction]),
-            // data: dates.map((date, index) => ({ value: [date, surfaceCurrent[index]?.split(';')[1]] })),
-            data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
+            data: dates.map((date, index) => ({ value: [date, surfaceCurrent[index]?.split(';')[1]] })),
+            // data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
             type:  chartType,
             lineStyle: { normal: { color: 'red', type: 'dashed' } },
             itemStyle: { color: 'red' },
@@ -1294,8 +1391,9 @@ midSpeedDirection(): void {
         //   }
         // }    
 
-        const midCurrent = this.selectedStation === 'cwprs01' ? this.cwprs01.map(item => item.Middle_CurrentSpeedDirection) : 
-        this.selectedStation === 'cwprs02' ? this.cwprs02.map(item => item.Middle_CurrentSpeedDirection) : []
+        const midCurrent = this.updateInit(this.midbin, false);
+        // = this.selectedStation === 'cwprs01' ? this.cwprs01.map(item => item.Middle_CurrentSpeedDirection) : 
+        // this.selectedStation === 'cwprs02' ? this.cwprs02.map(item => item.Middle_CurrentSpeedDirection) : []
 
 const dates =  this.selectedStation === 'cwprs01' ? this.cwprs01.map(item =>`${item.Date?.split('T')[0]} ${item.Time?.split('T')[1]?.split('.')[0]}`) :
 this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split('T')[0]} ${item.Time?.split('T')[1]?.split('.')[0]}`) : []
@@ -1489,8 +1587,8 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
                   {
                     name: 'Current Speed',
                     // data: this.sampleData2.map(item => [item.time, item.speed]), 
-                      data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
-                      // data:  dates.map((date, index) => ({ value: [date, midCurrent[index]?.split(';')[0]] })),
+                      // data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
+                      data:  dates.map((date, index) => ({ value: [date, midCurrent[index]?.split(';')[0]] })),
                     type: chartType,
                     lineStyle: {
                         normal: {
@@ -1513,8 +1611,8 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
                     {
                       name: 'Current Direction',
                       // data: this.sampleData.map(item => [item.time, item.direction]),
-                         data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
-                        // data: dates.map((date, index) => ({ value: [date, midCurrent[index]?.split(';')[1]] })),
+                        //  data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
+                        data: dates.map((date, index) => ({ value: [date, midCurrent[index]?.split(';')[1]] })),
                       type: chartType,
                       lineStyle: {
                           normal: {
@@ -1586,8 +1684,9 @@ bottomSpeedDirection(): void {
         //   }
         // }
 
-        const bottomCurrent = this.selectedStation === 'cwprs01' ? this.cwprs01.map(item => item.Lower_CurrentSpeedDirection) : 
-        this.selectedStation === 'cwprs02' ? this.cwprs02.map(item => item.Lower_CurrentSpeedDirection) : []
+        const bottomCurrent = this.updateInit(this.bottombin, false);
+        // = this.selectedStation === 'cwprs01' ? this.cwprs01.map(item => item.Lower_CurrentSpeedDirection) : 
+        // this.selectedStation === 'cwprs02' ? this.cwprs02.map(item => item.Lower_CurrentSpeedDirection) : []
 
 const dates =  this.selectedStation === 'cwprs01' ? this.cwprs01.map(item =>`${item.Date?.split('T')[0]} ${item.Time?.split('T')[1]?.split('.')[0]}`) :
 this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split('T')[0]} ${item.Time?.split('T')[1]?.split('.')[0]}`) : []
@@ -1762,8 +1861,8 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
               ...(this.isSpeedChecked ? [{
                 name: 'Current Speed',
                 // data: this.sampleData3.map(item => [item.time, item.speed]),
-                 data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
-                // data:  dates.map((date, index) => ({ value: [date, bottomCurrent[index]?.split(';')[0]] })),                   
+                //  data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_speed]),
+                data:  dates.map((date, index) => ({ value: [date, bottomCurrent[index]?.split(';')[0]] })),                   
                 type: chartType,
                 lineStyle: { normal: { color: '#00bfff' } },  // Updated to blue
                 itemStyle: { color: '#00bfff' },  // Updated to blue
@@ -1776,8 +1875,8 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
                 {
                   name: 'Current Direction',
                   // data: this.sampleData3.map(item => [item.time, item.direction]),
-                     data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
-                    // data: dates.map((date, index) => ({ value: [date, bottomCurrent[index]?.split(';')[1]] })),
+                    //  data: this.sampleDataAdcp.map(item => [item.timestamp, item.current_direction]),
+                    data: dates.map((date, index) => ({ value: [date, bottomCurrent[index]?.split(';')[1]] })),
                   type: chartType,
                   lineStyle: { normal: { color: 'green', type: 'dashed' } },  // Updated to green
                   itemStyle: { color: 'green' },  // Updated to green
@@ -1856,7 +1955,7 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
           }));
           
           // Map directions to labels and fill dataBins with counts
-          this.sampleDataPolar.forEach(({ speed, direction }) => {
+          surfacePolar.forEach(({ speed, direction }) => {
               const directionIndex = Math.round(direction / 22.5) % 16;
               const speedCategory = categorizeSpeed(speed);
               dataBins[directionIndex][speedCategory] += 1;
@@ -2053,7 +2152,7 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
       }));
       
       // Map directions to labels and fill dataBins with counts
-      this.sampleDataPolar.forEach(({ speed, direction }) => {
+      midPolar.forEach(({ speed, direction }) => {
           const directionIndex = Math.round(direction / 22.5) % 16;
           const speedCategory = categorizeSpeed(speed);
           dataBins[directionIndex][speedCategory] += 1;
@@ -2195,7 +2294,7 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
           ? this.cwprs02.map(item => item.Lower_CurrentSpeedDirection)
           : [];
       
-          const surfacePolar = surfaceCurrent.map((data) => {
+          const bottomPolar = surfaceCurrent.map((data) => {
             const [speed, direction] = data.split(';').map(Number);
             return {speed , direction};
           });
@@ -2241,7 +2340,7 @@ this.selectedStation === 'cwprs02' ? this.cwprs02.map(item =>`${item.Date?.split
       }));
       
       // Map directions to labels and fill dataBins with counts
-      this.sampleDataPolar.forEach(({ speed, direction }) => {
+      bottomPolar.forEach(({ speed, direction }) => {
           const directionIndex = Math.round(direction / 22.5) % 16;
           const speedCategory = categorizeSpeed(speed);
           dataBins[directionIndex][speedCategory] += 1;
